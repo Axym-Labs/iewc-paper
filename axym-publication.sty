@@ -1,0 +1,213 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{axym-publication}[2026/07/15 Axym publication templates]
+
+\RequirePackage[
+  letterpaper,
+  left=2.2cm,
+  right=2.2cm,
+  top=1in,
+  textheight=9in,
+  headheight=14pt,
+  headsep=25pt,
+  footskip=30pt
+]{geometry}
+\RequirePackage[T1]{fontenc}
+\RequirePackage{mathpazo}
+\RequirePackage{microtype}
+\RequirePackage{graphicx}
+\RequirePackage{caption}
+\RequirePackage{xcolor}
+\RequirePackage{hyperref}
+\RequirePackage{amsmath,amssymb}
+\RequirePackage{booktabs}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{listings}
+
+% Match the accepted wide TRL candidate rather than article.cls's slightly
+% larger default leading at 11 pt.
+\makeatletter
+\renewcommand{\normalsize}{%
+  \@setfontsize\normalsize{11pt}{13.2pt}%
+  \abovedisplayskip 8pt plus 2pt minus 5pt
+  \abovedisplayshortskip 0pt plus 3pt
+  \belowdisplayskip \abovedisplayskip
+  \belowdisplayshortskip 5pt plus 3pt minus 3pt
+}
+\renewcommand{\small}{\@setfontsize\small{10pt}{12pt}}
+\renewcommand{\footnotesize}{\@setfontsize\footnotesize{9pt}{11pt}}
+\normalsize
+\makeatother
+
+\definecolor{AxymPrimary}{HTML}{3F21B6}
+\definecolor{AxymTitle}{HTML}{003262}
+\definecolor{AxymInk}{HTML}{111827}
+\definecolor{AxymMuted}{HTML}{4B5563}
+\definecolor{AxymCodeBackground}{HTML}{F5F3FC}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=AxymPrimary,
+  citecolor=AxymPrimary,
+  urlcolor=AxymPrimary
+}
+\urlstyle{same}
+
+\captionsetup{
+  font={small},
+  labelfont=bf,
+  justification=raggedright,
+  singlelinecheck=false
+}
+
+\newcommand{\publicationtitle}[1]{\def\PublicationTitle{#1}}
+\newcommand{\publicationauthors}[1]{\def\PublicationAuthors{#1}}
+\newcommand{\publicationaffiliations}[1]{\def\PublicationAffiliations{#1}}
+\newcommand{\publicationdate}[1]{\def\PublicationDate{#1}}
+\newcommand{\publicationcode}[1]{\def\PublicationCode{#1}}
+\newcommand{\publicationprojectpage}[1]{\def\PublicationProjectPage{#1}}
+\newcommand{\publicationcorrespondence}[1]{\def\PublicationCorrespondence{#1}}
+
+\publicationtitle{Publication title}
+\publicationauthors{Author Name}
+\publicationaffiliations{$^1$Affiliation, City, Country}
+\publicationdate{\today}
+\publicationcode{https://github.com/Axym-Labs/project}
+\publicationprojectpage{https://axym.org/work/project}
+\publicationcorrespondence{contact@axym.org}
+
+\newcommand{\makepublicationtitle}{%
+  \thispagestyle{empty}%
+  \noindent{\color{AxymInk}\rule{\linewidth}{1pt}}\par
+  \vspace{1.15em}%
+  {\raggedright\fontsize{21pt}{23pt}\selectfont\bfseries
+   \color{AxymTitle}\PublicationTitle\par}
+  \vspace{0.8em}%
+  {\raggedright\fontsize{11pt}{15pt}\selectfont\bfseries
+   \color{AxymInk}\PublicationAuthors\par}
+  \vspace{0.05em}%
+  {\raggedright\fontsize{10pt}{12pt}\selectfont
+   \color{AxymMuted}\PublicationAffiliations\par}
+  \ifx\PublicationDate\empty\else
+    \vspace{0.1em}%
+    {\raggedright\fontsize{10pt}{12pt}\selectfont
+     \color{AxymMuted}\PublicationDate\par}%
+  \fi
+  \vspace{0.45em}%
+  \noindent{\color{AxymInk}\rule{\linewidth}{1pt}}\par
+}
+
+\newcommand{\publicationleadfigure}[3][0.20\textheight]{%
+  \par\vspace{1em}%
+  \begin{center}
+    \includegraphics[width=\linewidth,height=#1,keepaspectratio]{#2}
+  \end{center}
+  \refstepcounter{figure}%
+  {\fontsize{10pt}{12pt}\selectfont
+   \noindent\textbf{Figure \thefigure:} #3\par}%
+  \vspace{0.85em}%
+}
+
+\newcommand{\publicationabstract}[1]{%
+  \par
+  \begin{center}
+    {\fontsize{11pt}{13pt}\selectfont\bfseries Abstract\par}
+  \end{center}
+  \vspace{0.15em}%
+  {\fontsize{10pt}{12pt}\selectfont #1\par}%
+}
+
+\newcommand{\makepublicationlinks}{%
+  \par\vspace{0.9em}%
+  {\fontsize{10pt}{12pt}\selectfont
+   \noindent\textbf{Code:}\enspace
+   \href{\PublicationCode}{\nolinkurl{\PublicationCode}}\\
+   \textbf{Project page:}\enspace
+   \href{\PublicationProjectPage}{\nolinkurl{\PublicationProjectPage}}\\
+   \textbf{Correspondence:}\enspace
+   \href{mailto:\PublicationCorrespondence}{\nolinkurl{\PublicationCorrespondence}}\par}%
+}
+
+\newcommand{\makepublicationcover}[1][Technical report]{%
+  \hypersetup{pageanchor=false}%
+  \pagenumbering{roman}%
+  \begin{titlepage}
+    \thispagestyle{empty}
+    \raggedright
+    \vspace*{0.13\textheight}
+    {\color{AxymPrimary}\rule{\linewidth}{1.2pt}}\par
+    \vspace{0.75cm}
+    {\small\bfseries\color{AxymPrimary}#1\par}
+    \vspace{0.45cm}
+    {\fontsize{30pt}{35pt}\selectfont\bfseries
+     \color{AxymTitle}\PublicationTitle\par}
+    \vspace{0.75cm}
+    {\color{AxymPrimary}\rule{\linewidth}{1.2pt}}\par
+    \vspace{0.9cm}
+    {\large\bfseries\color{AxymInk}\PublicationAuthors\par}
+    \vspace{0.25cm}
+    {\normalsize\color{AxymMuted}\PublicationAffiliations\par}
+    \vfill
+    {\normalsize\color{AxymMuted}\PublicationDate\par}
+  \end{titlepage}%
+}
+
+\newcommand{\makepublicationabstractpage}[1]{%
+  \thispagestyle{empty}
+  \vspace*{0.10\textheight}
+  \begin{center}
+    {\Large\bfseries Abstract\par}
+  \end{center}
+  \vspace{1.0em}
+  {\large #1\par}
+  \vfill
+  \makepublicationlinks
+  \clearpage
+  \pagenumbering{arabic}%
+  \hypersetup{pageanchor=true}%
+}
+
+\newtcolorbox{publicationsummary}[1][Summary]{%
+  enhanced,
+  breakable,
+  sharp corners,
+  boxrule=0pt,
+  frame hidden,
+  colback=AxymPrimary!6,
+  borderline west={3pt}{0pt}{AxymPrimary},
+  left=12pt,
+  right=10pt,
+  top=8pt,
+  bottom=8pt,
+  before skip=10pt,
+  after skip=12pt,
+  before upper={{\bfseries\small\textcolor{AxymPrimary}{#1}}\par\vspace{2pt}}
+}
+
+\lstdefinestyle{axymcode}{
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  commentstyle=\color{AxymMuted},
+  keywordstyle=\color{AxymPrimary}\bfseries,
+  stringstyle=\color{AxymTitle}
+}
+
+\newtcblisting{publicationcodeblock}[1][Python]{%
+  enhanced,
+  breakable,
+  sharp corners,
+  boxrule=0pt,
+  frame hidden,
+  colback=AxymCodeBackground,
+  borderline west={2pt}{0pt}{AxymPrimary},
+  left=10pt,
+  right=8pt,
+  top=8pt,
+  bottom=8pt,
+  before skip=10pt,
+  after skip=12pt,
+  listing only,
+  listing options={style=axymcode,language=#1}
+}

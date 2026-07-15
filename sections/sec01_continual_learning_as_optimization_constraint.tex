@@ -1,0 +1,11 @@
+\section{Continual Learning as Optimization Constraint}
+
+Consider the problem of continual learning, where data from distributions (tasks, environments) are presented sequentially \citep{McCloskeyCohen1989,French1999,Parisi2019,VanDeVenTolias2019}. Concretely, we first train a model on distribution $A$ and obtain parameters $\theta^*_A$, and only then can we optimize with respect to a new distribution $B$. If we plainly pick a minimal loss/cost $\min_\theta L_B(\theta)$ as our objective, then the optimization does not have to respect performance on $A$, which usually degrades it too much to be practical. Hence, we have to guide or constrain optimization in a way. A natural fit for this problem is the framework of constrained optimization, with solution preservation being the constraint in question. Define both a quantity $Q: \Theta \rightarrow \mathcal{H}$ that is relevant to this preservation and a constraint set $\mathcal{C} \subset \mathcal{H}$ that implies preservation is met. Before exploring concrete choices in later sections, we continue on the common thread. These two objects let us define a new objective:
+\[
+\min_{\theta \in \Theta} L_B(\theta)
+\qquad
+\text{subject to}
+\qquad
+q(\theta) \in \mathcal{C}
+\]
+This gives a mathematical formulation of preservation, and the next section extends it to become more practical.

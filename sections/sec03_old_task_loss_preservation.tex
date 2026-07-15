@@ -1,0 +1,80 @@
+\section{Old-Task Loss Preservation}
+
+Since $\ell_A$ is our best practical surrogate on performance on distribution $A$, a natural choice is to use $\ell_A$ itself to define preservation. We say that the model $f_\theta$ preserved the solution if it preserved the old loss value for distribution $A$. This leads to:
+\[
+q(a,\theta)
+=
+\ell_A(f_\theta(x))-\ell_A(f_{\theta_A^\star}(x)).
+\]
+Since preservation means $q(a,\theta)=0$, take $\mathcal C=\{0\}$. The corresponding unscaled proximal loss is
+\[
+p(a,\theta)
+=
+\operatorname{dist}(q(a,\theta),\mathcal C)^2
+=
+q(a,\theta)^2.
+\]
+To obtain a low-order Taylor approximation, use the perturbation around the old solution $\delta=\theta-\theta_A^\star$ in the first-order expansion of $q$:
+\[
+q(a,\theta_A^\star+\delta)
+\approx
+g^\top\delta,
+\]
+where
+\[
+g
+=
+\nabla_\theta \ell_A(f_{\theta_A^\star}(a)).
+\]
+
+Equivalently, writing
+\[
+z_A=f_{\theta_A^\star}(a)
+\qquad
+r_i
+=
+\nabla_z \ell_A(z)\big|_{z=f_{\theta_A^\star}(a)},
+\qquad
+J_i
+=
+\nabla_\theta f_{\theta_A^\star}(a),
+\]
+the chain rule gives
+\[
+g_i
+=
+J_i^\top r_i.
+\]
+
+Substituting this expansion into the preservation penalty gives
+\[
+\frac{\lambda}{2N_A}\sum_{i=1}^{N_A} q(a_i,\theta)^2
+\;\approx\;
+\frac{\lambda}{2N_A}\sum_{i=1}^{N_A} (g_i^\top\delta)^2.
+\]
+Collecting the gradient outer products yields
+\[
+\frac{\lambda}{2N_A}\sum_{i=1}^{N_A} (g_i^\top\delta)^2
+=
+\frac{\lambda}{2}\,
+\delta^\top
+\left(
+\frac{1}{N_A}\sum_{i=1}^{N_A} g_i g_i^\top
+\right)
+\delta
+=
+\frac{\lambda}{2}\,
+\delta^\top
+M_1
+\delta.
+\]
+
+Therefore the resulting matrix is
+\[
+M_1
+=
+\frac{1}{N_A}\sum_{i=1}^{N_A} g_i g_i^\top
+=
+\frac{1}{N_A}\sum_{i=1}^{N_A} J_i^\top r_i r_i^\top J_i.
+\]
+We call this an importance matrix as it encodes how important it is to preserve a direction in parameter space.

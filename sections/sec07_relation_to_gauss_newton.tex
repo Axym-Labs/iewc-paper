@@ -1,0 +1,25 @@
+\section{Relation to Gauss-Newton}
+
+Consider the scalar least-squares setting in Euclidean geometry. Suppose the model output is scalar, such that
+\[
+\ell_n(z)=\frac12(z-y_n)^2.
+\]
+Then
+\[
+r_n=z_n^A-y_n
+\]
+is scalar, and for $r_n\neq 0$ we have
+\[
+\frac{r_n^2}{r_n^2}=1.
+\]
+Therefore the Euclidean IEF contribution reduces to
+\[
+J_n^\top J_n,
+\]
+and averaging gives
+\[
+M_{\mathrm{IEF}}
+=
+\frac{1}{N}\sum_{n=1}^N J_n^\top J_n.
+\]
+This is exactly the Gauss--Newton or output-Jacobian form for squared-error regression \citep{GaussNewton,MartensHF,MartensNG}, the standard practical preconditioning matrix for second-order optimization. This matches our geometric intuition: Loss preservation is governed by how parameters move the output, which is encoded by the Jacobian $J$, not by the current output gradient magnitude. This equivalence was made explicit in \citep{IEF}. In fact, the IEF was motivated as an approximate Gauss--Newton algorithm.

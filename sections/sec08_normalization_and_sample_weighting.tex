@@ -1,0 +1,39 @@
+\section{Normalization and Sample Weighting}
+
+To compare both matrices in a common notation, let $G_n \succ 0$ denote the chosen output metric for sample $n$. Although $F_{\mathrm{EF}}$ itself does not depend on $G_n$, its summands can be rewritten relative to said output metric.
+
+Define
+\[
+\hat r_n^{\,G}
+=
+\frac{r_n}{\sqrt{r_n^\top G_n^{-1}r_n}},
+\qquad
+a_n^{\,G}
+=
+J_n^\top \hat r_n^{\,G},
+\qquad
+w_n^{\,G}
+=
+r_n^\top G_n^{-1}r_n.
+\]
+Then
+\[
+M_{\mathrm{IEF},G}
+=
+\frac{1}{N}\sum_{n=1}^N a_n^{\,G}(a_n^{\,G})^\top,
+\qquad
+F_{\mathrm{EF}}
+=
+\frac{1}{N}\sum_{n=1}^N w_n^{\,G}\, a_n^{\,G}(a_n^{\,G})^\top.
+\]
+
+If we interpret both matrices as empirical approximations of local old-task sensitivity directions, represented by $a_n^{\,G}(a_n^{\,G})^\top$, then they use the same directions but differ in how strongly each sample contributes. $M_{\mathrm{IEF},G}$ keeps the original empirical weighting of the old-task samples, while $F_{\mathrm{EF}}$ multiplies each sample's contribution by the metric-dependent squared magnitude
+\[
+w_n^{\,G}
+=
+r_n^\top G_n^{-1}r_n.
+\]
+
+Thus, normalization changes the sample aggregation: EF changes the old-task weighting toward high-loss samples and away from confidently fitted ones, whereas IEF keeps the empirical old-task weighting.
+
+We will analyze this difference more closely below and see that this particular weighting is problematic in general. The next section treats the important special case of probabilistic classification models.

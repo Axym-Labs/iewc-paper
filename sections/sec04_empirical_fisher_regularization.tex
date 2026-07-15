@@ -1,0 +1,32 @@
+\section{Empirical Fisher Regularization}
+
+This is exactly the empirical Fisher matrix $F_{\mathrm{EF}}$, the standard practical matrix used in Elastic Weight Consolidation (EWC) \citep{EWC}. We refer to this instantiation as EF-EWC:
+\[
+M_1=F_{\mathrm{EF}}.
+\]
+Hence EF-EWC approximates a constrained optimization problem with a smooth proximal penalty, preserving the old scalar loss value sample by sample. This places EF-EWC within the broader family of parameter-importance regularizers \citep{SI,MAS} and Bayesian or online continual-learning approximations \citep{HuszarEWC,ProgressCompress,VCL}.
+
+The original EF-EWC derivation uses properties specific to probabilistic classification models. After training on task $A$, one considers the posterior over parameters
+\[
+p(\theta\mid \mathcal D_A)\propto p(\mathcal D_A\mid \theta)\,p(\theta),
+\]
+and uses it as a prior when learning task $B$. Expanding the negative log-posterior around the old solution $\theta_A^\star$ yields a local quadratic approximation
+\[
+-\log p(\theta\mid \mathcal D_A)
+\approx
+-\log p(\theta_A^\star\mid \mathcal D_A)
++
+\frac12(\theta-\theta_A^\star)^\top H_A(\theta_A^\star)(\theta-\theta_A^\star),
+\]
+where $H_A(\theta_A^\star)$ is the Hessian of the negative log-posterior at the old solution. Under the usual assumptions for log-likelihood models, and neglecting the prior curvature term or absorbing it into the approximation, this Hessian can be replaced by the Fisher information matrix
+\[
+F(\theta)
+=
+\mathbb E_{(x,y)\sim\mathcal D_A}
+\left[
+\nabla_\theta \log p_\theta(y\mid x)\,
+\nabla_\theta \log p_\theta(y\mid x)^\top
+\right].
+\]
+
+For negative log-likelihood losses, this Fisher matrix coincides with the curvature of the expected loss under standard regularity conditions, and therefore matches the corresponding Hessian-based local quadratic model near an optimum, as in the natural-gradient and approximate-curvature literature \citep{Amari1998,MartensNG,KFAC}. Since classification models explicitly define a predictive distribution $p_\theta(y\mid x)$ over labels, the true Fisher can be computed as population object by sampling from said distribution. In practice, however, EWC replaces it by empirical approximations computed from the old dataset, which leads to the empirical Fisher form used above. However, this framework leaves open a justification of the empirical Fisher outside of negative log-likelihood losses. This is an open problem because EWC is used for different tasks and objectives as well, for example for diffusion \citep{Rank1Diffusion}. Furthermore, Kunstner et al. show that the empirical Fisher is a different mathematical object than the true Fisher and approximates the true Fisher well only in specific settings \citep{KunstnerEF}. We re-derive EF-EWC from scratch using PL-CLOC to resolve these two issues, basing the usage of said matrix on solid theoretical grounding without reliance on the true Fisher matrix.

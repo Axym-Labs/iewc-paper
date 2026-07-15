@@ -1,0 +1,85 @@
+\section{Level-Set Preservation in Output Space}
+
+Our first mechanism is derived from preservation of the loss value. An extension of the same preservation constraint is to impose it through the old-task loss level set in output space. More concretely, we preserve the output per-sample up to motions that stay on this set. This output-space perspective connects to distillation and functional regularization approaches to continual learning \citep{LwF,Distillation,FunctionalGP,FROMP}, which let the model match old predictions or predictive functions. This gives a geometric formulation of the same underlying constraint: instead of penalizing raw change in the scalar loss coordinate, we penalize displacement away from the local constraint set in output space. Let $a \in D_A$ be an old sample, and write  $z_A=f_{\theta_A^\star}(x)$. The exact old-loss preservation set in output coordinates is
+\[
+\mathcal C=
+\{z:\ell_A(z)=\ell_A(z_A)\}.  
+\]
+Thus the preserved quantity is the model output itself:
+\[
+q(a,\theta)=f_\theta(x).  
+\]
+The hard constraint is
+\[
+q(a,\theta)\in\mathcal C,  
+\]
+and the corresponding unscaled proximal loss is
+\[
+p(a,\theta) =
+\operatorname{dist}_{G}\big(q(a,\theta),\mathcal C\big)^2,  
+\]
+where $G\succ0$ is the chosen local output metric.
+
+This exact penalty is generally not tractable. To obtain a practical form, use the standard first-order local model of the constraint set near the old output $z_A$, namely its tangent plane. Let
+\[
+r=
+\nabla_z \ell_A(z)\big|_{z=z_A}.  
+\]
+For a small output displacement $\Delta z=f_\theta(x)-f_{\theta_A^\star}(x)$, the first-order old-loss change is approximately $r^\top \Delta z$.
+Hence the local constraint set is
+\[
+T=
+\{\Delta z:r^\top \Delta z=0\}.  
+\]
+Replacing the exact level set by this tangent hyperplane gives the local proximal loss
+\[
+p(a,\theta)  
+\approx  
+\operatorname{dist}_{G}(\Delta z,T)^2.  
+\]
+
+For the metric $|v|_G^2=v^\top G v$, the squared distance to the tangent hyperplane follows from projecting $\Delta z$ onto the gradient:
+\[
+\operatorname{dist}_{G}(\Delta z,T)^2 =
+\frac{(r^\top \Delta z)^2}{r^\top G^{-1}r}.  
+\]
+Linearizing the model output around $\theta_A^\star$, with
+\[
+\delta=\theta-\theta_A^\star,  
+\qquad  
+J=\nabla_\theta f_{\theta_A^\star}(x),  
+\]
+we have
+\[
+\Delta z \approx J\delta.  
+\]
+Substituting this into the local regularization term gives
+\[
+\frac{\lambda}{2}p(a,\theta_A^\star+\delta)  
+\approx  
+\frac{\lambda}{2}  
+\frac{(r^\top J\delta)^2}{r^\top G^{-1}r}.  
+\]
+Equivalently,
+\[
+\frac{\lambda}{2}p(a,\theta_A^\star+\delta)  
+\approx  
+\frac{\lambda}{2}  
+\delta^\top  
+\left(
+J^\top  
+\frac{rr^\top}{r^\top G^{-1}r}  
+J  
+\right)
+\delta.  
+\]
+
+Taking the empirical average over old-distribution samples $a_1,\dots,a_N$ yields an importance matrix of the form
+\[
+M_{2,A} =
+\frac{1}{N}\sum_{i=1}^N  
+J_i^\top  
+\frac{r_i r_i^\top}{r_i^\top G_i^{-1}r_i}  
+J_i.  
+\]
+

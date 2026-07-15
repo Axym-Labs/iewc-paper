@@ -1,0 +1,31 @@
+\section{Spectral Stability Under Contamination}
+
+The normalization difference between EF and IEF has consequences for their spectrum. This matters in practice because any diagonal or low-rank approximation is built from the leading part of the matrix. Consider for example \citep{Rank1Diffusion}. To see how this difference can affect the leading eigenspace, consider the following simple contamination model: Contaminated samples, such as mislabeled or atypical data, can have large output-loss gradients because their signal aligns with directions that gradient descent learns only very slowly; in the spectral-bias / kernel-eigenmode framework, low-alignment or low-eigenvalue components can remain effectively unlearned over the training horizon \citep{Memorization,SpectralBias}. With probability $1-\varepsilon$, a sample is clean and its normalized sensitivity direction contributes to a stable old-task preservation matrix $\Sigma_{\mathrm{clean}}=\mathbb E[a a^\top \mid a \in D_{A,\mathrm{clean}}]$. Assume also that clean weights are independent of these normalized directions, or are sufficiently concentrated around their clean mean. With probability $\varepsilon$, a sample is contaminated. Assume its direction is concentrated near a unit vector $u$ outside that clean leading subspace, and that its output gradient scale is large,
+\[
+w \approx W,  
+\qquad  
+W\gg 1.
+\]
+Under this model, the population version of IEF is
+\[
+\mathbb E[M_{\mathrm{IEF}}]
+= (1-\varepsilon)\Sigma_{\mathrm{clean}}
++  
+\varepsilon uu^\top
+\]
+while the corresponding EF matrix becomes
+\[
+\mathbb E[F_{\mathrm{EF}}]
+=
+(1-\varepsilon)\mathbb E[w\mid\text{clean}]\,\Sigma_{\mathrm{clean}}  
++  
+\varepsilon W uu^\top.  
+\]
+
+In terms of the spectrum, let $\lambda_k^{\mathrm{clean}}$ denote the $k$-th eigenvalue of the clean component. If
+\[
+\varepsilon W  
+\gtrsim  
+(1-\varepsilon)\lambda_k^{\mathrm{clean}}\mathbb E[w\mid\text{clean}],  
+\]
+then the contaminated direction $u$ will enter the leading eigenspace of $F_{\mathrm{EF}}$. The insight is that the normalization can realistically affect which directions dominate the spectrum. In settings with noisy labels, hard examples, underfit outliers, or other rare but high-loss samples, we should expect the leading eigenspace of $F_{\mathrm{EF}}$ to be less stable than that of $M_{\mathrm{IEF}}$, relevant to low-rank approximations thereof.

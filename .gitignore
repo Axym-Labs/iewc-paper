@@ -1,0 +1,9 @@
+main.aux
+main.bbl
+main.blg
+main.log
+main.out
+*.synctex.gz
+dist/
+paper_writeup.md
+arxiv_endorsement_request_template.md

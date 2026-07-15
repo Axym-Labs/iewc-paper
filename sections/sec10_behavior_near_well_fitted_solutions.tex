@@ -1,0 +1,108 @@
+\section{Behavior Near Well-Fitted Solutions}
+
+The loss scale dependence of $F_{\mathrm{EF}}$ is further accentuated by the fact that we calculate $F_{\mathrm{EF}}$ \emph{after} training on $A$, where we expect the model to have fitted the data well. In fact, this approximate optimality of $\theta_A^\star$ is a necessary assumption in the derivation of EF-EWC \citep{EWC} to relate the true Fisher to the Hessian. This also matches modern practice, where highly expressive models are often trained to fit the data very well, frequently up to interpolation \citep{ModernInterp}. This justifies theoretical treatment outside of the classification case.
+
+To make the comparison precise, consider the per-sample summands
+\[
+S_n^{\mathrm{EF}}
+=
+J_n^\top r_n r_n^\top J_n,
+\qquad
+S_n^{\mathrm{IEF},G}
+=
+J_n^\top
+\frac{r_n r_n^\top}{r_n^\top G_n^{-1}r_n}
+J_n,
+\]
+where $G_n\succ0$ is the chosen output metric. We assume that $G_n$ is uniformly positive definite and bounded, and that $J_n$ is bounded under the operator norm. More precisely, assume there exists a constant $C_J<\infty$ such that
+\[
+\|J_n^\top v\|_2
+\le
+C_J\|v\|_2
+\]
+for the relevant directions, and constants $0<m_G\le M_G<\infty$ such that
+$G_n$ is uniformly bounded between $m_G I$ and $M_G I$.
+
+Using the same $G_n$-normalized direction as above,
+\[
+\hat r_n^{\,G}
+=
+\frac{r_n}{\sqrt{r_n^\top G_n^{-1}r_n}},
+\qquad
+a_n^{\,G}
+=
+J_n^\top \hat r_n^{\,G},
+\qquad
+w_n^{\,G}
+=
+r_n^\top G_n^{-1}r_n,
+\qquad
+b_n^{\,G}
+=
+\|J_n^\top \hat r_n^{\,G}\|_2^2,
+\]
+This gives
+\[
+S_n^{\mathrm{IEF},G}
+=
+a_n^{\,G}(a_n^{\,G})^\top,
+\qquad
+S_n^{\mathrm{EF}}
+=
+w_n^{\,G}\,a_n^{\,G}(a_n^{\,G})^\top.
+\]
+
+For the spectral norm,
+\[
+\|S_n^{\mathrm{EF}}\|_2
+=
+w_n^{\,G} b_n^{\,G},
+\qquad
+\|S_n^{\mathrm{IEF},G}\|_2
+=
+b_n^{\,G}.
+\]
+Since
+\[
+\|\hat r_n^{\,G}\|_2^2
+=
+\frac{\|r_n\|_2^2}{r_n^\top G_n^{-1}r_n},
+\]
+the metric bounds and bounded-Jacobian assumption give $b_n^{\,G}\in O(1)$, so
+\[
+\|S_n^{\mathrm{EF}}\|_2 \in O(w_n^{\,G}),
+\qquad
+\|S_n^{\mathrm{IEF},G}\|_2 \in O(1).
+\]
+The sharper lower-bound statement requires a nondegeneracy condition in the normalized output-gradient direction. If there exists $c_J>0$ such that
+\[
+\|J_n^\top \hat r_n^{\,G}\|_2\ge c_J
+\]
+for the relevant samples, then
+\[
+\|S_n^{\mathrm{EF}}\|_2 \in \Theta(w_n^{\,G}),
+\qquad
+\|S_n^{\mathrm{IEF},G}\|_2 \in \Theta(1).
+\]
+We now interpret this for practical situations. Near the end of training on distribution $A$, we expect many old samples to have small gradients. The norm analysis above then shows that EF contains the additional multiplicative factor $w_n^{\,G}=r_n^\top G_n^{-1}r_n$, whereas IEF removes that factor. Remaining low-magnitude summands of the IEF come from the model sensitivity term $b_n^{\,G}$, not from the scale of the output-loss gradient itself. In the classification setting with $G_n=I$, a confidently correct prediction with $p_{n,c}=1-\varepsilon$ yields
+\[
+\|r_n\|_2^2=\|p_n-y_n\|_2^2\in\Theta(\varepsilon^2).
+\]
+Therefore
+\[
+\|S_n^{\mathrm{EF}}\|_2 = w_n^{\,I} b_n^{\,I} \in \Theta(\varepsilon^2)\,b_n^{\,I},
+\qquad
+\|S_n^{\mathrm{IEF},I}\|_2 = b_n^{\,I}.
+\]
+Under the same nondegeneracy condition on $J_n^\top \hat r_n^{\,I}$, this gives $\|S_n^{\mathrm{EF}}\|_2 \in \Theta(\varepsilon^2)$ and $\|S_n^{\mathrm{IEF},I}\|_2 \in \Theta(1)$.
+
+The singular case $r_n=0$ remains and must be handled explicitly. As done in \citep{IEF}, one practical solution is to add a damping factor $\tau$ to the quotient, yielding
+\[
+M_{\mathrm{IEF},G}  
+=  
+\frac1N  
+\sum_{n=1}^N  
+\frac{g_n g_n^\top}{r_n^\top G_n^{-1}r_n+\tau},  
+\qquad  
+g_n=J_n^\top r_n.  
+\]
