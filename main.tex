@@ -39,8 +39,9 @@
 \publicationleadfigure[0.36\textheight]{figures/overview.pdf}{%
 Each surface shows the continual-learning penalty over normalized directions,
 which locally approximate loss changes for two representative samples.
-EF-EWC induces anisotropy through gradient-scale weighting; uniform IEWC
-removes this scaling, while GSS-IEWC weights samples by diversity.
+Observed-label OPG/EWC induces anisotropy through gradient-scale weighting;
+uniform IEWC removes this scaling away from the damping regime, while the
+separate RDW variant weights samples by streaming residual diversity.
 \citep{GSS}}
 
 \publicationabstract{\input{abstract}}
@@ -75,6 +76,8 @@ removes this scaling, while GSS-IEWC weights samples by diversity.
 \input{sections/sec13_improved_elastic_weight_consolidation.tex}
 
 \input{sections/sec14_empirical_evaluation.tex}
+
+\input{sections/sec15_limitations.tex}
 
 \input{sections/sec15_conclusion.tex}
 

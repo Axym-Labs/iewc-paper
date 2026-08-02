@@ -1,6 +1,6 @@
 \section{Old-Task Loss Preservation}
 
-Since $\ell_A$ is our best practical surrogate on performance on distribution $A$, a natural choice is to use $\ell_A$ itself to define preservation. We say that the model $f_\theta$ preserved the solution if it preserved the old loss value for distribution $A$. This leads to:
+Since $\ell_A$ is a practical surrogate for performance on distribution $A$, a natural choice is to use the loss itself to define preservation. We say that $f_\theta$ locally preserves an old sample if it preserves that sample's old loss value. This gives
 \[
 q(a,\theta)
 =
@@ -77,4 +77,4 @@ M_1
 =
 \frac{1}{N_A}\sum_{i=1}^{N_A} J_i^\top r_i r_i^\top J_i.
 \]
-We call this an importance matrix as it encodes how important it is to preserve a direction in parameter space.
+This matrix encodes the local parameter directions in which the chosen scalar preservation quantity changes. We call it the \emph{outer-product loss-gradient} (OPG) matrix. The construction is exact for the squared first-order surrogate displayed above, not for the original nonlinear equality constraint. It becomes the observed-label empirical-Fisher algebra only for likelihood losses, as specified next.

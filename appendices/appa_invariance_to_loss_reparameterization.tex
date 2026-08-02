@@ -24,7 +24,7 @@ then the output gradient rescales as
 \phi'(\ell_n(z_n^A))\,r_n.
 \]
 
-For EF, the sample contribution changes by
+For OPG, the sample contribution changes by
 
 \[
 J_n^\top \tilde r_n\tilde r_n^\top J_n
@@ -43,4 +43,6 @@ For IEF, the same scalar factor appears in numerator and denominator:
 {r_n^\top G_n^{-1}r_n}.
 \]
 
-Thus IEF is invariant to local scalar relabelings of the constraint function. This includes loss rescaling, unit changes in regression losses, reduction conventions, and smooth monotone transformations that preserve the local level-set geometry. This invariance can also improve hyperparameter interpretability, as EF's penalty scale depends on the loss magnitudes. IEF removes this dependence, while regularization strength and damping still require tuning.
+Thus undamped IEF is invariant to local scalar relabelings of the constraint function wherever $r_n\ne0$. This includes loss rescaling, unit changes in regression losses, reduction conventions, and smooth monotone transformations that preserve the local level-set geometry. OPG's global scale can be absorbed into $\lambda$ only when the transformation rescales all samples equally; sample-dependent factors change its relative weighting.
+
+Positive shared damping narrows the invariance. A fixed numerical $\tau$ does not transform with the loss and therefore changes even under a global unit rescaling. Task-relative damping $\tau_A=\kappa\operatorname{median}_{i:s_i>0}s_i$ restores invariance to a global task-loss multiplier because $s_i$ and $\tau_A$ scale together. It does not generally preserve invariance to sample-dependent monotone transformations. At $r_n=0$, the implementation assigns a zero contribution rather than claiming an undamped $0/0$ identity.

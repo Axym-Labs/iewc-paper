@@ -1,0 +1,11 @@
+\section{Limitations}
+
+CLOC is a formulation of preservation, not a claim that all old-task behavior can be retained. Per-sample equality is stronger than expected-risk preservation and can conflict with fitting later tasks. The penalty coefficient therefore controls a stability--plasticity relaxation rather than guaranteeing feasibility of the original hard constraint.
+
+The OPG and IEF identities are local. They follow after linearizing the chosen scalar or output map at the old solution and squaring the resulting first-order change. Neural-network loss level sets are generally nonconvex, their global projections need not be unique, and the tangent approximation can become inaccurate after a large parameter displacement. At a stationary output loss, the level-set normal is undefined; finite damping assigns zero contribution and restores attenuation in the near-zero regime.
+
+The output metric must be specified as a matched primal/dual pair. Ambient singular metrics require restriction to an identifiable subspace and a stated pseudoinverse convention. Our ordered-CDF construction satisfies that requirement on the probability-simplex tangent, but the inherited diffusion result is exploratory and does not validate a general Wasserstein geometry.
+
+Practical IEWC also introduces approximations beyond the derivation. A diagonal retains coordinatewise importance but discards correlations, eigenspaces, and reparameterization behavior. Importance estimates use finitely many old samples. RDW is an order-dependent weighting heuristic with additional cost and is not implied by level-set normalization. Relative damping guarantees invariance to a global change of loss units, not to arbitrary sample-dependent transformations at finite damping.
+
+Finally, empirical comparisons cover selected datasets, model families, adaptation regimes, and task orders. Validation selection and locked paired evaluation reduce selection bias but cannot establish a domain-independent advantage or deployment robustness. Offline/joint training is only a reference because it violates the continual data-access constraint, and untested replay, distillation, and parameter-isolation methods may be preferable when their storage or architectural assumptions are allowed.

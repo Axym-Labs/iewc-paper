@@ -18,13 +18,14 @@ and the corresponding unscaled proximal loss is
 p(a,\theta) =
 \operatorname{dist}_{G}\big(q(a,\theta),\mathcal C\big)^2,  
 \]
-where $G\succ0$ is the chosen local output metric.
+where $G\succ0$ is the chosen local output metric. Positive definiteness makes the primal metric and its inverse on covectors unambiguous; Section~11 treats the restricted pseudoinverse convention needed by a singular ordered-output example.
 
 This exact penalty is generally not tractable. To obtain a practical form, use the standard first-order local model of the constraint set near the old output $z_A$, namely its tangent plane. Let
 \[
 r=
 \nabla_z \ell_A(z)\big|_{z=z_A}.  
 \]
+We first assume $r\ne0$, so the loss level set has a regular tangent hyperplane at $z_A$.
 For a small output displacement $\Delta z=f_\theta(x)-f_{\theta_A^\star}(x)$, the first-order old-loss change is approximately $r^\top \Delta z$.
 Hence the local constraint set is
 \[
@@ -83,3 +84,4 @@ J_i^\top
 J_i.  
 \]
 
+This is a local construction: it penalizes motion normal to the tangent model, not distance to a globally convex neural-network level set. When $r_i=0$, the tangent normal is undefined and the undamped quotient is $0/0$; our finite-damping implementation assigns that sample zero contribution. Section~10 makes the resulting near-interpolation boundary explicit.

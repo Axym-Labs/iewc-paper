@@ -1,13 +1,17 @@
 \section{Empirical Evaluation}
 
-We next test whether the CLOC-derived regularizers produce useful continual-learning behavior in practical settings. Unless stated otherwise, all EWC matrices are diagonal. We write U-IEWC for the empirical, uniformly weighted IEF aggregation with $h_n\equiv 1$, and GSS-IEWC for a weighted variant that applies the gradient-diversity principle of GSS to the normalized IEWC directions \citep{GSS}. The classification setting is ImageNet-R class-incremental learning with a pretrained ViT-B/16 and LoRA adapters, while the NLP setting is TRACE multiple-choice continual fine-tuning with Qwen2.5-3B and LoRA adapters. Thus, these two setups place the comparison in the recent line of parameter-efficient continual fine-tuning, including LoRA and recent continual LoRA methods \citep{LoRA,FRLoRA,CLLoRA,CLoRA}. We also evaluate non-LoRA fine-tuning of a pretrained CNN for VOC 15-5 semantic segmentation, and from-scratch training for long-horizon time-series forecasting and MNIST DDPM denoising. For each method and task type, we tune $\lambda$ to optimize the average performance metric across distributions; Appendix C gives the full training and tuning protocol, including the selected $\lambda$ and $\tau$ values.
+We use two evidence tiers. The confirmatory comparison is frozen before locked-test access and asks whether IEF normalization helps relative to OPG under identical uniform weights and matched global diagonal scale. It uses disjoint train, validation, and locked-test roles; paired task orders and optimizer seeds; fixed five-point validation grids without edge expansion; and paired uncertainty on the held-out repetitions. The secondary $2\times2$ comparison crosses OPG/IEF with uniform/RDW aggregation. Sampled model-Fisher EWC and MAS are external regularization baselines; sequential training and offline/joint training provide lower-context and non-continual references. Appendix C specifies the complete protocol.
+
+The rejected submission's experiments are retained below as an \emph{inherited exploratory record}. Their reported endpoints participated in hyperparameter and method development, so their numerical differences are not confirmatory and their across-seed dispersions do not repair that selection bias. Retaining them preserves the paper's empirical breadth and provenance without using them to decide the revised headline. Unless stated otherwise, all stored matrices are diagonal. The legacy names U-IEWC and GSS-IEWC denote uniform IEF and the earlier GSS-motivated weighting implementation, respectively; the latter is order dependent and is not evidence for normalization in isolation.
+
+\subsection{Inherited exploratory results}
 
 \begin{table}[H]
 \centering
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{llccccc}
 \toprule
-Task type & Metric & Sequential & EF-EWC & EWC-DR & U-IEWC & GSS-IEWC \\
+Task type & Metric & Sequential & OPG-EWC & EWC-DR & U-IEWC & GSS-IEWC \\
 \midrule
 Classification & Final avg. accuracy $\uparrow$ & 0.2896 $\pm$ 0.0405 & 0.5981 $\pm$ 0.0337 & 0.5687 $\pm$ 0.0263 & \textbf{0.6332 $\pm$ 0.0232} & 0.6250 $\pm$ 0.0263 \\
 Classification & Avg. forgetting $\downarrow$ & 0.7066 $\pm$ 0.0466 & 0.3595 $\pm$ 0.0378 & 0.3933 $\pm$ 0.0286 & \textbf{0.3142 $\pm$ 0.0250} & 0.3285 $\pm$ 0.0278 \\
@@ -22,29 +26,29 @@ Diffusion & Denoising-MSE forgetting $\downarrow$ & 0.0503 $\pm$ 0.0002 & \textb
 \bottomrule
 \end{tabular}
 }
-\caption[Main continual-learning results]{Main continual-learning results. The objective used for tuning is the final average performance across distributions; forgetting is reported separately as a retention measure. Higher is better for accuracy, score, and mIoU; lower is better for MSE and forgetting.}
+\caption[Inherited exploratory continual-learning results]{Inherited exploratory results from the rejected submission. The reported endpoint was used during the earlier selection workflow. Values are retained for provenance and breadth, not used for confirmatory inference. Higher is better for accuracy, score, and mIoU; lower is better for MSE and forgetting.}
 \label{tab:main-empirical-results}
 \end{table}
 
-Overall, Table \ref{tab:main-empirical-results} separates the joint performance objective from the forgetting metric. U-IEWC gives the strongest ImageNet-R retention and average accuracy. In turn, GSS-IEWC gives the strongest TRACE result and the lowest average forecasting MSE, while EF-EWC is slightly better on forecasting forgetting. On VOC 15-5, U-IEWC gives the clearest gain over EF-EWC and EWC-DR. In DDPM denoising, the tuned regularizers are close; GSS-IEWC has the lowest average denoising MSE, and EF-EWC has the smallest measured forgetting within the reported variance.
+Descriptively, Table \ref{tab:main-empirical-results} shows that the selected uniform IEF configuration is higher than the selected OPG-EWC configuration on ImageNet-R and VOC 15-5, while the legacy weighted configuration is highest on TRACE and marginally lowest in forecasting and DDPM MSE. These comparisons mix normalization, weighting, and adaptive selection; they motivate the revised factorial and locked evaluation but do not establish their causal or out-of-sample effects.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.65\linewidth]{figures/classification_distribution_retention.pdf}
-\caption[ImageNet-R distribution retention]{ImageNet-R distribution retention. The left panel shows the final accuracy on each distribution after the full sequence; the right panel shows the corresponding forgetting. U-IEWC and GSS-IEWC improve retention across most distributions relative to EF-EWC, while sequential training forgets the early distributions almost entirely.}
+\caption[Exploratory ImageNet-R distribution retention]{Inherited exploratory ImageNet-R retention. The left panel shows final accuracy per distribution; the right shows forgetting. These selected-run profiles are descriptive.}
 \label{fig:classification-distribution-retention}
 \end{figure}
 
-At the distribution level, Figure \ref{fig:classification-distribution-retention} breaks the classification result down by distribution. The retained accuracy is not concentrated in a single late distribution: the IEWC variants reduce forgetting across the early and middle parts of the sequence, which is the regime where sequential fine-tuning fails most visibly.
+At the distribution level, Figure \ref{fig:classification-distribution-retention} shows that the selected IEWC runs' retained accuracy is not concentrated in a single late distribution. The locked paired analysis tests whether that pattern generalizes across newly frozen class orders.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.65\linewidth]{figures/nlp_distribution_retention.pdf}
-\caption[TRACE distribution retention]{TRACE distribution retention. The plot reports the final multiple-choice score and forgetting for C-STANCE, FOMC, and ScienceQA after sequential LoRA fine-tuning of Qwen2.5-3B. GSS-IEWC preserves the earlier NLP distributions while keeping competitive performance on the final distribution.}
+\caption[Exploratory TRACE distribution retention]{Inherited exploratory TRACE retention for C-STANCE, FOMC, and ScienceQA. FOMC's distributed evaluation and test files are duplicates, so this sequence is excluded from confirmatory inference.}
 \label{fig:nlp-distribution-retention}
 \end{figure}
 
-Similarly, the TRACE retention profile in Figure \ref{fig:nlp-distribution-retention} explains the table-level gain of GSS-IEWC. The weighted aggregation mainly changes the stability side of the tradeoff: it reduces forgetting on C-STANCE and FOMC while leaving ScienceQA in the same range as the other regularized methods.
+Similarly, the selected legacy weighted run has less forgetting on C-STANCE and FOMC in Figure \ref{fig:nlp-distribution-retention}. Because that weighting is order dependent and FOMC has an invalid evaluation/test separation, the revised comparison instead uses C-STANCE, ScienceQA, and NumGLUE-cm and crosses the same RDW rule with both OPG and IEF.
 
 \begin{figure}[H]
 \centering
@@ -53,13 +57,13 @@ Similarly, the TRACE retention profile in Figure \ref{fig:nlp-distribution-reten
 \label{fig:forecast-rollouts}
 \end{figure}
 
-For visual inspection and qualitative analysis, Figure \ref{fig:forecast-rollouts} adds individual forecasts. We can see that forgetting significantly affects all methods, while GSS-IEWC retains the most target trajectory structure at the first task and stays close to EF-EWC on later tasks.
+For visual inspection, Figure \ref{fig:forecast-rollouts} retains individual forecasts from the earlier study. The selected legacy weighted run visually retains more target trajectory structure at the first task and stays close to the selected OPG-EWC run later; no uncertainty claim is made from these individual rollouts.
 
-In addition, the output-geometry parameter $\Gamma$ is evaluated separately in the DDPM setting. Replacing the Euclidean output metric with a sliced-Wasserstein surrogate lowers old-output sliced-Wasserstein drift relative to Euclidean U-IEWC ($9.4409\pm7.2517$ versus $14.1026\pm12.2220$), while keeping final average denoising MSE close to U-IEWC ($0.0301\pm0.0012$ versus $0.0298\pm0.0014$).
+The earlier DDPM study also used a surrogate labeled ``sliced Wasserstein.'' Because it did not establish a matched primal/dual metric pair, we narrow its interpretation: the selected surrogate run had old-output drift $9.4409\pm7.2517$ versus $14.1026\pm12.2220$ for selected Euclidean U-IEWC, with denoising MSE $0.0301\pm0.0012$ versus $0.0298\pm0.0014$. This is retained as an exploratory output-representation ablation, not evidence validating Wasserstein geometry. Section~11 gives a correct ordered-CDF/Cram\'er construction.
 
-Finally, we tested FROMP-derived sample weighting \citep{FROMP} as a second alternative to the empirical weighting, with mixed results: on ImageNet-R, IEWC-FROMP reaches $0.6365\pm0.0165$ final average accuracy and $0.3068\pm0.0170$ forgetting, slightly ahead of GSS-IEWC; on VOC 15-5, it reaches only $0.3351\pm0.0742$ final all-mIoU and $0.4064\pm0.1122$ base-class forgetting, below U-IEWC and GSS-IEWC.
+The inherited FROMP-derived weighting ablation \citep{FROMP} was mixed: on ImageNet-R it reached $0.6365\pm0.0165$ final average accuracy and $0.3068\pm0.0170$ forgetting, while on VOC 15-5 it reached $0.3351\pm0.0742$ final all-mIoU and $0.4064\pm0.1122$ base-class forgetting. These selected endpoints likewise do not isolate normalization.
 
-For reproducibility, Appendix C gives the experimental protocol, the programmatic $\lambda$ search, a damping sensitivity curve, and the effective summand-norm distributions. Appendix D connects the contamination model of Appendix B to a controlled label-noise experiment and reports the resulting accuracy and importance-matrix stability.
+Appendix C records both the inherited workflow and the frozen confirmatory protocol, together with damping and effective-summand diagnostics. Appendix D preserves the earlier downstream label-noise stress test; Appendix B supplies the new direct clean/corrupt contribution analysis.
 
 \subsection*{Code Release}
 

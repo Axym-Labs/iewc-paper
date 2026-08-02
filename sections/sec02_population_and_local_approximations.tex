@@ -1,12 +1,18 @@
 \section{Population and Local Approximations}
 
-To obtain a differentiable objective suitable for gradient-based optimization, we apply the standard Moreau-Yosida regularization of the constraint indicator, which for closed convex $\mathcal C$ yields the squared-distance penalty \citep{MoreauProx}:
+For a closed convex set $\mathcal C$, the Moreau envelope of its indicator is a scaled squared distance \citep{MoreauProx}. This motivates the soft CLOC objective
 \[
-\min_\theta J(\theta)=
-\min_\theta L_B(\theta) + \frac{\lambda}{2}\text{dist}(q(\theta), \mathcal{C})^2 = 
-\min_\theta L_B(\theta) + \frac{\lambda}{2}\inf_{u \in \mathcal{C}} \ \text{dist}(q(\theta), u)^2.
+\min_\theta J(\theta)
+=
+\min_\theta
+L_B(\theta)
++\frac{\lambda}{2}\operatorname{dist}(q(\theta),\mathcal C)^2
+=
+\min_\theta
+L_B(\theta)
++\frac{\lambda}{2}\inf_{u\in\mathcal C}\|q(\theta)-u\|^2.
 \]
-We call this the \textbf{Continual Learning as Optimization Constraint (CLOC)} formulation. GEM and A-GEM are similar in spirit in that they formulate preservation through constraints on old examples \citep{GEM,AGEM}. CLOC turns the old-task constraint into a proximal penalty built after task-$A$ training. In a population setting, e.g. when we have a dataset, we can translate this into a population risk objective by wrapping it in an expectation over the data and using sample-based analogues $\ell_B$ of $L_B$ and $q$ of $Q$, then taking the empirical average. Define the unscaled proximal loss as $p(a, \theta)=\text{dist}(q(a, \theta), \mathcal{C})^2$.
+GEM and A-GEM are similar in spirit in that they formulate preservation through constraints on old examples \citep{GEM,AGEM}. CLOC turns the old-task constraint into a penalty built after task-$A$ training. In a population setting, we use sample-based analogues $\ell_B$ and $q$ and take the empirical average. Define the unscaled preservation loss as $p(a,\theta)=\operatorname{dist}(q(a,\theta),\mathcal C)^2$.
 \[
 \min_\theta
 \;
@@ -14,5 +20,9 @@ We call this the \textbf{Continual Learning as Optimization Constraint (CLOC)} f
 +
 \frac{\lambda}{2N_A}\sum_{i=1}^{N_A}p(a_i, \theta)
 \]
+The convex Moreau--Yosida identity motivates this penalty form but is not a global theorem for every set used below. Neural-network loss level sets are generally nonconvex, their projections need not be unique, and squared distance need not be globally smooth. Our operative construction is local: we replace each exact set by its tangent model at the old output and derive the resulting quadratic penalty. We do not require a globally convex old-loss level set.
+
+The samplewise population form is also stronger than preserving only expected old risk: it asks every retained sample surrogate to remain near its own constraint. Those equalities can conflict with learning the new distribution or with each other after approximation. The penalty parameter $\lambda$ is therefore a soft feasibility--plasticity tradeoff, not a guarantee that all hard constraints remain exactly satisfiable.
+
 The two-distribution presentation is only for notational simplicity; additional old distributions can be handled by adding analogous constraints. We refer to this population version as \textbf{population CLOC (P-CLOC)}. One efficiency consideration is the penalty $p$: Ideally, we let the constraint contribute to each gradient step with its gradient. However, recomputing the full old-distribution penalty $p$ and its associated factors many times during optimization on distribution $B$ is usually prohibitively expensive, since it depends on the dataset $D_A$ associated with $A$. Additionally, reusing dataset $D_A$ later on does not respect the continual learning setting. For this reason, replace the exact penalty by a local $k$-th order Taylor-polynomial approximation around the old solution $\theta_A^\star$.
 This turns the computation of $p$ into a repeated evaluation of precomputed derivative tensors and bounds memory requirements to $O(d^k)$ for a $d$-dimensional parameterization. Since memory scales exponentially with $k$, the standard scalable surrogate is a low-order Taylor approximation. We refer to this local approximation as \textbf{low-order CLOC (L-CLOC)}, and to its population version as \textbf{PL-CLOC}. It remains to specify the preserved quantity $q$ and constraint set $\mathcal{C}$. Notice that the gradient of $p$ is dependent on only one sample at once, which allows us to analyze $p$ and its gradients on a per-sample basis.

@@ -1,31 +1,40 @@
-\section{Spectral Stability Under Contamination}
+\section{Contamination Contributions and Spectral Stability}
 
-The normalization difference between EF and IEF has consequences for their spectrum. This matters in practice because any diagonal or low-rank approximation is built from the leading part of the matrix. Consider for example \citep{Rank1Diffusion}. To see how this difference can affect the leading eigenspace, consider the following simple contamination model: Contaminated samples, such as mislabeled or atypical data, can have large output-loss gradients because their signal aligns with directions that gradient descent learns only very slowly; in the spectral-bias / kernel-eigenmode framework, low-alignment or low-eigenvalue components can remain effectively unlearned over the training horizon \citep{Memorization,SpectralBias}. With probability $1-\varepsilon$, a sample is clean and its normalized sensitivity direction contributes to a stable old-task preservation matrix $\Sigma_{\mathrm{clean}}=\mathbb E[a a^\top \mid a \in D_{A,\mathrm{clean}}]$. Assume also that clean weights are independent of these normalized directions, or are sufficiently concentrated around their clean mean. With probability $\varepsilon$, a sample is contaminated. Assume its direction is concentrated near a unit vector $u$ outside that clean leading subspace, and that its output gradient scale is large,
+The OPG--IEF normalization difference can change which samples dominate a full importance matrix. In Euclidean output geometry, write $s_i=\|r_i\|_2^2$ and $a_i=g_i/\sqrt{s_i}$ for $s_i>0$. The undamped per-sample matrices are
 \[
-w \approx W,  
-\qquad  
-W\gg 1.
+M_{\mathrm{OPG},i}=s_i a_i a_i^\top,
+\qquad
+M_{\mathrm{IEF},i}=a_i a_i^\top.
 \]
-Under this model, the population version of IEF is
-\[
-\mathbb E[M_{\mathrm{IEF}}]
-= (1-\varepsilon)\Sigma_{\mathrm{clean}}
-+  
-\varepsilon uu^\top
-\]
-while the corresponding EF matrix becomes
-\[
-\mathbb E[F_{\mathrm{EF}}]
-=
-(1-\varepsilon)\mathbb E[w\mid\text{clean}]\,\Sigma_{\mathrm{clean}}  
-+  
-\varepsilon W uu^\top.  
-\]
+Thus OPG couples a sensitivity direction to the squared output-loss-gradient scale, whereas undamped IEF keeps the direction-only outer product. Relative damping multiplies the latter by $s_i/(s_i+\tau_A)$ and therefore retains the near-zero qualification from Section~10.
 
-In terms of the spectrum, let $\lambda_k^{\mathrm{clean}}$ denote the $k$-th eigenvalue of the clean component. If
+For intuition, suppose a fraction $\varepsilon$ of samples are contaminated, their normalized sensitivity is concentrated near a direction $u$ outside the leading clean subspace, and their scale is $s_i\approx W$. If clean scales are sufficiently concentrated or independent of direction, then
 \[
-\varepsilon W  
-\gtrsim  
-(1-\varepsilon)\lambda_k^{\mathrm{clean}}\mathbb E[w\mid\text{clean}],  
+\mathbb E[M_{\mathrm{OPG}}]
+\approx
+(1-\varepsilon)\bar s_{\mathrm{clean}}\Sigma_{\mathrm{clean}}
++\varepsilon Wuu^\top,
 \]
-then the contaminated direction $u$ will enter the leading eigenspace of $F_{\mathrm{EF}}$. The insight is that the normalization can realistically affect which directions dominate the spectrum. In settings with noisy labels, hard examples, underfit outliers, or other rare but high-loss samples, we should expect the leading eigenspace of $F_{\mathrm{EF}}$ to be less stable than that of $M_{\mathrm{IEF}}$, relevant to low-rank approximations thereof.
+whereas undamped IEF has no factor $W$ on the contaminating direction. In particular, a sufficiently large $\varepsilon W$ can move $u$ into the leading OPG eigenspace. This model is illustrative rather than a distribution-free robustness theorem.
+
+We test the mechanism directly in a fitted two-class MLP. For each of 20 independent seeds and label-flip rates $0.05$, $0.10$, and $0.20$, we retain all 512 per-sample parameter-gradient rows and clean/corrupt identities. We decompose the full OPG and relative-damped IEF matrices into clean and corrupt contributions, then compare each total matrix with its clean-contribution reference. Table~\ref{tab:contamination-mechanism} reports means over seeds.
+
+\begin{table}[H]
+\centering
+\small
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{rrrrrrrr}
+\toprule
+Flip rate & Corrupt/clean $s_i$ & \multicolumn{2}{c}{Corrupt trace share} & \multicolumn{2}{c}{Leading-vector alignment} & \multicolumn{2}{c}{Top-5 overlap} \\
+& ratio & OPG & IEF & OPG & IEF & OPG & IEF \\
+\midrule
+$0.05$ & 81.26 & 0.783 & 0.054 & 0.426 & 1.000 & 0.902 & 0.996 \\
+$0.10$ & 36.67 & 0.789 & 0.104 & 0.720 & 0.999 & 0.923 & 0.997 \\
+$0.20$ & 11.23 & 0.736 & 0.202 & 0.875 & 0.998 & 0.930 & 0.990 \\
+\bottomrule
+\end{tabular}}
+\caption{Direct full-matrix contamination diagnostic. Alignment is the absolute inner product of the leading eigenvectors; top-5 overlap is the mean squared singular value between the corresponding eigenspaces. Each reference is the clean contribution from the same fitted model.}
+\label{tab:contamination-mechanism}
+\end{table}
+
+Paired 95\% intervals over seeds exclude zero for every IEF-minus-OPG contrast in the table. Across increasing flip rates, the trace-share differences are $-0.729$, $-0.685$, and $-0.534$; leading-vector alignment differences are $+0.574$, $+0.279$, and $+0.123$; and top-5-overlap differences are $+0.094$, $+0.074$, and $+0.060$. These observations support the proposed contamination mechanism in this controlled construction. They do not establish a universal robustness guarantee or prove that a diagonal continual-learning penalty improves on a real benchmark; those are separate empirical questions.

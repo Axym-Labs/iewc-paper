@@ -1,3 +1,25 @@
 \section{Output-Space Geometry}
 
-The original EWC derivation is tied to the true Fisher matrix, and therefore to the local KL geometry of probabilistic models \citep{EWC}. From that perspective, one might conclude that EWC is theoretically tied to KL-type distances and therefore mismatched with settings that require different metrics. This concern is especially relevant in modern generative modeling, where Wasserstein-type structure appears explicitly in parts of the flow-matching and optimal-transport literature \citep{WassersteinFlowMatching,ComputationalOT}. However, our derivation of the empirical Fisher starting from \textbf{PL-CLOC} does not require compatibility with KL geometry. In fact, our derivation of $F_{\mathrm{EF}}$ sidesteps this problem by not relying on any output-space distance metric at all. This matches empirical results, where the empirical Fisher is useful in diffusion settings too \citep{Rank1Diffusion}. In contrast, the preceding derivation and resulting form of the IEF is compatible with arbitrary output metrics. Concretely, the output-level derivation only requires a local metric $G_n \succ 0$ on output displacements. In practice, $G_n$ should be read as a quadratic surrogate of the output-space distance one wants to preserve local to the point $f_{\theta_A^\star}(a_n)$. For the mathematical relation of $M_{\mathrm{IEF}}$ to $G_n$-based distance, see Section 5. The canonical Euclidean choice $G_n=I$ recovers the algebraic form from \citep{IEF}. For regression or NLL-based classification setups, this may already be the right local model. Other settings warrant other choices: if the outputs lie on a probability simplex, one may instead choose a local statistical geometry. If the outputs are elements of a distribution, a Wasserstein-type local geometry may be more appropriate; our experiments use a sliced-Wasserstein surrogate for this purpose \citep{SlicedWasserstein}.
+The scalar CLOC construction and its OPG matrix require no output-space metric. The level-set construction does: for a symmetric positive-definite primal metric $G_n$, output displacements have inner product $\langle u,v\rangle_{G_n}=u^\top G_n v$, the metric-normal direction is $G_n^{-1}r_n$, and the normal-distance denominator is $r_n^\top G_n^{-1}r_n$. Thus a geometry choice must supply a matched pair: $G_n$ acts on primal output displacement and $G_n^{-1}$ on the loss covector. An arbitrary denominator does not constitute a new geometry.
+
+The canonical choice $G_n=I$ recovers iEF \citep{IEF}. Other choices can represent a local quadratic notion of output stability, but the assumptions matter. A positive-semidefinite ambient metric is sufficient only after specifying a tangent space or quotient, a Moore--Penrose pseudoinverse, and the relevant range conditions. Diagonalizing the resulting parameter pullback can further discard cross-parameter geometry.
+
+As one explicit non-Euclidean example, consider probability vectors on an ordered grid with $m$ bins. Let
+\[
+P=I-\frac{1}{m}\mathbf 1\mathbf 1^\top
+\]
+project onto the probability-simplex tangent, let $C\in\mathbb R^{(m-1)\times m}$ compute cumulative sums through the penultimate bin, and let $\Delta x$ be the grid spacing. Define
+\[
+G_{\mathrm{CDF}}=\Delta x\,P C^\top C P.
+\]
+For a zero-sum probability perturbation $\Delta z$,
+\[
+\Delta z^\top G_{\mathrm{CDF}}\Delta z
+=
+\Delta x\,\|C\Delta z\|_2^2,
+\]
+the squared $L^2$ distance between the corresponding one-dimensional cumulative distribution functions. The matched dual form is
+\[
+(Pr)^\top G_{\mathrm{CDF}}^+(Pr).
+\]
+Our implementation tests both identities numerically. This is an ordered-CDF or Cram\'er metric, not sliced Wasserstein. We retain the earlier diffusion experiment only as exploratory evidence that alternative output representations can be inserted into IEWC; it is not used to claim that the diagonal experiment validates Wasserstein geometry.

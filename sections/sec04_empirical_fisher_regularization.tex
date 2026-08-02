@@ -1,32 +1,40 @@
-\section{Empirical Fisher Regularization}
+\section{Outer-Product Loss-Gradient Regularization and EWC}
 
-This is exactly the empirical Fisher matrix $F_{\mathrm{EF}}$, the standard practical matrix used in Elastic Weight Consolidation (EWC) \citep{EWC}. We refer to this instantiation as EF-EWC:
+The matrix obtained in the previous section is
 \[
-M_1=F_{\mathrm{EF}}.
-\]
-Hence EF-EWC approximates a constrained optimization problem with a smooth proximal penalty, preserving the old scalar loss value sample by sample. This places EF-EWC within the broader family of parameter-importance regularizers \citep{SI,MAS} and Bayesian or online continual-learning approximations \citep{HuszarEWC,ProgressCompress,VCL}.
-
-The original EF-EWC derivation uses properties specific to probabilistic classification models. After training on task $A$, one considers the posterior over parameters
-\[
-p(\theta\mid \mathcal D_A)\propto p(\mathcal D_A\mid \theta)\,p(\theta),
-\]
-and uses it as a prior when learning task $B$. Expanding the negative log-posterior around the old solution $\theta_A^\star$ yields a local quadratic approximation
-\[
--\log p(\theta\mid \mathcal D_A)
-\approx
--\log p(\theta_A^\star\mid \mathcal D_A)
-+
-\frac12(\theta-\theta_A^\star)^\top H_A(\theta_A^\star)(\theta-\theta_A^\star),
-\]
-where $H_A(\theta_A^\star)$ is the Hessian of the negative log-posterior at the old solution. Under the usual assumptions for log-likelihood models, and neglecting the prior curvature term or absorbing it into the approximation, this Hessian can be replaced by the Fisher information matrix
-\[
-F(\theta)
+M_{\mathrm{OPG}}
 =
-\mathbb E_{(x,y)\sim\mathcal D_A}
+\frac{1}{N_A}\sum_{i=1}^{N_A}g_i g_i^\top.
+\]
+It is an outer product of gradients of the selected scalar preservation object. This identity holds for any differentiable loss, without a probabilistic model or a curvature interpretation. We therefore call the general object an \emph{outer-product-of-loss-gradients} (OPG) matrix.
+
+For a negative-log-likelihood loss,
+\[
+\ell_i(\theta)=-\log p_\theta(y_i\mid x_i),
+\]
+we have $g_i=-\nabla_\theta\log p_\theta(y_i\mid x_i)$. The same OPG algebra then coincides with the observed-label score-gradient matrix commonly called the empirical Fisher,
+\[
+F_{\mathrm{emp}}
+=
+\frac{1}{N_A}\sum_{i=1}^{N_A}
+\nabla_\theta\log p_\theta(y_i\mid x_i)
+\nabla_\theta\log p_\theta(y_i\mid x_i)^\top.
+\]
+Thus OPG-EWC and empirical-Fisher EWC denote the same implementation in an explicit likelihood setting. The CLOC derivation justifies this matrix as the quadratic form of a squared first-order loss-preservation surrogate. It does not turn the matrix into the model Fisher or establish that it approximates the Hessian.
+
+The model Fisher is instead
+\[
+F_{\mathrm{model}}(\theta)
+=
+\mathbb E_{x\sim\mathcal D_A}
+\mathbb E_{y\sim p_\theta(\cdot\mid x)}
 \left[
-\nabla_\theta \log p_\theta(y\mid x)\,
-\nabla_\theta \log p_\theta(y\mid x)^\top
+\nabla_\theta\log p_\theta(y\mid x)
+\nabla_\theta\log p_\theta(y\mid x)^\top
 \right].
 \]
+It averages over labels sampled from the model, not only the observed label. Under standard regularity conditions this Fisher is connected to expected negative-log-likelihood curvature and natural-gradient geometry \citep{Amari1998,MartensNG,KFAC}. The observed-label empirical Fisher is a different object and can be a poor curvature approximation \citep{KunstnerEF}; Fisher-estimator choice can also materially affect EWC behavior and regularization scale \citep{VanDeVenFisher2025}.
 
-For negative log-likelihood losses, this Fisher matrix coincides with the curvature of the expected loss under standard regularity conditions, and therefore matches the corresponding Hessian-based local quadratic model near an optimum, as in the natural-gradient and approximate-curvature literature \citep{Amari1998,MartensNG,KFAC}. Since classification models explicitly define a predictive distribution $p_\theta(y\mid x)$ over labels, the true Fisher can be computed as population object by sampling from said distribution. In practice, however, EWC replaces it by empirical approximations computed from the old dataset, which leads to the empirical Fisher form used above. However, this framework leaves open a justification of the empirical Fisher outside of negative log-likelihood losses. This is an open problem because EWC is used for different tasks and objectives as well, for example for diffusion \citep{Rank1Diffusion}. Furthermore, Kunstner et al. show that the empirical Fisher is a different mathematical object than the true Fisher and approximates the true Fisher well only in specific settings \citep{KunstnerEF}. We re-derive EF-EWC from scratch using PL-CLOC to resolve these two issues, basing the usage of said matrix on solid theoretical grounding without reliance on the true Fisher matrix.
+This distinction separates two questions that are often conflated. First, why might the observed-label OPG be a useful continual-learning importance matrix? The local CLOC construction answers: it penalizes first-order changes of old sample losses. Second, is that matrix a faithful estimate of probabilistic Fisher curvature? Not in general. Our experiments therefore include a one-label Monte Carlo model-Fisher baseline, obtained by sampling $y\sim p_{\theta_A^\star}(\cdot\mid x)$ for each retained input, alongside OPG-EWC.
+
+The word ``exact'' below always refers to the algebra of the squared first-order local surrogate. The original hard per-sample constraint, its population counterpart, and the nonlinear loss away from $\theta_A^\star$ remain approximated.

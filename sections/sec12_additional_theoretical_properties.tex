@@ -1,3 +1,29 @@
-\section{Additional Theoretical Properties}
+\section{Notation and Approximation Boundaries}
 
-We move further analysis of $M_{\mathrm{IEF}}$ into the appendix. Namely, we treat invariance to monotone relabelings of the loss and better hyperparameter interpretability in Appendix A, and analyze rank stability of the two matrices subject to a simple contamination model in Appendix B.
+Table~\ref{tab:notation} collects the objects that are otherwise easy to conflate.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{p{0.18\linewidth}p{0.74\linewidth}}
+\toprule
+Symbol or name & Meaning \\
+\midrule
+$g_i=J_i^\top r_i$ & Parameter gradient of the selected old-sample scalar loss. \\
+$M_{\mathrm{OPG}}$ & Mean $g_i g_i^\top$ from scalar-loss preservation; only the likelihood-score case is the observed-label empirical-Fisher algebra. \\
+$F_{\mathrm{model}}$ & Fisher information averaging score outer products over labels sampled from the frozen predictive distribution. \\
+$s_i=r_i^\top G_i^{-1}r_i$ & Squared dual norm of the output-loss gradient under the matched output metric. \\
+$M_{\mathrm{IEF}}$ & Level-set-normalized mean $g_i g_i^\top/(s_i+\tau_A)$; the undamped Euclidean case is iEF. \\
+$\rho_\tau(s)$ & Damping attenuation $s/(s+\tau)$ relative to the undamped summand. \\
+$\kappa$ & Dimensionless relative-damping coefficient in $\tau_A=\kappa\operatorname{median}_{s_i>0}s_i$. \\
+$\bar h_i$ & Optional mean-one aggregation weight; uniform weighting and RDW are evaluated separately. \\
+$\Gamma$ & Rule assigning the local primal output metric $G_i$. \\
+\bottomrule
+\end{tabular}
+\caption{Notation and distinctions used throughout the paper.}
+\label{tab:notation}
+\end{table}
+
+Our derivations concern full positive-semidefinite matrices, whereas the training experiments store only their diagonals. Taking $\operatorname{diag}(M)$ preserves each coordinate-axis quadratic penalty, nonnegativity of the entries, and the trace. It generally does not preserve off-axis quadratic forms, rank, eigenvectors, parameterization behavior, or the full normal-space geometry. Consequently, the full-matrix contamination analysis in Appendix B tests the proposed normalization mechanism, while benchmark training separately tests whether its diagonal projection is useful.
+
+Appendix A gives the exact scope of loss-rescaling invariance and Appendix B analyzes and directly tests the contamination mechanism.

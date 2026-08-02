@@ -1,11 +1,17 @@
-\section{Continual Learning as Optimization Constraint}
+\section{Continual Learning as an Optimization Constraint}
 
-Consider the problem of continual learning, where data from distributions (tasks, environments) are presented sequentially \citep{McCloskeyCohen1989,French1999,Parisi2019,VanDeVenTolias2019}. Concretely, we first train a model on distribution $A$ and obtain parameters $\theta^*_A$, and only then can we optimize with respect to a new distribution $B$. If we plainly pick a minimal loss/cost $\min_\theta L_B(\theta)$ as our objective, then the optimization does not have to respect performance on $A$, which usually degrades it too much to be practical. Hence, we have to guide or constrain optimization in a way. A natural fit for this problem is the framework of constrained optimization, with solution preservation being the constraint in question. Define both a quantity $Q: \Theta \rightarrow \mathcal{H}$ that is relevant to this preservation and a constraint set $\mathcal{C} \subset \mathcal{H}$ that implies preservation is met. Before exploring concrete choices in later sections, we continue on the common thread. These two objects let us define a new objective:
+Continual learning asks a model to learn from sequentially available distributions without unrestricted access to earlier data \citep{McCloskeyCohen1989,French1999,Parisi2019,VanDeVenTolias2019}. After training on distribution $A$ and obtaining $\theta_A^\star$, minimizing only the later loss $L_B(\theta)$ leaves old behavior unconstrained. Methods such as EWC, SI, MAS, and LwF address this problem with different preservation objects: parameter importance, learning-path importance, output sensitivity, or old predictions \citep{EWC,SI,MAS,LwF}. This variety raises a prior question: \emph{what quantity should a local continual-learning penalty preserve?}
+
+We pose that question directly as constrained optimization. Let $q:\Theta\rightarrow\mathcal H$ be a quantity whose old value or acceptable set represents preservation, and let $\mathcal C\subset\mathcal H$ encode the corresponding constraint. Learning distribution $B$ becomes
 \[
-\min_{\theta \in \Theta} L_B(\theta)
+\min_{\theta\in\Theta} L_B(\theta)
 \qquad
 \text{subject to}
 \qquad
-q(\theta) \in \mathcal{C}
+q(\theta)\in\mathcal C.
 \]
-This gives a mathematical formulation of preservation, and the next section extends it to become more practical.
+We call this perspective \emph{Continual Learning as an Optimization Constraint} (CLOC). CLOC is deliberately a formulation rather than a single algorithm: different choices of $q$, $\mathcal C$, relaxation, and approximation recover different local preservation penalties.
+
+The paper develops one path through this design space. First, a population and low-order relaxation turns samplewise preservation objects into a stored quadratic penalty. Second, preserving a scalar old-sample loss yields an outer-product loss-gradient (OPG) matrix; for negative log likelihood, this is algebraically the observed-label empirical Fisher used in common EWC implementations. Third, preserving output motion only in the normal quotient of the old loss level set yields the iEF normalization and a geometric interpretation of IEWC. We make damping, sample weighting, output metric, and diagonal approximation explicit instead of treating them as consequences of the normalization. Finally, controlled mechanism tests and validation-selected, locked evaluations ask which parts of this construction survive finite damping and improve continual learning in the studied domains.
+
+This framing preserves the original intuition---continual learning as old-solution preservation---while separating exact local algebra from global curvature claims and empirical questions. The next section constructs the practical relaxation and states its feasibility and locality boundaries.

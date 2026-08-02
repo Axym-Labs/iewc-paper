@@ -1,44 +1,49 @@
 \section{Improved Elastic Weight Consolidation}
 
-After the theoretical analysis of $M_{\mathrm{IEF}}$, we turn to the remaining design choices needed for an implementation. First, in Section 10 we already identified the singular case $r_n=0$ and introduced damping with parameter $\tau$ as the practical remedy. Second, using a full matrix is usually prohibitively expensive in memory and computation, so an approximation is necessary. \citep{EWC} suggested a diagonal approximation, which we adopt, while noting the empirical evidence from diffusion continual learning that indicates that diagonal Fisher approximations can underperform in diffusion settings \citep{Rank1Diffusion}. In addition, the contamination model of Appendix B suggests that the leading eigenspace of $M_{\mathrm{IEF}}$ can be more stable than that of $F_{\mathrm{EF}}$ in settings with atypical samples or samples that the model did not learn. Section 8 identified the empirical Fisher's implicit sample-weighting profile. Since alternative aggregation weights can be useful in some continual-learning settings, we include an explicit weighting function; possible weighting mechanisms appear in FROMP and GSS \citep{FROMP,GSS}. Therefore, let
+The preceding derivation leaves four implementation choices: global penalty strength, damping, aggregation weights, and output geometry. For old-task samples $a_1,\dots,a_N$, IEWC uses
 \[
-h:\mathcal D_A\times\Theta\to\mathbb R_{\ge 0},
-\qquad
-a\mapsto h(a,\theta),
-\]
-be the weighting function that assigns each sample its corresponding sample importance coefficient. To keep $\lambda$ as the global regularization strength, normalize the coefficients as
-\[
-\bar h(a_i,\theta)
+M_{\mathrm{IEWC}}
 =
-\frac{h(a_i,\theta)}{\frac{1}{N_A}\sum_{j=1}^{N_A} h(a_j,\theta)},
-\]
-In P-CLOC, this is simply absorbed into the penalty function. We recover the IEF from \citep{IEF} with
-\[
-\bar h(a_i,\theta)=1,
-\]
-The empirical Fisher corresponds instead to the unnormalized weighting profile
-\[
-h(a_i,\theta)=w_i^{\,G}=r_i^\top G_i^{-1}r_i
-\]
-when we use $\tau=0$. With mean-normalized $\bar h$, this only differs by a global scale that can be absorbed into $\lambda$. This extension yields the final form of the importance matrix that we use:
-\[
-M_{\mathrm{IEF},G}  
-=  
-\frac1N  
-\sum_{n=1}^N  
-\bar h(a_n, \theta)
-\frac{g_n g_n^\top}{r_n^\top G_n^{-1}r_n+\tau},  
-\qquad  
-g_n=J_n^\top r_n.  
-\]
-The free parameters of an implementation can be described more precisely as the four-tuple
-\[
-(\lambda,\tau,\Gamma,h).
-\]
-Here $\lambda$ is the strength of the preservation constraint from CLOC, $\tau$ controls damping for small-gradient samples, $h$ maps samples to their importance coefficient and $\Gamma$ specifies the output geometry. Concretely, we treat $G_n$ as the samplewise metric induced by the chosen geometry model $\Gamma$ at the old output. $\Gamma$ maps an output to the positive-definite matrix that constitutes the local quadratic approximation of the distance:
-\[
-\Gamma:\mathcal Z\to \mathbb S_{++}^{m},
+\frac1N
+\sum_{n=1}^N
+\bar h_n
+\frac{g_ng_n^\top}{r_n^\top G_n^{-1}r_n+\tau_A},
 \qquad
-G_n=\Gamma\!\big(f_{\theta_A^\star}(a_n)\big).
+g_n=J_n^\top r_n,
 \]
-As motivated earlier, the canonical choice is to take $\Gamma(\cdot)=I$, $\tau \approx 0$ and $h(\cdot, \cdot)=1$. Empirically, $\tau=10^{-2}$ is a practical default for the diagonal CIFAR-100 runs, and Appendix C shows that different values measurably affect forgetting. Conversely, the remaining parameter is then $\lambda$ that intuitively controls the strength of the solution preservation constraint. For low-rank approximations of $M_{\mathrm{IEF}}$, one also has to determine the rank $k$, turning this into a five-tuple. \textbf{Together, these derivations and implementation choices define an implementable mechanism derived from PL-CLOC: EWC arises from scalar loss preservation, and IEWC extends this mechanism through normalization, damping, sample weighting, and output-geometry selection. We call this mechanism Improved Elastic Weight Consolidation (IEWC)}.
+where $\bar h_n\ge0$ has empirical mean one. The continual-learning penalty is
+\[
+\frac{\lambda}{2}
+(\theta-\theta_A^\star)^\top
+M_{\mathrm{IEWC}}
+(\theta-\theta_A^\star).
+\]
+
+The canonical geometry is $G_n=I$. We use task-relative damping
+\[
+\tau_A
+=
+\kappa\,\operatorname{median}
+\{r_i^\top G_i^{-1}r_i:r_i\ne0\},
+\]
+with $\kappa=10^{-2}$ in the confirmatory comparison. This makes $\kappa$ dimensionless and preserves global loss-unit invariance. If all denominators are zero, the stored importance is zero.
+
+Uniform IEWC sets $\bar h_n=1$. To study weighting without confounding it with normalization, we define a separate \emph{residual-diversity weighting} (RDW) variant. Let
+\[
+u_n=\frac{g_n}{\|g_n\|_2}
+\]
+for nonzero parameter gradients. In a fixed sample order, RDW maintains an orthonormal basis $Q$ of at most $K$ earlier residual directions and assigns
+\[
+h_n=\|(I-Q^\top Q)u_n\|_2^2.
+\]
+When the residual is nonzero and the cap is not reached, its normalized direction is appended to $Q$; the final $h_n$ are mean-normalized. This streaming rule is motivated by residual-gradient diversity ideas in GSS \citep{GSS}, but it is an order-dependent aggregation heuristic, not part of the level-set derivation. Crucially, both OPG-RDW and IEF-RDW receive the same unit parameter-gradient directions. Scalar IEF normalization cannot change $u_n$, so the $2\times2$ comparison
+\[
+\{\mathrm{OPG},\mathrm{IEF}\}
+\times
+\{\mathrm{uniform},\mathrm{RDW}\}
+\]
+isolates matrix normalization from sample weighting.
+
+For diagonal training penalties, we take the diagonal after aggregation and rescale every nonzero diagonal to have mean one over trainable parameters. This removes only a global factor absorbable into $\lambda$ and lets all regularized methods use the same within-domain $\lambda$ grid. It does not restore the cross-parameter information discarded by diagonalization.
+
+The design can be summarized by $(\lambda,\kappa,\Gamma,h)$, where $\Gamma$ maps an old output to its local metric $G_n$, and by an additional approximation choice such as diagonal or low rank. Scalar loss preservation gives OPG-EWC; level-set normal preservation gives uniform IEWC; damping, weighting, and geometry are explicit surrounding choices. We call this CLOC-derived mechanism \emph{Improved Elastic Weight Consolidation} while treating its individual axes separately in theory and experiment.

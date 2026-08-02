@@ -1,7 +1,9 @@
-\section{Improved Empirical Fisher Regularization}
+\section{Level-Set Normalization and the Improved Empirical Fisher}
 
-In the Euclidena-output csae, this recovers the improved empirical Fisher matrix introduced by Wu et al. \citep{IEF}:
+In the Euclidean-output case $G_i=I$, the matrix from the previous section is the improved empirical Fisher (iEF) introduced by Wu et al. \citep{IEF}:
 \[
 M_{2,I}=F_{\mathrm{IEF}}.
 \]
-Hence the IEF is the first-order local approximation of a constrained optimization problem that protects old behavior geometrically: instead of preserving the scalar loss value, it preserves the output up to motion along the loss level set. The original IEF paper derives the same normalization from approximate natural-gradient descent. In that setting, the empirical Fisher reweights sample contributions by squared output-gradient magnitude, which can make it a poor curvature surrogate; IEF removes this scale factor and retains the normalized output-loss direction. In our derivation, the same normalization arises because the penalty is defined through distance to the old-loss level set rather than through raw change in the scalar loss coordinate.
+Hence iEF is the quadratic form of a first-order local constraint that protects old behavior geometrically: instead of preserving a raw scalar-loss coordinate, it penalizes only output motion normal to the old loss level set. The original iEF paper derives the same normalization for approximate natural-gradient descent. In that setting, the observed-label OPG reweights sample contributions by squared output-gradient magnitude; iEF removes this scale factor and retains the normalized output-loss direction. Here the normalization arises from metric projection onto the normal quotient of the old-loss tangent space.
+
+This is an identity for the undamped local summand when $r_i\ne0$. Practical damping changes its behavior near $r_i=0$; Section~10 states that boundary explicitly.
