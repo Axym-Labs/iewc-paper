@@ -44,6 +44,19 @@ For the metric $|v|_G^2=v^\top G v$, the squared distance to the tangent hyperpl
 \operatorname{dist}_{G}(\Delta z,T)^2 =
 \frac{(r^\top \Delta z)^2}{r^\top G^{-1}r}.  
 \]
+To verify the matched metric pair, write the normal residual as $e=\Delta z-t$ with $t\in T$. It solves
+\[
+\min_e e^\top G e
+\quad\text{subject to}\quad
+r^\top e=r^\top\Delta z.
+\]
+The Lagrange equations give
+\[
+e^\star
+=
+\frac{r^\top\Delta z}{r^\top G^{-1}r}G^{-1}r,
+\]
+whose squared $G$-norm is the displayed quotient. Thus $G$ measures primal output displacement while $G^{-1}$ acts on the loss covector; these roles cannot be chosen independently.
 Linearizing the model output around $\theta_A^\star$, with
 \[
 \delta=\theta-\theta_A^\star,  
