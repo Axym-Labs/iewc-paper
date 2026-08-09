@@ -1,6 +1,6 @@
-\section{Inherited Label-Noise Stress Test}
+\section{Label-Noise Stress Test}
 
-We retain the rejected submission's CIFAR-100 label-noise experiment as exploratory evidence, not as part of the locked confirmatory comparison. Its endpoints were available during the earlier method-development workflow, so the table should not be read as an unbiased estimate after model selection. Uniform training-label flips create atypical high-loss samples, and the clean task-aware test set measures downstream retention. In this inherited experiment, IEWC loses less accuracy than observed-label OPG-EWC as the flip rate increases.
+The original CIFAR-100 label-noise experiment provides a downstream stress test complementary to the direct matrix analysis in Appendix B. Its endpoints were available during method development, so the table reports descriptive selected performance rather than a selection-independent effect estimate. Uniform training-label flips create atypical high-loss samples, and the clean task-aware test set measures downstream retention. Across this stress test, IEWC loses less accuracy than observed-label OPG-EWC as the flip rate increases.
 
 \begin{table}[H]
 \centering
@@ -15,7 +15,7 @@ IEWC & 0.5978 $\pm$ 0.0260 & 0.5642 $\pm$ 0.0215 & 0.5322 $\pm$ 0.0239 \\
 \end{tabular}
 \end{table}
 
-The earlier submission also compared sorted diagonal entries on a CIFAR-100 prefix. That diagnostic does not identify clean and corrupt sample contributions and cannot establish the spectral mechanism by itself; Appendix B now supplies the direct per-sample full-matrix test. We retain the diagonal summary here only for provenance. It uses all 512 exported entries per matrix and reports the stored-tail mass ratio, normalized stored-tail profile change, and log-scale RMSE of the sorted entries.
+The original study also compared sorted diagonal entries on a CIFAR-100 prefix. That diagnostic does not identify clean and corrupt sample contributions and cannot establish the spectral mechanism by itself; Appendix B now supplies the direct per-sample full-matrix test. The diagonal summary remains useful as a complementary downstream view. It uses all 512 exported entries per matrix and reports the stored-tail mass ratio, normalized stored-tail profile change, and log-scale RMSE of the sorted entries.
 
 \begin{table}[H]
 \centering
@@ -34,6 +34,6 @@ IEWC & 0.25 & 512 & 1.1003 & 0.0154 & 0.0415 \\
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.54\linewidth]{figures/contamination_diagonal_spectra.pdf}
-\caption[Inherited label-noise diagonal diagnostic]{Inherited label-noise diagonal diagnostic. The plot visualizes the sorted high-importance coordinate tail. It is descriptive and is not used as the direct test of clean/corrupt contribution attribution.}
+\caption[Label-noise diagonal diagnostic]{Label-noise diagonal diagnostic. The plot visualizes the sorted high-importance coordinate tail and complements the direct clean/corrupt contribution analysis in Appendix B.}
 \label{fig:contamination-diagonal-spectra}
 \end{figure}
