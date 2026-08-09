@@ -6,7 +6,7 @@ M_{\mathrm{OPG},i}=s_i a_i a_i^\top,
 \qquad
 M_{\mathrm{IEF},i}=a_i a_i^\top.
 \]
-Thus OPG couples a sensitivity direction to the squared output-loss-gradient scale, whereas undamped IEF keeps the direction-only outer product. Relative damping multiplies the latter by $s_i/(s_i+\tau_A)$ and therefore retains the near-zero qualification from Section~10.
+Thus OPG couples each sensitivity direction to the squared output-loss-gradient scale, whereas undamped IEF keeps the direction-only outer product. Relative damping multiplies IEF by $s_i/(s_i+\tau_A)$ and therefore retains the near-zero qualification from Section~10.
 
 For intuition, suppose a fraction $\varepsilon$ of samples are contaminated, their normalized sensitivity is concentrated near a direction $u$ outside the leading clean subspace, and their scale is $s_i\approx W$. If clean scales are sufficiently concentrated or independent of direction, then
 \[
@@ -17,7 +17,7 @@ For intuition, suppose a fraction $\varepsilon$ of samples are contaminated, the
 \]
 whereas undamped IEF has no factor $W$ on the contaminating direction. In particular, a sufficiently large $\varepsilon W$ can move $u$ into the leading OPG eigenspace. This model is illustrative rather than a distribution-free robustness theorem.
 
-We test the mechanism directly in a fitted two-class MLP. For each of 20 independent seeds and label-flip rates $0.05$, $0.10$, and $0.20$, we retain all 512 per-sample parameter-gradient rows and clean/corrupt identities. We decompose the full OPG and relative-damped IEF matrices into clean and corrupt contributions, then compare each total matrix with its clean-contribution reference. Table~\ref{tab:contamination-mechanism} reports means over seeds.
+We test the mechanism directly in a fitted two-class MLP. For each seed, 512 inputs are drawn from $\mathcal N(0,I_2)$ and assigned the clean label $\mathbf{1}\{x_1+0.75x_2<0\}$; a uniformly selected $0$, $5$, $10$, or $20\%$ of labels is flipped. A $2$--$32$--$2$ tanh MLP is trained for 250 epochs with Adam, learning rate $0.01$, and batch size 64. For each of 20 independent seeds we then retain every per-sample parameter-gradient row and clean/corrupt identity. We decompose the full OPG and task-relative-damped IEF matrices ($\kappa=0.01$) into clean and corrupt contributions, then compare each total matrix with its clean-contribution reference. Table~\ref{tab:contamination-mechanism} reports means over seeds.
 
 \begin{table}[H]
 \centering
@@ -37,4 +37,20 @@ $0.20$ & 11.23 & 0.736 & 0.202 & 0.875 & 0.998 & 0.930 & 0.990 \\
 \label{tab:contamination-mechanism}
 \end{table}
 
-Paired 95\% intervals over seeds exclude zero for every IEF-minus-OPG contrast in the table. Across increasing flip rates, the trace-share differences are $-0.729$, $-0.685$, and $-0.534$; leading-vector alignment differences are $+0.574$, $+0.279$, and $+0.123$; and top-5-overlap differences are $+0.094$, $+0.074$, and $+0.060$. These observations support the proposed contamination mechanism in this controlled construction. They do not establish a universal robustness guarantee or prove that a diagonal continual-learning penalty improves on a real benchmark; those are separate empirical questions.
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+IEF minus OPG contrast & 5\% flips & 10\% flips & 20\% flips \\
+\midrule
+Corrupt trace share & $-0.729$ [$-0.751,-0.706$] & $-0.685$ [$-0.701,-0.670$] & $-0.534$ [$-0.549,-0.519$] \\
+Leading-vector alignment & $+0.574$ [$+0.444,+0.704$] & $+0.279$ [$+0.152,+0.406$] & $+0.123$ [$+0.034,+0.213$] \\
+Top-5 overlap & $+0.094$ [$+0.067,+0.122$] & $+0.074$ [$+0.047,+0.101$] & $+0.060$ [$+0.029,+0.091$] \\
+\bottomrule
+\end{tabular}
+\caption{Paired mean differences with 95\% Student-$t$ intervals over 20 seeds. Every interval excludes zero.}
+\label{tab:contamination-mechanism-intervals}
+\end{table}
+
+These observations support the proposed contamination mechanism in this controlled construction. They do not establish a universal robustness guarantee or prove that a diagonal continual-learning penalty improves on a real benchmark; those are separate empirical questions.

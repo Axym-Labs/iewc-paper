@@ -27,7 +27,7 @@ M_{\mathrm{OPG}}
 \frac{1}{N}\sum_{n=1}^N w_n^{\,G}\,a_n^{\,G}(a_n^{\,G})^\top.
 \]
 
-If we interpret both matrices as empirical aggregates of local old-task sensitivity directions $a_n^{\,G}(a_n^{\,G})^\top$, they use the same directions but differ in how strongly each sample contributes. Undamped IEF keeps uniform empirical weighting of these normalized directions, while OPG multiplies each contribution by the metric-dependent squared magnitude
+Both matrices empirically aggregate the same local old-task sensitivity directions $a_n^{\,G}(a_n^{\,G})^\top$, but they differ in how strongly each sample contributes. Undamped IEF keeps uniform empirical weighting of these normalized directions, while OPG multiplies each contribution by the metric-dependent squared magnitude
 \[
 w_n^{\,G}=r_n^\top G_n^{-1}r_n.
 \]
