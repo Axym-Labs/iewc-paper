@@ -1,135 +1,49 @@
 \section{Behavior Near Well-Fitted Solutions}
 \label{sec:well-fitted}
 
-The output-loss-gradient scale in OPG is especially consequential because importance is estimated \emph{after} training on $A$, when many samples may already be well fit. The original EWC Laplace argument likewise expands at an old-task optimum, although its model-Fisher/Hessian motivation is distinct from the observed-label OPG object analyzed here \citep{EWC,KunstnerEF}. Modern expressive models can fit training data up to interpolation \citep{ModernInterp}, so the near-zero regime must be treated explicitly rather than hidden by notation.
+Importance is estimated after training on $A$, when many old samples may be well fit. The original EWC Laplace argument likewise expands at an old-task optimum, although its model-Fisher motivation differs from the observed-label OPG analyzed here \citep{EWC,KunstnerEF}. Modern expressive models can fit training data up to interpolation \citep{ModernInterp}, so the near-zero regime must be explicit. For one sample, let
+\[
+\begin{aligned}
+s_n &= r_n^\top G_n^{-1}r_n,\\
+S_n^{\mathrm{OPG}} &= J_n^\top r_nr_n^\top J_n,\\
+S_{n,\tau}^{\mathrm{IEF},G}
+&= \frac{J_n^\top r_nr_n^\top J_n}{s_n+\tau}.
+\end{aligned}
+\]
 
-To make the comparison precise, consider the per-sample summands
+\begin{proposition}[Gradient-scale behavior near a well-fitted solution]
+\label{prop:well-fitted-scaling}
+Assume $m_GI\preceq G_n\preceq M_GI$ and
+$\|J_n^\top v\|_2\le C_J\|v\|_2$. For $s_n>0$,
 \[
 S_n^{\mathrm{OPG}}
-=
-J_n^\top r_n r_n^\top J_n,
+=s_nS_{n,0}^{\mathrm{IEF},G},
 \qquad
-S_n^{\mathrm{IEF},G}
-=
-J_n^\top
-\frac{r_n r_n^\top}{r_n^\top G_n^{-1}r_n}
-J_n,
+\begin{aligned}
+\|S_n^{\mathrm{OPG}}\|_2&\in O(s_n),\\
+\|S_{n,0}^{\mathrm{IEF},G}\|_2&\in O(1).
+\end{aligned}
 \]
-where $G_n\succ0$ is the chosen output metric. We assume that $G_n$ is uniformly positive definite and bounded, and that $J_n$ is bounded under the operator norm. More precisely, assume there exists a constant $C_J<\infty$ such that
-\[
-\|J_n^\top v\|_2
-\le
-C_J\|v\|_2
-\]
-for the relevant directions, and constants $0<m_G\le M_G<\infty$ such that
-$G_n$ is uniformly bounded between $m_G I$ and $M_G I$.
-
-Using the same $G_n$-normalized direction as above,
-\[
-\hat r_n^{\,G}
-=
-\frac{r_n}{\sqrt{r_n^\top G_n^{-1}r_n}},
-\qquad
-a_n^{\,G}
-=
-J_n^\top \hat r_n^{\,G},
-\qquad
-w_n^{\,G}
-=
-r_n^\top G_n^{-1}r_n,
-\qquad
-b_n^{\,G}
-=
-\|J_n^\top \hat r_n^{\,G}\|_2^2,
-\]
-which gives
-\[
-S_n^{\mathrm{IEF},G}
-=
-a_n^{\,G}(a_n^{\,G})^\top,
-\qquad
-S_n^{\mathrm{OPG}}
-=
-w_n^{\,G}\,a_n^{\,G}(a_n^{\,G})^\top.
-\]
-
-For the spectral norm,
-\[
-\|S_n^{\mathrm{OPG}}\|_2
-=
-w_n^{\,G} b_n^{\,G},
-\qquad
-\|S_n^{\mathrm{IEF},G}\|_2
-=
-b_n^{\,G}.
-\]
-Since
-\[
-\|\hat r_n^{\,G}\|_2^2
-=
-\frac{\|r_n\|_2^2}{r_n^\top G_n^{-1}r_n},
-\]
-the metric bounds and bounded-Jacobian assumption give $b_n^{\,G}\in O(1)$, so
-\[
-\|S_n^{\mathrm{OPG}}\|_2 \in O(w_n^{\,G}),
-\qquad
-\|S_n^{\mathrm{IEF},G}\|_2 \in O(1).
-\]
-The sharper lower-bound statement requires a nondegeneracy condition in the normalized output-gradient direction. If there exists $c_J>0$ such that
-\[
-\|J_n^\top \hat r_n^{\,G}\|_2\ge c_J
-\]
-for the relevant samples, then
-\[
-\|S_n^{\mathrm{OPG}}\|_2 \in \Theta(w_n^{\,G}),
-\qquad
-\|S_n^{\mathrm{IEF},G}\|_2 \in \Theta(1).
-\]
-We now interpret this for practical situations. Near the end of training on distribution $A$, we expect many old samples to have small gradients. The norm analysis above then shows that OPG contains the additional multiplicative factor $w_n^{\,G}=r_n^\top G_n^{-1}r_n$, whereas undamped IEF removes that factor. Remaining low-magnitude summands of the IEF come from the model sensitivity term $b_n^{\,G}$, not from the scale of the output-loss gradient itself. In the classification setting with $G_n=I$, a confidently correct prediction with $p_{n,c}=1-\varepsilon$ yields
-\[
-\|r_n\|_2^2=\|p_n-y_n\|_2^2\in\Theta(\varepsilon^2).
-\]
-Therefore
-\[
-\|S_n^{\mathrm{OPG}}\|_2 = w_n^{\,I} b_n^{\,I} \in \Theta(\varepsilon^2)\,b_n^{\,I},
-\qquad
-\|S_n^{\mathrm{IEF},I}\|_2 = b_n^{\,I}.
-\]
-Under the same nondegeneracy condition on $J_n^\top \hat r_n^{\,I}$, this gives $\|S_n^{\mathrm{OPG}}\|_2 \in \Theta(\varepsilon^2)$ and $\|S_n^{\mathrm{IEF},I}\|_2 \in \Theta(1)$.
-
-The singular case $r_n=0$ remains and must be handled explicitly. As done in \citep{IEF}, one practical solution is to add a damping factor $\tau$ to the quotient, yielding
-\[
-M_{\mathrm{IEF},G}  
-=  
-\frac1N  
-\sum_{n=1}^N  
-\frac{g_n g_n^\top}{r_n^\top G_n^{-1}r_n+\tau},  
-\qquad  
-g_n=J_n^\top r_n.  
-\]
-For $s_n=r_n^\top G_n^{-1}r_n>0$, each damped summand admits the exact factorization
+If $\|J_n^\top r_n/\sqrt{s_n}\|_2\ge c_J>0$, these rates are
+$\Theta(s_n)$ and $\Theta(1)$. Consequently, for Euclidean softmax
+cross-entropy with correct-class probability $1-\varepsilon$, they are
+$\Theta(\varepsilon^2)$ and $\Theta(1)$, respectively. For $\tau>0$,
 \[
 S_{n,\tau}^{\mathrm{IEF},G}
 =
-\frac{g_ng_n^\top}{s_n+\tau}
-=
-\underbrace{\frac{s_n}{s_n+\tau}}_{\rho_\tau(s_n)}
-S_{n,0}^{\mathrm{IEF},G}.
+\frac{s_n}{s_n+\tau}S_{n,0}^{\mathrm{IEF},G},
 \]
-Thus finite damping introduces a transition rather than a uniform scale removal. When $s_n\gg\tau$, $\rho_\tau(s_n)\approx1$ and the undamped direction-normalization analysis applies. When $s_n\ll\tau$, $\rho_\tau(s_n)\approx s_n/\tau$, so small output-loss gradients are again suppressed. Since $g_n=J_n^\top r_n$, fixed positive damping gives $S_{n,\tau}^{\mathrm{IEF},G}\to0$ as $r_n\to0$ under a bounded Jacobian. At exact interpolation, $r_n=g_n=0$; we define the sample contribution as zero. The undamped expression is instead $0/0$ and has no canonical value without specifying a directional limit.
-
-Fixed numerical $\tau$ also has the units of $s_n$. Under a global rescaling of one task loss by $c$, the numerator and $s_n$ scale by $c^2$, but a fixed $\tau$ does not. We therefore use task-relative damping in the confirmatory experiments:
+so fixed positive damping restores attenuation and
+$S_{n,\tau}^{\mathrm{IEF},G}\to0$ as $r_n\to0$. Finally,
 \[
 \tau_A
 =
-\kappa\,\operatorname{median}\{s_i:s_i>0\},
-\qquad
-\kappa=10^{-2}.
+\kappa\operatorname{median}\{s_i:s_i>0\}
 \]
-Both $s_n$ and $\tau_A$ then scale by $c^2$, giving
-\[
-\frac{c^2g_ng_n^\top}{c^2s_n+c^2\tau_A}
-=
-\frac{g_ng_n^\top}{s_n+\tau_A}.
-\]
-Task-relative damping therefore restores invariance to global changes of loss units while retaining explicit attenuation near zero gradient. It does not imply invariance to arbitrary sample-dependent monotone transformations under a shared positive damping value. If all recorded $s_i$ are zero, the task importance is defined as the zero matrix.
+makes every damped summand invariant to a global positive rescaling of the task loss.
+\end{proposition}
+Appendix~\ref{app:well-fitted-proof} gives the proof.
+
+The proposition isolates the central EWC--IEWC difference. OPG weights each normalized parameter-sensitivity direction by the squared dual norm $s_n$ of the current output-loss gradient; undamped IEF removes that factor, although model sensitivity through $J_n$ remains. Thus a small current loss gradient need not make the corresponding old behavior unimportant for continual learning.
+
+Finite damping introduces a transition rather than uniformly removing gradient scale: normalization applies when $s_n\gg\tau$, while $s_n\ll\tau$ again suppresses the sample. At exact interpolation we define the contribution as zero; the undamped expression is $0/0$ and has no canonical value without a directional limit. We use $\kappa=10^{-2}$ in the confirmatory experiments. Relative damping is invariant only to global loss-unit changes, not arbitrary sample-dependent transformations; if all recorded $s_i$ vanish, the task importance is the zero matrix.

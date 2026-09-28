@@ -1,0 +1,67 @@
+\section{Proof of the Well-Fitted Scaling Proposition}
+\label{app:well-fitted-proof}
+
+For $s_n>0$, define
+\[
+\hat r_n^{,G}
+=
+\frac{r_n}{\sqrt{s_n}},
+\qquad
+b_n^{,G}
+=
+\|J_n^\top\hat r_n^{,G}\|_2^2.
+\]
+Direct substitution gives
+\[
+S_{n,0}^{\mathrm{IEF},G}
+=
+J_n^\top\hat r_n^{,G}(\hat r_n^{,G})^\top J_n,
+\qquad
+S_n^{\mathrm{OPG}}
+=
+s_nS_{n,0}^{\mathrm{IEF},G},
+\]
+and therefore
+\[
+\|S_{n,0}^{\mathrm{IEF},G}\|_2=b_n^{,G},
+\qquad
+\|S_n^{\mathrm{OPG}}\|_2=s_nb_n^{,G}.
+\]
+Since $G_n\preceq M_GI$, we have
+\[
+\|\hat r_n^{,G}\|_2^2
+=
+\frac{\|r_n\|_2^2}{r_n^\top G_n^{-1}r_n}
+\le M_G.
+\]
+The bounded-Jacobian assumption consequently gives
+$b_n^{,G}\le C_J^2M_G$, which proves the two upper bounds. The
+nondegeneracy condition $\|J_n^\top\hat r_n^{,G}\|_2\ge c_J$ gives
+the corresponding lower bounds.
+
+For Euclidean softmax cross-entropy with correct-class probability
+$p_{n,c}=1-\varepsilon$, the non-target probabilities sum to
+$\varepsilon$, and hence
+\[
+\varepsilon^2
+\le
+\|p_n-y_n\|_2^2
+=
+\varepsilon^2+\sum_{k\ne c}p_{n,k}^2
+\le
+2\varepsilon^2.
+\]
+Thus $s_n\in\Theta(\varepsilon^2)$, which gives the stated rates under
+the same nondegeneracy condition.
+
+For positive damping, multiplying and dividing by $s_n$ yields
+\[
+S_{n,\tau}^{\mathrm{IEF},G}
+=
+\frac{s_n}{s_n+\tau}S_{n,0}^{\mathrm{IEF},G}.
+\]
+With fixed $\tau>0$, bounded $J_n$ gives
+$\|J_n^\top r_n\|_2^2/(s_n+\tau)\to0$ as $r_n\to0$. Finally, under
+a global positive loss rescaling by $c$, both $r_n$ and
+$g_n=J_n^\top r_n$ scale by $c$, while $s_n$ and the task-relative
+$\tau_A$ scale by $c^2$. Their quotient is therefore unchanged.
