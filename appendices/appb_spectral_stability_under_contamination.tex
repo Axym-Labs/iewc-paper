@@ -6,7 +6,7 @@ M_{\mathrm{OPG},i}=s_i a_i a_i^\top,
 \qquad
 M_{\mathrm{IEF},i}=a_i a_i^\top.
 \]
-Thus OPG couples each sensitivity direction to the squared output-loss-gradient scale, whereas undamped IEF keeps the direction-only outer product. Relative damping multiplies IEF by $s_i/(s_i+\tau_A)$ and therefore retains the near-zero qualification from Section~10.
+Thus OPG couples each sensitivity direction to the squared output-loss-gradient scale, whereas undamped IEF keeps the direction-only outer product. Relative damping multiplies IEF by $s_i/(s_i+\tau_A)$ and therefore retains the near-zero qualification from Section~\ref{sec:well-fitted}.
 
 For intuition, suppose a fraction $\varepsilon$ of samples are contaminated, their normalized sensitivity is concentrated near a direction $u$ outside the leading clean subspace, and their scale is $s_i\approx W$. If clean scales are sufficiently concentrated or independent of direction, then
 \[

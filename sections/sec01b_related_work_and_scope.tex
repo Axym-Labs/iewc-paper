@@ -1,4 +1,5 @@
 \section{Related Work and Scope}
+\label{sec:related-work}
 
 EWC stores a quadratic approximation around earlier parameters and weights parameter motion by a Fisher-derived importance estimate \citep{EWC}. Subsequent work has clarified how multiple task penalties should be accumulated and placed EWC within broader Bayesian and regularization-based views of continual learning \citep{HuszarEWC,ProgressCompress,VCL}. A practical ambiguity remains: implementations called ``Fisher'' may use the model-label expectation, sampled model labels, observed labels, or minibatch aggregates. These estimators are not interchangeable in theory or practice \citep{KunstnerEF,VanDeVenFisher2025}. Our scalar-loss derivation concerns the observed-label OPG object; sampled model-Fisher EWC is evaluated separately rather than treated as another name for the same matrix.
 

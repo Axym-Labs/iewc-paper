@@ -15,6 +15,11 @@ lockfile, and file-level checksums. A bundle verifier checks counts, paths,
 hashes, source ancestry, protocol identity, and the absence of restricted
 example payloads before accepting an extracted archive.
 
+The paper-facing empirical scripts use one \texttt{IEWCConfig} interface across
+the diagonal and low-rank implementations. The same interface records output
+geometry, damping, aggregation weights, and matrix approximation choices and
+is used by the frozen experiment and reproduction entrypoints.
+
 \paragraph{Environment and execution.}
 All confirmatory records identify the clean source commit
 \texttt{5e170ea7d84d7094dd1734ee1516b9fba2133a63} and the same canonical

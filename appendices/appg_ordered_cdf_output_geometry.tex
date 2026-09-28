@@ -1,0 +1,37 @@
+\section{Matched Ordered-CDF Output Geometry}
+\label{app:ordered-cdf-geometry}
+
+Consider probability vectors on an ordered grid with $m$ bins. Let
+\[
+P=I-\frac{1}{m}\mathbf 1\mathbf 1^\top
+\]
+project onto the probability-simplex tangent, let
+$C\in\mathbb R^{(m-1)\times m}$ compute cumulative sums through the
+penultimate bin, and let $\Delta x$ be the grid spacing. Define
+\[
+G_{\mathrm{CDF}}=\Delta x\,P C^\top C P.
+\]
+For a zero-sum probability perturbation $\Delta z$,
+\[
+\Delta z^\top G_{\mathrm{CDF}}\Delta z
+=
+\Delta x\,\|C\Delta z\|_2^2,
+\]
+which is the squared $L^2$ distance between the corresponding
+one-dimensional cumulative distribution functions. Because
+$G_{\mathrm{CDF}}$ is singular in the ambient space, its use is restricted to
+the probability-simplex tangent. The matched dual form for a loss covector
+$r$ is
+\[
+(Pr)^\top G_{\mathrm{CDF}}^+(Pr),
+\]
+where $G_{\mathrm{CDF}}^+$ is the Moore--Penrose pseudoinverse. The
+implementation tests both the primal identity and the matched dual
+construction numerically.
+
+This is an ordered-CDF or Cram\'er metric, not sliced Wasserstein. It supplies
+one explicit space-dependent geometry compatible with IEWC's matched
+primal/dual construction. The retained diffusion output-representation
+experiment predates this correction and is therefore treated only as
+exploratory evidence that alternative output representations can affect the
+penalty, not as empirical validation of Wasserstein geometry.

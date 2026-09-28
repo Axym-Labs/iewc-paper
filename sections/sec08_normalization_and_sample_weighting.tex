@@ -1,4 +1,5 @@
 \section{Normalization and Sample Weighting}
+\label{sec:normalization-weighting}
 
 To compare both matrices in a common notation, let $G_n\succ0$ denote the chosen output metric for sample $n$. Although $M_{\mathrm{OPG}}$ itself does not depend on $G_n$, its summands can be rewritten relative to that metric. In a negative-log-likelihood setting, $M_{\mathrm{OPG}}=F_{\mathrm{emp}}$.
 
@@ -32,6 +33,6 @@ Both matrices empirically aggregate the same local old-task sensitivity directio
 w_n^{\,G}=r_n^\top G_n^{-1}r_n.
 \]
 
-Thus normalization changes sample aggregation: OPG shifts old-task weighting toward samples with large output-loss gradients and away from confidently fitted ones, whereas undamped IEF removes that scale. With positive damping, IEF also multiplies each direction by $s_n/(s_n+\tau)$, as Section~10 makes explicit.
+Thus normalization changes sample aggregation: OPG shifts old-task weighting toward samples with large output-loss gradients and away from confidently fitted ones, whereas undamped IEF removes that scale. With positive damping, IEF also multiplies each direction by $s_n/(s_n+\tau)$, as Section~\ref{sec:well-fitted} makes explicit.
 
 This decomposition identifies a mechanism to test; it does not show that either weighting is preferable for every task. The next section treats probabilistic classification, where the scale difference has a concrete well-fitted limit.

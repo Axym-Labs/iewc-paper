@@ -12,6 +12,8 @@ The primary contrast in each domain is paired final average performance of unifo
 \]
 All four cells use the same retained examples, and the RDW cells receive the same unit-normalized parameter-gradient directions. Sampled model-Fisher EWC and MAS \citep{MAS} are external regularization baselines. Sequential and offline/joint training are references. Every nonzero diagonal importance is rescaled to mean one across trainable parameters, and every method uses the displayed $\lambda/2$ convention.
 
+This estimator-focused factorial keeps the same post-task diagonal-penalty interface. SI's trajectory accumulation and LwF's distillation objective are discussed in Section~\ref{sec:related-work} but are not mixed into that factorial. Paper-facing EWC, IEWC, and IEWC+RDW correspond respectively to archived EF-EWC, IEWC-E/U-IEWC, and IEWC-GSS/GSS-IEWC labels.
+
 \begin{table}[H]
 \caption{Frozen confirmatory roles and repetitions. FOMC is excluded because its distributed evaluation and test files are exact duplicates.}
 \label{tab:confirmatory-protocol}
@@ -42,7 +44,7 @@ IEF uses task-relative damping
 \[
 \tau_A=10^{-2}\operatorname{median}\{s_i:s_i>0\}.
 \]
-Validation-only sensitivity varies the coefficient over $\{0,10^{-3},10^{-2},10^{-1},1\}$, importance counts, RDW caps, and RDW sample order. A separate loss-unit diagnostic multiplies a fitted classification loss by $0.1$, $1$, and $10$. OPG raw scale changes quadratically, fixed numerical damping changes IEF shape, and task-relative damping preserves the IEF matrix to numerical tolerance, matching Section~10.
+Validation-only sensitivity varies the coefficient over $\{0,10^{-3},10^{-2},10^{-1},1\}$, importance counts, RDW caps, and RDW sample order. A separate loss-unit diagnostic multiplies a fitted classification loss by $0.1$, $1$, and $10$. OPG raw scale changes quadratically, fixed numerical damping changes IEF shape, and task-relative damping preserves the IEF matrix to numerical tolerance, matching Section~\ref{sec:well-fitted}.
 
 \subsection{Original multi-domain protocol}
 
