@@ -10,9 +10,15 @@ Unless stated otherwise, all stored matrices are diagonal. Paper-facing EWC, IEW
 \caption[Multi-domain continual-learning results]{Multi-domain selected-run means. Across-seed standard deviations and full-precision means are reported in Appendix Table~\ref{tab:main-empirical-results-uncertainty}. Higher is better except for MSE and forgetting.}
 \label{tab:main-empirical-results}
 \centering
+\ifdefined\TMLRSubmission
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.0}
+\else
 \footnotesize
 \setlength{\tabcolsep}{1.8pt}
 \renewcommand{\arraystretch}{0.92}
+\fi
 \begin{tabular}{@{}llrrrrr@{}}
 \toprule
 Task & Metric & Seq. & EWC & DR & IEWC & +RDW \\

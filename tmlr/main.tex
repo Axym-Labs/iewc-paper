@@ -1,0 +1,119 @@
+\documentclass[10pt]{article}
+
+% Official TMLR submission style. Do not modify the style file.
+\usepackage{tmlr}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsfonts,mathtools}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{nicefrac}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{url}
+\usepackage{doi}
+
+\graphicspath{{../}}
+
+\newtheorem{proposition}{Proposition}
+\newcommand{\TMLRSubmission}{}
+
+\hypersetup{
+  hidelinks,
+  pdftitle={Improved Elastic Weight Consolidation as an Optimization Constraint for Continual Learning},
+  pdfauthor={},
+  pdfkeywords={continual learning, elastic weight consolidation, empirical Fisher, constrained optimization},
+}
+
+\title{Improved Elastic Weight Consolidation as an Optimization Constraint for Continual Learning}
+
+% The official TMLR style suppresses this block in submission mode. Keeping the
+% source anonymous also protects double blind review if source is shared.
+\author{\name Anonymous Author \\
+  \addr Anonymous Institution}
+
+\def\month{XX}
+\def\year{XXXX}
+\def\openreview{\url{https://openreview.net/forum?id=XXXX}}
+
+\newcommand{\iewcleadfigure}{%
+  \begin{figure}[h]
+  \centering
+  \includegraphics[width=0.84\textwidth]{figures/overview.pdf}
+  \caption[IEWC framework overview]{Each panel shows the continual-learning
+  penalty over normalized directions for two representative samples. EWC (OPG)
+  inherits sample weighting from output-loss-gradient scale; uniform IEWC
+  removes this scale away from the damping regime, while residual-diversity
+  weighting changes the aggregation measure as a separate design choice.}
+  \label{fig:overview}
+  \end{figure}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\input{../abstract}
+\end{abstract}
+
+\iewcleadfigure
+
+\input{../sections/sec01_continual_learning_as_optimization_constraint.tex}
+
+\input{../sections/sec01b_related_work_and_scope.tex}
+
+\input{../sections/sec02_population_and_local_approximations.tex}
+
+\input{../sections/sec03_old_task_loss_preservation.tex}
+
+\input{../sections/sec04_empirical_fisher_regularization.tex}
+
+\input{../sections/sec05_level_set_preservation_in_output_space.tex}
+
+\input{../sections/sec06_improved_empirical_fisher_regularization.tex}
+
+\input{../sections/sec08_normalization_and_sample_weighting.tex}
+
+\input{../sections/sec10_behavior_near_well_fitted_solutions.tex}
+
+\input{../sections/sec11_output_space_geometry.tex}
+
+\input{../sections/sec13_improved_elastic_weight_consolidation.tex}
+
+\input{../sections/sec14_empirical_evaluation.tex}
+
+\input{../sections/sec15_limitations.tex}
+
+\input{../sections/sec15_conclusion.tex}
+
+\bibliographystyle{tmlr}
+\bibliography{../references}
+
+\clearpage
+\appendix
+
+\input{../appendices/appa_invariance_to_loss_reparameterization.tex}
+
+\input{../appendices/appb_spectral_stability_under_contamination.tex}
+
+\input{../appendices/appc_experimental_details_and_damping_sensitivity.tex}
+
+\input{../appendices/appd_label_noise_stress_test.tex}
+
+\input{../appendices/appe_qualitative_ddpm_samples.tex}
+
+\input{../appendices/app0_reproducibility.tex}
+
+\input{../appendices/appg_ordered_cdf_output_geometry.tex}
+
+\input{../appendices/apph_well_fitted_proof.tex}
+
+\input{../appendices/appi_additional_output_space_derivations.tex}
+
+\input{../appendices/appj_notation.tex}
+
+\end{document}
