@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 from pathlib import Path
 
@@ -55,9 +56,19 @@ def build(name: str) -> None:
     target = OUT / f"{name}.pdf"
     wrapper_path.write_text(wrapper(source))
     try:
+        env = os.environ.copy()
+        env.setdefault("SOURCE_DATE_EPOCH", "0")
         subprocess.run(
-            ["tectonic", "--outdir", str(OUT), str(wrapper_path)],
+            [
+                "tectonic",
+                "-Z",
+                "deterministic-mode",
+                "--outdir",
+                str(OUT),
+                str(wrapper_path),
+            ],
             cwd=ROOT,
+            env=env,
             check=True,
         )
         wrapper_pdf.replace(target)
