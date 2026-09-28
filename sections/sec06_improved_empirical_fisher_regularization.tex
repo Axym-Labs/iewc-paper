@@ -1,9 +1,11 @@
 \subsection{Level-Set Normalization and the Improved Empirical Fisher}
 
-For the loss-functional specialization $\phi_a=\ell_A$ and Euclidean output metric $G_i=I$, the matrix from the previous section is the improved empirical Fisher (iEF) introduced by Wu et al. \citep{IEF}:
+For the loss-functional specialization $\phi_a=\ell_A$ and Euclidean output metric $G_i=I$, the matrix from the previous section is the improved empirical Fisher (iEF) introduced by \citet{IEF}:
 \[
 M_{2,I}=F_{\mathrm{IEF}}.
 \]
 Hence iEF is the quadratic form of a first-order local constraint that protects old behavior geometrically: instead of preserving a raw scalar-loss coordinate, it penalizes only output motion normal to the old loss level set. The original iEF paper derives the same normalization for approximate natural-gradient descent. In that setting, the observed-label OPG reweights sample contributions by squared output-gradient magnitude; iEF removes this scale factor and retains the normalized output-loss direction. Here the normalization arises from metric projection onto the normal quotient of the old-loss tangent space.
 
-This is an identity for the undamped local summand when $r_i\ne0$. Practical damping changes its behavior near $r_i=0$; Section~\ref{sec:well-fitted} states that boundary explicitly.
+This identity holds for each undamped local summand with $r_i\ne0$; Section~\ref{sec:well-fitted} gives the finite-damping extension.
+
+For scalar-output regression in Euclidean geometry, $r_n$ is scalar and the undamped normalized factor $r_n^2/r_n^2$ equals one, so each iEF summand is $J_n^\top J_n$. The aggregate is exactly the Gauss--Newton output-Jacobian matrix, as shown by \citet{IEF}; geometrically, preservation is governed by output sensitivity $J_n$ rather than current residual magnitude. Positive damping multiplies each summand by $r_n^2/(r_n^2+\tau)$, so the exact identity holds for $\tau=0$ and $r_n\ne0$.

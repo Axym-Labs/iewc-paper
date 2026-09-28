@@ -36,7 +36,7 @@ for nonzero parameter gradients. In a fixed sample order, RDW maintains an ortho
 \[
 h_n=\|(I-Q^\top Q)u_n\|_2^2.
 \]
-When the residual is nonzero and the cap is not reached, its normalized direction is appended to $Q$; the final $h_n$ are mean-normalized. This streaming rule is motivated by residual-gradient diversity ideas in GSS \citep{GSS}, but it is an order-dependent aggregation heuristic, not part of the level-set derivation. Crucially, both OPG-RDW and IEF-RDW receive the same unit parameter-gradient directions. Scalar IEF normalization cannot change $u_n$, so the $2\times2$ comparison
+When the residual is nonzero and the cap is not reached, its normalized direction is appended to $Q$; the final $h_n$ are mean-normalized. This order-dependent aggregation heuristic draws on residual-gradient diversity in GSS \citep{GSS} and is kept separate from the level-set derivation. Both OPG-RDW and IEF-RDW receive the same unit parameter-gradient directions. Scalar IEF normalization leaves $u_n$ unchanged, so the $2\times2$ comparison
 \[
 \{\mathrm{OPG},\mathrm{IEF}\}
 \times
@@ -44,7 +44,7 @@ When the residual is nonzero and the cap is not reached, its normalized directio
 \]
 isolates matrix normalization from sample weighting.
 
-For diagonal training penalties, we take the diagonal after aggregation and rescale every nonzero diagonal to have mean one over trainable parameters. This removes only a global factor absorbable into $\lambda$ and lets all regularized methods use the same within-domain $\lambda$ grid. It does not restore the cross-parameter information discarded by diagonalization.
+For diagonal training penalties, we take the diagonal after aggregation and rescale every nonzero diagonal to have mean one over trainable parameters. This removes a global factor absorbable into $\lambda$ and lets all regularized methods use the same within-domain $\lambda$ grid; the resulting penalty retains coordinate-axis curvature.
 
 An IEWC instantiation is specified by the five-tuple
 \[

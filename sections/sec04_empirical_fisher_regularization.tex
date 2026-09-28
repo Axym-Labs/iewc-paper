@@ -20,7 +20,7 @@ F_{\mathrm{emp}}
 \nabla_\theta\log p_\theta(y_i\mid x_i)
 \nabla_\theta\log p_\theta(y_i\mid x_i)^\top.
 \]
-Thus OPG-EWC and empirical-Fisher EWC denote the same implementation in an explicit likelihood setting. The CLOC derivation justifies this matrix as the quadratic form of a squared first-order loss-preservation surrogate. It does not turn the matrix into the model Fisher or establish that it approximates the Hessian.
+Thus OPG-EWC and empirical-Fisher EWC denote the same implementation in an explicit likelihood setting. The CLOC derivation identifies this matrix as the quadratic form of a squared first-order loss-preservation surrogate, an interpretation distinct from the model Fisher and Hessian curvature.
 
 The model Fisher is instead
 \[
@@ -35,6 +35,6 @@ F_{\mathrm{model}}(\theta)
 \]
 It averages over labels sampled from the model, not only the observed label. Under standard regularity conditions this Fisher is connected to expected negative-log-likelihood curvature and natural-gradient geometry \citep{Amari1998,MartensNG,KFAC}. The observed-label empirical Fisher is a different object and can be a poor curvature approximation \citep{KunstnerEF}; Fisher-estimator choice can also materially affect EWC behavior and regularization scale \citep{VanDeVenFisher2025}.
 
-This distinction separates two questions that are often conflated. First, why might the observed-label OPG be a useful continual-learning importance matrix? The local CLOC construction answers: it penalizes first-order changes of old sample losses. Second, is that matrix a faithful estimate of probabilistic Fisher curvature? Not in general. Our experiments therefore include a one-label Monte Carlo model-Fisher baseline, obtained by sampling from the frozen predictive distribution at each supervised output site---one class per image and one token per supervised TRACE answer position---alongside OPG-EWC.
+This distinction separates two questions that are often conflated. The local CLOC construction motivates observed-label OPG as a penalty on first-order changes of old sample losses. Probabilistic Fisher curvature is a separate interpretation, tested against a one-label Monte Carlo model-Fisher baseline obtained by sampling from the frozen predictive distribution at each supervised output site---one class per image and one token per supervised TRACE answer position.
 
-The word ``exact'' below always refers to the algebra of the squared first-order local surrogate. The original hard per-sample constraint, its population counterpart, and the nonlinear loss away from $\theta_A^\star$ remain approximated.
+Below, ``exact'' refers to the algebra of the squared first-order local surrogate; the hard per-sample constraint, its population counterpart, and the nonlinear loss are approximated around $\theta_A^\star$.

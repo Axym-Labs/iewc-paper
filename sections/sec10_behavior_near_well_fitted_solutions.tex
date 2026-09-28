@@ -1,7 +1,9 @@
-\section{Behavior Near Well-Fitted Solutions}
+\section{Gradient Scale Near Well-Fitted Solutions}
 \label{sec:well-fitted}
 
-Importance is estimated after training on $A$, when many old samples may be well fit. The original EWC Laplace argument likewise expands at an old-task optimum, although its model-Fisher motivation differs from the observed-label OPG analyzed here \citep{EWC,KunstnerEF}. Modern expressive models can fit training data up to interpolation \citep{ModernInterp}, so the near-zero regime must be explicit. For one sample, let
+For softmax cross-entropy with probabilities $p_n$ and one-hot label $y_n$, the output-loss gradient with respect to logits is $r_n=p_n-y_n$. If the correct class has probability $p_{n,c}=1-\varepsilon$, then $\|r_n\|_2^2\in\Theta(\varepsilon^2)$, so the observed-label OPG contribution vanishes quadratically as confidence approaches one. The squared first-order loss change has the same scaling, yet continual-learning importance concerns the cost of changing that prediction later. EWC-DR identifies this classification effect and proposes a logit-reversal repair \citep{EWC-DR}; undamped iEF instead removes the output-gradient scale factor.
+
+The same mechanism extends to arbitrary differentiable losses. Importance is estimated after training on $A$, when many old samples may be well fit. The original EWC Laplace argument likewise expands at an old-task optimum, although its model-Fisher motivation differs from the observed-label OPG analyzed here \citep{EWC,KunstnerEF}. Modern expressive models can fit training data up to interpolation \citep{ModernInterp}, so the near-zero regime must be explicit. For one sample, let
 \[
 \begin{aligned}
 s_n &= r_n^\top G_n^{-1}r_n,\\
@@ -27,23 +29,10 @@ S_n^{\mathrm{OPG}}
 If $\|J_n^\top r_n/\sqrt{s_n}\|_2\ge c_J>0$, these rates are
 $\Theta(s_n)$ and $\Theta(1)$. Consequently, for Euclidean softmax
 cross-entropy with correct-class probability $1-\varepsilon$, they are
-$\Theta(\varepsilon^2)$ and $\Theta(1)$, respectively. For $\tau>0$,
-\[
-S_{n,\tau}^{\mathrm{IEF},G}
-=
-\frac{s_n}{s_n+\tau}S_{n,0}^{\mathrm{IEF},G},
-\]
-so fixed positive damping restores attenuation and
-$S_{n,\tau}^{\mathrm{IEF},G}\to0$ as $r_n\to0$. Finally,
-\[
-\tau_A
-=
-\kappa\operatorname{median}\{s_i:s_i>0\}
-\]
-makes every damped summand invariant to a global positive rescaling of the task loss.
+$\Theta(\varepsilon^2)$ and $\Theta(1)$, respectively.
 \end{proposition}
 Appendix~\ref{app:well-fitted-proof} gives the proof.
 
-The proposition isolates the central EWC--IEWC difference. OPG weights each normalized parameter-sensitivity direction by the squared dual norm $s_n$ of the current output-loss gradient; undamped IEF removes that factor, although model sensitivity through $J_n$ remains. Thus a small current loss gradient need not make the corresponding old behavior unimportant for continual learning.
+The proposition isolates the central EWC--IEWC difference. OPG weights each normalized parameter-sensitivity direction by the squared dual norm $s_n$ of the current output-loss gradient; undamped IEF removes that factor while retaining model sensitivity through $J_n$. Current loss-gradient magnitude and the importance of retaining old behavior are therefore distinct quantities.
 
-Finite damping introduces a transition rather than uniformly removing gradient scale: normalization applies when $s_n\gg\tau$, while $s_n\ll\tau$ again suppresses the sample. At exact interpolation we define the contribution as zero; the undamped expression is $0/0$ and has no canonical value without a directional limit. We use $\kappa=10^{-2}$ in the confirmatory experiments. Relative damping is invariant only to global loss-unit changes, not arbitrary sample-dependent transformations; if all recorded $s_i$ vanish, the task importance is the zero matrix.
+Positive damping gives $S_{n,\tau}^{\mathrm{IEF},G}=\frac{s_n}{s_n+\tau}S_{n,0}^{\mathrm{IEF},G}$: normalization dominates for $s_n\gg\tau$, whereas $s_n\ll\tau$ suppresses the sample and exact interpolation contributes zero. The confirmatory experiments use $\tau_A=\kappa\operatorname{median}_{s_i>0}s_i$ with $\kappa=10^{-2}$; Appendix~\ref{app:well-fitted-proof} proves invariance to global changes in loss units. If all recorded $s_i$ vanish, the stored importance is zero.
