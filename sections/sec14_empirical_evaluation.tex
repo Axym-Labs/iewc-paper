@@ -34,9 +34,9 @@ Diffusion & Final denoise MSE $\downarrow$ & 0.0676(.0029) & 0.0296(.0013) & -- 
 \end{tabular}
 \end{table*}
 
-Table \ref{tab:main-empirical-results} shows that uniform IEWC attained higher selected means than OPG-EWC on ImageNet-R and VOC 15--5, while the weighted IEWC configuration attained the highest TRACE score and the lowest forecasting and DDPM MSE. Together, these results demonstrate broad applicability and strong selected performance. The matched factorial and locked evaluation then isolates which gains generalize and which arise from normalization versus weighting.
+Table \ref{tab:main-empirical-results} shows that uniform IEWC attained higher selected means than OPG-EWC on ImageNet-R and VOC 15--5, while the weighted IEWC configuration attained the highest TRACE score and the lowest forecasting and DDPM MSE. The matched factorial and locked evaluation then isolates which gains generalize and which arise from normalization versus weighting.
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/rendered/classification_distribution_retention.pdf}
 \caption[ImageNet-R distribution retention]{ImageNet-R retention in the original multi-domain study. The left panel shows final accuracy per distribution; the right shows forgetting.}
@@ -45,7 +45,7 @@ Table \ref{tab:main-empirical-results} shows that uniform IEWC attained higher s
 
 At the distribution level, Figure \ref{fig:classification-distribution-retention} shows that IEWC's retained accuracy is not concentrated in a single late distribution. The locked paired analysis tests whether this advantage generalizes across newly frozen class orders.
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/rendered/nlp_distribution_retention.pdf}
 \caption[TRACE distribution retention]{TRACE retention for C-STANCE, FOMC, and ScienceQA in the original study. FOMC's distributed evaluation and test files are duplicates, so the new locked comparison uses C-STANCE, ScienceQA, and NumGLUE-cm.}
@@ -54,7 +54,7 @@ At the distribution level, Figure \ref{fig:classification-distribution-retention
 
 The weighted IEWC run likewise has less forgetting on C-STANCE and FOMC in Figure \ref{fig:nlp-distribution-retention}. The revised comparison retains the weighting mechanism but crosses it with both OPG and IEF, while replacing FOMC with NumGLUE-cm to obtain disjoint validation and test roles.
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/rendered/forecast_rollouts_longhorizon_tasknorm_selected.pdf}
 \caption[Forecasting rollout comparison]{Forecasting rollout comparison. Each panel shows one held-out rollout from the corresponding forecasting distribution. The gray curve is the observed context, the black curve is the target horizon, and colored curves are method predictions after the full continual sequence.}

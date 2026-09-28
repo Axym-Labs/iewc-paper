@@ -12,7 +12,7 @@ q(\theta)\in\mathcal C.
 \]
 We call this perspective \emph{Continual Learning as an Optimization Constraint} (CLOC). CLOC is deliberately a formulation rather than a single algorithm: different choices of $q$, $\mathcal C$, relaxation, and approximation recover different local preservation penalties.
 
-The paper develops one path through this design space. First, a population and low-order relaxation turns samplewise preservation objects into a stored quadratic penalty. Second, preserving any differentiable scalar functional yields a gradient outer-product matrix; choosing the old-sample loss gives OPG, and negative log likelihood gives the empirical Fisher used in common EWC implementations. Third, preserving output motion only in the normal quotient of the old loss level set yields the iEF normalization and IEWC. We make damping, sample weighting, output metric, and matrix approximation explicit design choices instead of treating them as consequences of the normalization. Finally, controlled mechanism tests and validation-selected, locked evaluations ask which parts of this construction survive finite damping and improve continual learning in the studied domains.
+The paper develops one path through this design space. First, a population and low-order relaxation turns samplewise preservation objects into a stored quadratic penalty. Second, preserving any differentiable scalar functional yields a gradient outer-product matrix; choosing the old-sample loss gives OPG, and negative log likelihood gives the empirical Fisher used in common EWC implementations. Third, preserving output motion only in the normal quotient of the old loss level set yields the iEF normalization and IEWC. We make damping, sample weighting, output metric, and matrix approximation explicit design choices instead of treating them as consequences of the normalization.
 
 Concretely, the paper contributes (i) a functional-preservation construction whose loss specialization derives empirical-Fisher EWC and level-set-normalized IEWC within one framework; (ii) a matched output-metric construction and the exact finite-damping, interpolation, and loss-unit boundary; and (iii) direct spectral mechanism evidence plus a matched, validation-selected locked factorial, complemented by the retained five-domain performance record.
 
@@ -37,5 +37,3 @@ $(\Gamma,h,\Pi)$ & Output-metric rule, aggregation-weight rule, and matrix appro
 \bottomrule
 \end{tabular}
 \end{table}
-
-This framing preserves the original intuition---continual learning as preservation of previously learned behavior---while separating exact local algebra from global curvature claims and empirical questions. The next section constructs the practical relaxation and states its feasibility and locality boundaries.

@@ -124,8 +124,8 @@ def retention_figure(
         height = ".37"
     lines = [
         "\\begin{tikzpicture}",
-        "\\begin{groupplot}[group style={group size=2 by 1,horizontal sep=9mm},",
-        f"iewc axis,width=.44\\columnwidth,height={height}\\columnwidth,{xopts}]",
+        "\\begin{groupplot}[group style={group size=2 by 1,horizontal sep=11mm},",
+        f"iewc axis,width=.425\\columnwidth,height={height}\\columnwidth,{xopts}]",
         f"\\nextgroupplot[title={{\\textbf{{A}}\\quad Performance}},ylabel={{{left_ylabel}}},legend to name={output_name}legend,legend columns=3]",
     ]
     for method in methods:
@@ -133,7 +133,7 @@ def retention_figure(
         style = METHODS[method]
         lines.append(band_and_curve(xs, final_mean, final_sd, style, colors[style]))
         lines.append(f"\\addlegendentry{{{METHOD_LABELS[method]}}}")
-    lines.append("\\nextgroupplot[title={\\textbf{B}\\quad Forgetting},ylabel={Forgetting}]")
+    lines.append("\\nextgroupplot[title={\\textbf{B}\\quad Forgetting}]")
     for method in methods:
         _, _, forget_mean, forget_sd = summaries[method]
         style = METHODS[method]

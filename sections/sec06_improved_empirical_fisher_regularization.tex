@@ -6,8 +6,6 @@ M_{2,I}=F_{\mathrm{IEF}}.
 \]
 Hence iEF is the quadratic form of a first-order local constraint that protects old behavior geometrically: instead of preserving a raw scalar-loss coordinate, it penalizes only output motion normal to the old loss level set. The original iEF paper derives the same normalization for approximate natural-gradient descent. In that setting, the observed-label OPG reweights sample contributions by squared output-gradient magnitude; iEF removes this scale factor and retains the normalized output-loss direction. Here the normalization arises from metric projection onto the normal quotient of the old-loss tangent space.
 
-This is an identity for the undamped local summand when $r_i\ne0$. Practical damping changes its behavior near $r_i=0$; Section~\ref{sec:well-fitted} states that boundary explicitly.
-
 Consider the scalar least-squares setting in Euclidean geometry. Suppose the model output is scalar, such that
 \[
 \ell_n(z)=\frac12(z-y_n)^2.
@@ -30,4 +28,4 @@ M_{\mathrm{IEF}}
 =
 \frac{1}{N}\sum_{n=1}^N J_n^\top J_n.
 \]
-This is exactly the Gauss--Newton or output-Jacobian form for squared-error regression \citep{GaussNewton,MartensHF,MartensNG}, the standard practical preconditioning matrix for second-order optimization. This matches our geometric intuition: loss preservation is governed by how parameters move the output, which is encoded by the Jacobian $J$, not by the current output-gradient magnitude. This equivalence was made explicit in \citep{IEF}. With positive damping, the contribution is instead multiplied by $r_n^2/(r_n^2+\tau)$ and tends to zero at exact interpolation; the exact Gauss--Newton identity therefore requires $\tau=0$ and $r_n\ne0$.
+This is exactly the Gauss--Newton or output-Jacobian form for squared-error regression \citep{GaussNewton,MartensHF,MartensNG}, the standard practical preconditioning matrix for second-order optimization. This matches our geometric intuition: loss preservation is governed by how parameters move the output, which is encoded by the Jacobian $J$, not by the current output-gradient magnitude. This equivalence was made explicit in \citep{IEF}.
