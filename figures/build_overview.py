@@ -3,8 +3,9 @@
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.lines import Line2D
-from matplotlib.patches import Ellipse, FancyArrowPatch, FancyBboxPatch
+from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 
 
 PRIMARY = "#3F21B6"
@@ -13,17 +14,19 @@ MUTED = "#5F6878"
 RDW = "#C15F18"
 PAPER = "#FFFFFF"
 PALE = "#F4F1FF"
+PALE_NEUTRAL = "#F0F2F6"
+PALE_ORANGE = "#FFF0E3"
 
 
-def add_box(fig, xy, width, height, text, *, edge=INK, face=PAPER, fontsize=12.5):
+def add_box(fig, xy, width, height, text, *, face, fontsize=12.5):
     patch = FancyBboxPatch(
         xy,
         width,
         height,
-        boxstyle="round,pad=0.008,rounding_size=0.008",
+        boxstyle="round,pad=0.012,rounding_size=0.012",
         transform=fig.transFigure,
-        linewidth=1.0,
-        edgecolor=edge,
+        linewidth=0,
+        edgecolor="none",
         facecolor=face,
     )
     fig.add_artist(patch)
@@ -59,70 +62,71 @@ def add_penalty_panel(
     *,
     title,
     color,
-    ellipse_ratio,
-    ellipse_angle,
-    left_label,
-    right_label,
+    curvature,
+    x_label,
+    y_label,
     formula,
     takeaway,
+    box_face,
 ):
-    ax = fig.add_axes(rect)
-    ax.set_xlim(-1.15, 1.15)
-    ax.set_ylim(-0.92, 1.1)
-    ax.axis("off")
-
-    center = (0.0, 0.02)
-    for index in range(1, 10):
-        scale = index / 9
-        ellipse = Ellipse(
-            center,
-            width=1.72 * scale,
-            height=1.72 * ellipse_ratio * scale,
-            angle=ellipse_angle,
-            fill=False,
-            linewidth=1.05,
-            edgecolor=color,
-            alpha=0.48 + 0.045 * index,
-        )
-        ax.add_patch(ellipse)
-
-    ax.annotate(
-        "",
-        xy=(0.0, 1.02),
-        xytext=(0.0, -0.66),
-        arrowprops={"arrowstyle": "-|>", "color": INK, "lw": 1.0},
+    plot_rect = (rect[0] + 0.025, rect[1] + 0.055, rect[2] - 0.05, rect[3] - 0.075)
+    ax = fig.add_axes(plot_rect, projection="3d")
+    coordinates = np.linspace(-1.0, 1.0, 31)
+    x_grid, y_grid = np.meshgrid(coordinates, coordinates)
+    x_curvature, y_curvature = curvature
+    z_grid = (x_curvature * x_grid**2 + y_curvature * y_grid**2) / (
+        x_curvature + y_curvature
     )
-    ax.annotate(
-        "",
-        xy=(0.96, -0.62),
-        xytext=(0.0, -0.66),
-        arrowprops={"arrowstyle": "-|>", "color": INK, "lw": 1.0},
+    ax.plot_surface(
+        x_grid,
+        y_grid,
+        z_grid,
+        color=color,
+        alpha=0.10,
+        edgecolor="none",
+        shade=False,
+        antialiased=True,
     )
-    ax.annotate(
-        "",
-        xy=(-0.80, -0.86),
-        xytext=(0.0, -0.66),
-        arrowprops={"arrowstyle": "-|>", "color": INK, "lw": 1.0},
+    ax.plot_wireframe(
+        x_grid,
+        y_grid,
+        z_grid,
+        rstride=5,
+        cstride=5,
+        color=color,
+        linewidth=0.55,
+        alpha=0.72,
     )
 
-    ax.text(0.02, 1.01, r"penalty $p$", color=INK, fontsize=11, va="bottom")
-    ax.text(1.00, -0.66, right_label, color=INK, fontsize=10.5, ha="left", va="center")
-    ax.text(-0.83, -0.87, left_label, color=INK, fontsize=10.5, ha="right", va="top")
-    ax.set_title(title, color=INK, fontsize=15, fontweight="bold", pad=2)
+    axis_length = 1.22
+    ax.quiver(0, 0, 0, axis_length, 0, 0, color=INK, linewidth=0.8, arrow_length_ratio=0.09)
+    ax.quiver(0, 0, 0, 0, -axis_length, 0, color=INK, linewidth=0.8, arrow_length_ratio=0.09)
+    ax.quiver(0, 0, 0, 0, 0, 0.90, color=INK, linewidth=0.8, arrow_length_ratio=0.09)
+    ax.text(1.30, 0, 0, x_label, color=INK, fontsize=8.5, ha="left", va="center")
+    ax.text(0, -1.30, 0, y_label, color=INK, fontsize=8.5, ha="right", va="center")
+    ax.text(0, 0, 0.99, r"penalty $p$", color=INK, fontsize=8.5, ha="center", va="bottom")
+    ax.set_xlim(-1.12, 1.38)
+    ax.set_ylim(-1.12, 1.38)
+    ax.set_zlim(0, 1.05)
+    ax.set_box_aspect((1.0, 1.0, 0.72))
+    ax.set_proj_type("ortho")
+    ax.view_init(elev=27, azim=-58)
+    ax.set_axis_off()
 
     xmid = rect[0] + rect[2] / 2
-    fig.text(xmid, 0.185, formula, ha="center", va="center", color=INK, fontsize=12)
+    fig.text(xmid, rect[1] + rect[3] + 0.015, title, ha="center", va="bottom", color=INK, fontsize=14, fontweight="bold")
+
+    fig.text(xmid, 0.240, formula, ha="center", va="center", color=INK, fontsize=11.5)
     add_box(
         fig,
-        (rect[0] + 0.015, 0.025),
-        rect[2] - 0.03,
-        0.075,
+        (rect[0], 0.035),
+        rect[2],
+        0.088,
         takeaway,
-        edge=color,
-        face=PALE if color == PRIMARY else PAPER,
-        fontsize=11.5,
+        face=box_face,
+        fontsize=11.1,
     )
-    add_arrow(fig, (xmid, 0.10), (xmid, 0.16), color=color)
+    add_arrow(fig, (xmid, 0.128), (xmid, 0.212), color=color)
 
 
 def main():
@@ -138,13 +142,12 @@ def main():
 
     add_box(
         fig,
-        (0.22, 0.895),
-        0.56,
-        0.065,
+        (0.18, 0.892),
+        0.64,
+        0.074,
         "CLOC: preserving learned behavior as an optimization constraint",
-        edge=PRIMARY,
         face=PALE,
-        fontsize=14,
+        fontsize=13.5,
     )
     fig.add_artist(
         Line2D([0.16, 0.84], [0.84, 0.84], transform=fig.transFigure, color=INK, lw=1.0)
@@ -153,45 +156,45 @@ def main():
         add_arrow(fig, (x, 0.84), (x, 0.79), color=INK)
 
     panels = [
-        (0.02, 0.25, 0.30, 0.50),
-        (0.35, 0.25, 0.30, 0.50),
-        (0.68, 0.25, 0.30, 0.50),
+        (0.01, 0.285, 0.31, 0.455),
+        (0.345, 0.285, 0.31, 0.455),
+        (0.68, 0.285, 0.31, 0.455),
     ]
     add_penalty_panel(
         fig,
         panels[0],
         title="EWC (OPG)",
         color=INK,
-        ellipse_ratio=0.38,
-        ellipse_angle=25,
-        left_label=r"$a_{\mathrm{well\ fit}}$",
-        right_label=r"$a_{\mathrm{poorly\ fit}}$",
+        curvature=(2.5, 0.55),
+        x_label=r"$a_{\mathrm{poorly\ fit}}$",
+        y_label=r"$a_{\mathrm{well\ fit}}$",
         formula=r"$p=\lambda(s_p a_p^2+s_w a_w^2),\quad s_p\gg s_w$",
         takeaway="Implicitly favors high-gradient samples",
+        box_face=PALE_NEUTRAL,
     )
     add_penalty_panel(
         fig,
         panels[1],
         title="Uniform IEWC",
         color=PRIMARY,
-        ellipse_ratio=0.72,
-        ellipse_angle=18,
-        left_label=r"$a_2$",
-        right_label=r"$a_1$",
+        curvature=(1.0, 1.0),
+        x_label=r"$a_1$",
+        y_label=r"$a_2$",
         formula=r"$p=\lambda(a_1^2+a_2^2)$",
         takeaway="Estimates normalized task sensitivity",
+        box_face=PALE,
     )
     add_penalty_panel(
         fig,
         panels[2],
         title="Weighted IEWC",
         color=RDW,
-        ellipse_ratio=0.40,
-        ellipse_angle=-5,
-        left_label=r"$a_{\mathrm{novel}}$",
-        right_label=r"$a_{\mathrm{redundant}}$",
+        curvature=(0.50, 2.35),
+        x_label=r"$a_{\mathrm{redundant}}$",
+        y_label=r"$a_{\mathrm{novel}}$",
         formula=r"$p=\lambda(h_r a_r^2+h_n a_n^2),\quad h_r\ll h_n$",
         takeaway="Makes the aggregation measure explicit",
+        box_face=PALE_ORANGE,
     )
 
     output = Path(__file__).with_name("overview.pdf")
