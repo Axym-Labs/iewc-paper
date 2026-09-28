@@ -16,4 +16,19 @@ The paper develops one path through this design space. First, a population and l
 
 Concretely, the paper contributes (i) a functional-preservation construction whose loss specialization derives empirical-Fisher EWC and level-set-normalized IEWC within one framework; (ii) a matched output-metric construction and the exact finite-damping, interpolation, and loss-unit boundary; and (iii) direct spectral mechanism evidence plus a matched, validation-selected locked factorial, complemented by the retained five-domain performance record.
 
-Notation is collected in Appendix~\ref{app:notation}.
+\begin{table}[t]
+\caption{Core notation; Appendix~\ref{app:notation} gives the complete table.}
+\label{tab:core-notation}
+\centering
+\small
+\begin{tabular}{@{}lp{0.68\columnwidth}@{}}
+\toprule
+Symbol & Meaning \\
+\midrule
+$J_i,r_i,g_i$ & Output Jacobian, output-loss gradient, and $g_i=J_i^\top r_i$. \\
+$M_{\mathrm{OPG}}$ & Mean $g_i g_i^\top$ from scalar preservation. \\
+$s_i=r_i^\top G_i^{-1}r_i$ & Squared dual norm of the output-loss gradient. \\
+$M_{\mathrm{IEF}}$ & Mean $g_i g_i^\top/(s_i+\tau_A)$ from level-set preservation. \\
+\bottomrule
+\end{tabular}
+\end{table}
