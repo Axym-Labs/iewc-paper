@@ -1,10 +1,7 @@
-\ifdefined\XeTeXversion
-\else
-  \pdfoutput=1
-\fi
-\documentclass[11pt]{article}
+\documentclass[twoside]{article}
 
-\usepackage{axym-publication}
+% Official AISTATS 2027 submission style. Do not modify the style file.
+\usepackage{aistats2027}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{microtype}
@@ -13,40 +10,52 @@
 \usepackage{booktabs}
 \usepackage{float}
 \usepackage{nicefrac}
-\usepackage[numbers,sort&compress]{natbib}
+\usepackage[round,authoryear]{natbib}
+\renewcommand{\bibname}{References}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
 \usepackage{hyperref}
 \usepackage{cleveref}
 \usepackage{url}
 \usepackage{doi}
 
-\publicationtitle{Improved Elastic Weight Consolidation as an Optimization Constraint for Continual Learning}
-\publicationauthors{Davide Wiest}
-\publicationaffiliations{Department of Computer Science, TU Darmstadt; Independent Researcher\\Darmstadt, Germany}
-\publicationdate{2026}
-\publicationcode{https://github.com/Axym-Labs/iewc}
-\publicationprojectpage{https://axym.org/work/iewc}
-\publicationcorrespondence{dw@axym.org}
-
 \hypersetup{
   pdftitle={Improved Elastic Weight Consolidation as an Optimization Constraint for Continual Learning},
-  pdfauthor={Davide Wiest},
+  pdfauthor={},
   pdfkeywords={continual learning, elastic weight consolidation, empirical Fisher, constrained optimization},
 }
 
+\newcommand{\iewcleadfigure}{%
+  \begin{center}
+  \refstepcounter{figure}
+  \includegraphics[width=0.88\textwidth]{figures/overview.pdf}
+
+  \begin{minipage}{0.94\textwidth}
+  \small
+  \textbf{Figure \thefigure:} Each panel shows the continual-learning penalty
+  over normalized directions for two representative samples. EWC (OPG) inherits
+  sample weighting from output-loss-gradient scale; uniform IEWC removes this
+  scale away from the damping regime, while residual-diversity weighting changes
+  the aggregation measure as a separate design choice.
+  \label{fig:overview}
+  \end{minipage}
+  \end{center}
+  \vspace{0.5em}%
+}
+
 \begin{document}
-\makepublicationtitle
 
-\publicationleadfigure[0.36\textheight]{figures/overview.pdf}{%
-Each surface shows the continual-learning penalty over normalized directions,
-which locally approximate loss changes for two representative samples.
-Observed-label OPG/EWC induces anisotropy through gradient-scale weighting;
-uniform IEWC removes this scaling away from the damping regime, while the
-separate RDW variant weights samples by streaming residual diversity.
-\citep{GSS}}
+\twocolumn[
+\aistatstitle{Improved Elastic Weight Consolidation as an Optimization Constraint for Continual Learning}
 
-\publicationabstract{\input{abstract}}
+\aistatsauthor{Anonymous Author}
+\aistatsaddress{Anonymous Institution}
 
-\makepublicationlinks
+\iewcleadfigure
+]
+
+\begin{abstract}
+\input{abstract}
+\end{abstract}
 
 \input{sections/sec01_continual_learning_as_optimization_constraint.tex}
 
@@ -82,10 +91,17 @@ separate RDW variant weights samples by streaming residual diversity.
 
 \input{sections/sec15_conclusion.tex}
 
-\bibliographystyle{unsrtnat}
+\input{sections/sec16_ai_use_statement.tex}
+
+\bibliographystyle{apalike}
 \bibliography{references}
 
+\input{sections/sec17_reproducibility_checklist.tex}
+
+\clearpage
 \appendix
+\onecolumn
+\aistatstitle{Improved Elastic Weight Consolidation as an Optimization Constraint for Continual Learning: Supplementary Materials}
 
 \input{appendices/appa_invariance_to_loss_reparameterization.tex}
 
@@ -94,4 +110,9 @@ separate RDW variant weights samples by streaming residual diversity.
 \input{appendices/appc_experimental_details_and_damping_sensitivity.tex}
 
 \input{appendices/appd_label_noise_stress_test.tex}
+
+\input{appendices/appe_qualitative_ddpm_samples.tex}
+
+\input{appendices/app0_reproducibility.tex}
+
 \end{document}

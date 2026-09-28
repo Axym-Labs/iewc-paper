@@ -1,1 +1,25 @@
-Elastic Weight Consolidation (EWC) is widely used in continual learning, but its importance matrix is implemented in several inequivalent ways. In particular, the observed-label outer product often called the empirical Fisher is neither the model Fisher nor a general curvature matrix. We derive this object instead from old-solution preservation. Starting from continual learning as an optimization constraint (CLOC), we introduce a population, low-order relaxation for constructing scalable local penalties. Preserving each old sample's scalar loss yields an outer product of loss gradients (OPG); for negative log likelihood, this algebraically coincides with the observed-label empirical Fisher used by EWC. Preserving outputs modulo motion tangent to the old loss level set instead yields the improved-empirical-Fisher (iEF) normalization and leads to IEWC. This derivation isolates the mechanism: OPG scales each local sensitivity direction by the squared output-loss-gradient magnitude, whereas undamped iEF removes that scale. We show exactly how positive damping restores attenuation near zero gradient, and introduce task-relative damping that preserves invariance to global loss units. With 5--20\% label corruption, corrupted samples account for 74--79\% of the OPG trace but only 5--20\% under iEF; iEF's leading-direction alignment with the clean contribution is $0.998$--$1.000$, compared with $0.426$--$0.875$ for OPG. We evaluate the resulting diagonal penalties with locked test sets, paired task orders, matched global scale, and separate uniform and residual-diversity weighting, so that evidence for normalization is not attributed to a weighting heuristic.
+Elastic Weight Consolidation (EWC) controls forgetting through a quadratic
+penalty, but its commonly used observed-label importance matrix lacks a
+general-loss derivation and implicitly lets output-loss-gradient magnitudes
+determine which samples dominate. We formulate continual learning as preserving
+selected properties of an old solution under new-task optimization (CLOC), and
+derive scalable penalties through a population, first-order approximation.
+Preserving each sample's scalar loss yields an EWC penalty whose importance is
+an outer product of loss gradients (OPG) for any differentiable loss; under
+negative log likelihood, this is algebraically the observed-label empirical
+Fisher conventionally used by EWC, without an appeal to model-Fisher curvature.
+Preserving outputs up to first-order motions tangent to the old loss level set
+instead yields improved-empirical-Fisher normalization and IEWC. The derivation
+determines how output geometry, positive damping, and the sample-aggregation
+measure enter the penalty: geometry requires a matched primal/dual metric,
+task-relative damping is invariant to global loss units, and explicit weights
+replace weighting induced by gradient scale. A controlled contamination
+experiment confirms that normalization prevents high-loss corrupted samples
+from dominating the full importance matrix. Across classification, language,
+forecasting, segmentation, and diffusion, IEWC variants attain strong
+continual-learning performance. In an extensive validation-selected locked
+study, uniform IEWC improves final average ImageNet-R accuracy over matched EWC
+(OPG) by 2.00 percentage points (95\% CI 0.93--3.07) and gives no material mean
+difference on TRACE ($-0.11$ points; 95\% CI $-1.48$--$1.27$). These results
+support IEWC as a principled refinement of EWC with a domain-dependent empirical
+advantage.

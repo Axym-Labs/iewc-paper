@@ -1,0 +1,81 @@
+\section{Reproducibility and Artifact Contents}
+\label{app:reproducibility}
+
+The supplementary archive supports two distinct reproduction tasks. First,
+all paper tables, intervals, and figures can be regenerated on CPU from the
+preserved analysis-complete records without downloading benchmark data or
+rerunning model training. Second, the model results can be rerun from the
+frozen source after obtaining the datasets and model checkpoints under their
+original terms. The archive contains the exact run-source snapshot and Git
+history, a later reproduction-source snapshot, the manuscript source, the
+protocol and its amendments, the canonical manifest and selected-lambda
+artifacts with SHA-256 sidecars, validation and locked-test records, sensitivity
+records, mechanism diagnostics, reporting scripts, a pinned dependency
+lockfile, and file-level checksums. A bundle verifier checks counts, paths,
+hashes, source ancestry, protocol identity, and the absence of restricted
+example payloads before accepting an extracted archive.
+
+\paragraph{Environment and execution.}
+All confirmatory records identify the clean source commit
+\texttt{5e170ea7d84d7094dd1734ee1516b9fba2133a63} and the same canonical
+protocol-manifest hash. The environment is reconstructed with
+\texttt{uv sync --frozen --dev}; the frozen source passes 75 CPU tests. Runs
+enable deterministic PyTorch algorithms, disable cuDNN benchmarking and TF32,
+and separately record model, training-loader, importance-order, and
+model-Fisher sampling seeds. Each task reseeds training before constructing its
+data loader, preventing method-specific importance computation from changing a
+later task's minibatch order. Result files are written atomically. Validation
+selection rejects missing or duplicate cells, mixed commits, manifest
+mismatches, and locked records; locked evaluation requires the frozen selected
+lambda artifact and records access before loading test examples.
+
+The confirmatory suite comprises 192 validation cells, 176 locked-test cells,
+and 48 validation-only sensitivity cells. ImageNet-R uses ten paired locked
+class orders. TRACE uses all six permutations of its three retained tasks,
+crossed with two optimizer seeds; the analysis additionally aggregates within
+task order to avoid treating the twelve cells as twelve independent order
+draws. The direct contamination experiment uses twenty independent seeds at
+each of four corruption levels. Every prespecified cell is retained regardless
+of effect direction. The analysis reports paired differences, Student-$t$
+intervals, exact sign-flip tests where enumerable, the predeclared practical
+threshold, and the complete prespecified secondary family.
+
+\paragraph{Data and model provenance.}
+The archive redistributes no benchmark images, language examples, or pretrained
+weights. ImageNet-R is obtained from its authors; split definitions are pinned
+to Mammoth commit \texttt{e75a491c69fd729edeb01431afb753d9157d9a81}.
+The frozen roles contain 19,206 training, 6,000 validation, and 4,794 locked-test
+images across 200 classes. The ViT-B/16 checkpoint is pinned to Hugging Face
+revision \texttt{063c6c38a5d8510b2e57df480445e94b231dad2c}. TRACE is obtained
+from its authors under the Apache-2.0 repository license. Its distributed
+train, evaluation, and test files define the three data roles for C-STANCE,
+ScienceQA, and NumGLUE-cm; the manifest hashes every role and verifies zero
+prompt and prompt--answer overlap. FOMC is excluded because its distributed
+evaluation and test files are identical. Qwen2.5-3B-Instruct is pinned to
+revision \texttt{aa8e72537993ba99e69dfaafa59ed015b17504d1} and remains subject
+to its model terms. Mammoth is MIT licensed, and the pinned \texttt{timm}
+checkpoint declares Apache-2.0. Original IEWC source is supplied for review;
+the submission does not override third-party terms or redistribute their
+assets.
+
+\paragraph{Compute and complexity.}
+The confirmatory experiments ran on one workstation with an Intel Core
+i9-13900K CPU and one NVIDIA GeForce RTX 5090 with 32~GiB of memory. Every run
+records total wall time, and every importance phase records wall time and peak
+CUDA allocation. With $d$ trainable parameters and $N$ retained importance
+samples, diagonal uniform OPG and IEWC store $O(d)$ values and require $N$
+per-sample gradients. RDW maintains at most $K$ unit residual directions on
+CPU, using $O(Kd)$ additional storage and $O(NKd)$ inner-product work before
+the same diagonal aggregation. The archived efficiency table reports the
+measured cost of every locked method in both domains.
+
+\paragraph{Regeneration checks.}
+The reproduction guide gives exact commands to rebuild the locked analysis and
+all generated LaTeX, PDF, PNG, and machine-readable reporting artifacts in a
+fresh directory. Their checksum manifest is byte-reproducible after removal of
+volatile PDF timestamps. A clean-checkout audit reconstructs the environment,
+runs the test suite, regenerates the analysis and paper artifacts, compiles the
+manuscript, and compares the resulting checksums. Historical multi-domain
+evidence is retained through the complete 635-outcome ledger and path-level
+checksums; records that may contain third-party prompts or targets are not
+redistributed.

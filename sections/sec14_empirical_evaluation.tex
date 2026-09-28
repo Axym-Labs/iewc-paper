@@ -65,6 +65,11 @@ The FROMP-derived weighting ablation \citep{FROMP} reached $0.6365\pm0.0165$ fin
 
 Appendix C records both the original workflow and the frozen confirmatory protocol, together with damping and effective-summand diagnostics. Appendix D reports the downstream label-noise stress test, while Appendix B supplies the new direct clean/corrupt contribution analysis.
 
-\subsection*{Code Release}
+\subsection*{Code and Artifacts}
 
-We release an accompanying repository with a readily usable IEWC implementation. The \texttt{IEWCConfig} class encapsulates the four-tuple parametrization introduced above. The same configuration interface is used by the diagonal and low-rank IEWC paths and by the empirical scripts, including the FACIL-based CIFAR-100 checks and the larger ImageNet-R, TRACE, forecasting, segmentation, and diffusion runs. The repository is available at \url{https://github.com/Axym-Labs/iewc}.
+The anonymous supplementary archive contains the IEWC implementation, frozen
+experiment source, analysis-complete records, generated tables and figures,
+and end-to-end reproduction instructions. The \texttt{IEWCConfig} interface is
+shared by the diagonal and low-rank paths and by the paper-facing empirical
+scripts. Appendix~\ref{app:reproducibility} specifies the archive contents,
+integrity checks, data provenance, and compute environment.
