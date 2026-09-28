@@ -2,23 +2,18 @@
 \begin{tikzpicture}
 \begin{groupplot}[group style={group size=2 by 1,horizontal sep=11mm},
 iewc axis,width=.425\columnwidth,height=.37\columnwidth,xmin=.8,xmax=3.2,xtick={1,2,3},xticklabels={C-STANCE,FOMC,SciQA},xticklabel style={font=\tiny,rotate=18,anchor=north east}]
-\nextgroupplot[title={\textbf{A}\quad Performance},ylabel={Final score},legend to name=nlp_distribution_retentionlegend,legend columns=3]
+\nextgroupplot[title={\textbf{C}\quad Performance},ylabel={Final score}]
 \addplot[draw=none,fill=IEWCLight,fill opacity=.08,forget plot] coordinates {(1,0.436628) (2,0.54801368) (3,0.80031725) (3,0.77520358) (2,0.50667382) (1,0.38889283)} -- cycle;
 \addplot+[sequential] coordinates {(1,0.41276042) (2,0.52734375) (3,0.78776042)};
-\addlegendentry{Sequential}
 \addplot[draw=none,fill=IEWCDark,fill opacity=.08,forget plot] coordinates {(1,0.48046875) (2,0.57649444) (3,0.80146842) (3,0.76623991) (2,0.54069306) (1,0.41796875)} -- cycle;
 \addplot+[ewc] coordinates {(1,0.44921875) (2,0.55859375) (3,0.78385417)};
-\addlegendentry{EWC}
 \addplot[draw=none,fill=IEWCMid,fill opacity=.08,forget plot] coordinates {(1,0.47818843) (2,0.60017051) (3,0.79510892) (3,0.76999525) (2,0.52482949) (1,0.41504074)} -- cycle;
 \addplot+[ewcdr] coordinates {(1,0.44661458) (2,0.5625) (3,0.78255208)};
-\addlegendentry{EWC-DR}
 \addplot[draw=none,fill=IEWCPrimary,fill opacity=.08,forget plot] coordinates {(1,0.47241115) (2,0.59375) (3,0.7943707) (3,0.7603168) (2,0.53125) (1,0.41040135)} -- cycle;
 \addplot+[iewc] coordinates {(1,0.44140625) (2,0.5625) (3,0.77734375)};
-\addlegendentry{IEWC}
 \addplot[draw=none,fill=IEWCSecondary,fill opacity=.08,forget plot] coordinates {(1,0.578125) (2,0.59260984) (3,0.75642872) (3,0.73575878) (2,0.561036) (1,0.5390625)} -- cycle;
 \addplot+[iewcrdw] coordinates {(1,0.55859375) (2,0.57682292) (3,0.74609375)};
-\addlegendentry{IEWC+RDW}
-\nextgroupplot[title={\textbf{B}\quad Forgetting}]
+\nextgroupplot[title={\textbf{D}\quad Forgetting}]
 \addplot[draw=none,fill=IEWCLight,fill opacity=.08,forget plot] coordinates {(1,0.15234375) (2,0.10693275) (3,0) (3,0) (2,0.075358912) (1,0.12109375)} -- cycle;
 \addplot+[sequential] coordinates {(1,0.13671875) (2,0.091145833) (3,0)};
 \addplot[draw=none,fill=IEWCDark,fill opacity=.08,forget plot] coordinates {(1,0.10407318) (2,0.065423174) (3,0) (3,0) (2,0.049160159) (1,0.086030985)} -- cycle;
@@ -30,5 +25,4 @@ iewc axis,width=.425\columnwidth,height=.37\columnwidth,xmin=.8,xmax=3.2,xtick={
 \addplot[draw=none,fill=IEWCSecondary,fill opacity=.08,forget plot] coordinates {(1,0) (2,0.024901505) (3,0.026297073) (3,0.012765427) (2,-0.0066723381) (1,0)} -- cycle;
 \addplot+[iewcrdw] coordinates {(1,0) (2,0.0091145833) (3,0.01953125)};
 \end{groupplot}
-\node[anchor=south] at ($(group c1r1.north west)!0.5!(group c2r1.north east)+(0,9mm)$) {\pgfplotslegendfromname{nlp_distribution_retentionlegend}};
 \end{tikzpicture}

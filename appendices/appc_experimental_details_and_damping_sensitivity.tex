@@ -51,6 +51,35 @@ Validation-only sensitivity varies the coefficient over $\{0,10^{-3},10^{-2},10^
 Table~\ref{tab:empirical-protocol} records the configurations behind Table~\ref{tab:main-empirical-results}. These values are retained for exact provenance. In the original study, final reported endpoints participated in grid centering, edge expansion, and method selection; the runs therefore do not have an untouched selection-independent endpoint. The original implementation also omitted the displayed factor $1/2$, so its numerical $\lambda$ values should not be compared directly with the revised convention.
 
 \begin{table}[H]
+\caption{Complete multi-domain selected-run estimates corresponding to Table~\ref{tab:main-empirical-results}, reported as mean (across-seed standard deviation). Higher is better for accuracy, score, and mIoU; lower is better for MSE and forgetting.}
+\label{tab:main-empirical-results-uncertainty}
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{0.96}
+\begin{tabular}{@{}llccccc@{}}
+\toprule
+Task & Metric & Seq. & EWC (OPG) & EWC-DR & IEWC & IEWC+RDW \\
+\midrule
+Classification & Final avg. acc. $\uparrow$ & 0.2896(.0405) & 0.5981(.0337) & 0.5687(.0263) & \textbf{0.6332(.0232)} & 0.6250(.0263) \\
+& Avg. forgetting $\downarrow$ & 0.7066(.0466) & 0.3595(.0378) & 0.3933(.0286) & \textbf{0.3142(.0250)} & 0.3285(.0278) \\
+\addlinespace[1pt]
+NLP & Final avg. score $\uparrow$ & 0.5760(.0027) & 0.5972(.0020) & 0.5972(.0059) & 0.5938(.0034) & \textbf{0.6272(.0080)} \\
+& Avg. forgetting $\downarrow$ & 0.1139(.0111) & 0.0762(.0034) & 0.0781(.0109) & 0.0820(.0122) & \textbf{0.0046(.0079)} \\
+\addlinespace[1pt]
+Forecasting & Final avg. MSE $\downarrow$ & 0.2733(.0065) & 0.2388(.0021) & -- & 0.2418(.0038) & \textbf{0.2383(.0007)} \\
+& MSE forgetting $\downarrow$ & 0.0535(.0081) & \textbf{0.0140(.0020)} & -- & 0.0191(.0047) & 0.0147(.0021) \\
+\addlinespace[1pt]
+Segmentation & Final all mIoU $\uparrow$ & 0.0917(.0061) & 0.0946(.0040) & 0.3080(.0307) & \textbf{0.4678(.0568)} & 0.4274(.0574) \\
+& Base forgetting $\downarrow$ & 0.7135(.0114) & 0.7131(.0166) & 0.4471(.0447) & \textbf{0.2418(.0965)} & 0.2925(.0839) \\
+\addlinespace[1pt]
+Diffusion & Final denoise MSE $\downarrow$ & 0.0676(.0029) & 0.0296(.0013) & -- & 0.0298(.0014) & \textbf{0.0293(.0013)} \\
+& MSE forgetting $\downarrow$ & 0.0503(.0002) & \textbf{-0.0006(.0020)} & -- & 0.0001(.0024) & -0.0003(.0020) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
 \caption{Configurations for the original multi-domain study. ``DR'' denotes EWC-DR. These hyperparameters belong to the original implementation and selection workflow.}
 \label{tab:empirical-protocol}
 \centering

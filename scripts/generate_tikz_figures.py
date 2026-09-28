@@ -97,6 +97,8 @@ def retention_figure(
     task_labels: list[str],
     output_name: str,
     left_ylabel: str,
+    panel_labels: tuple[str, str] = ("A", "B"),
+    show_legend: bool = True,
 ) -> None:
     summaries = {
         method: retention_summary(artifact_root, files, matrix_key)
@@ -122,29 +124,36 @@ def retention_figure(
             "xticklabel style={font=\\tiny,rotate=18,anchor=north east}"
         )
         height = ".37"
+    legend_option = (
+        f",legend to name={output_name}legend,legend columns=3"
+        if show_legend
+        else ""
+    )
     lines = [
         "\\begin{tikzpicture}",
         "\\begin{groupplot}[group style={group size=2 by 1,horizontal sep=11mm},",
         f"iewc axis,width=.425\\columnwidth,height={height}\\columnwidth,{xopts}]",
-        f"\\nextgroupplot[title={{\\textbf{{A}}\\quad Performance}},ylabel={{{left_ylabel}}},legend to name={output_name}legend,legend columns=3]",
+        f"\\nextgroupplot[title={{\\textbf{{{panel_labels[0]}}}\\quad Performance}},ylabel={{{left_ylabel}}}{legend_option}]",
     ]
     for method in methods:
         final_mean, final_sd, _, _ = summaries[method]
         style = METHODS[method]
         lines.append(band_and_curve(xs, final_mean, final_sd, style, colors[style]))
-        lines.append(f"\\addlegendentry{{{METHOD_LABELS[method]}}}")
-    lines.append("\\nextgroupplot[title={\\textbf{B}\\quad Forgetting}]")
+        if show_legend:
+            lines.append(f"\\addlegendentry{{{METHOD_LABELS[method]}}}")
+    lines.append(
+        f"\\nextgroupplot[title={{\\textbf{{{panel_labels[1]}}}\\quad Forgetting}}]"
+    )
     for method in methods:
         _, _, forget_mean, forget_sd = summaries[method]
         style = METHODS[method]
         lines.append(band_and_curve(xs, forget_mean, forget_sd, style, colors[style]))
-    lines.extend(
-        [
-            "\\end{groupplot}",
-            f"\\node[anchor=south] at ($(group c1r1.north west)!0.5!(group c2r1.north east)+(0,9mm)$) {{\\pgfplotslegendfromname{{{output_name}legend}}}};",
-            "\\end{tikzpicture}",
-        ]
-    )
+    lines.append("\\end{groupplot}")
+    if show_legend:
+        lines.append(
+            f"\\node[anchor=south] at ($(group c1r1.north west)!0.5!(group c2r1.north east)+(0,9mm)$) {{\\pgfplotslegendfromname{{{output_name}legend}}}};"
+        )
+    lines.append("\\end{tikzpicture}")
     write(f"{output_name}.tex", "\n".join(lines))
 
 
@@ -214,6 +223,8 @@ def nlp_retention(experiment_root: Path) -> None:
         task_labels=["C-STANCE", "FOMC", "ScienceQA"],
         output_name="nlp_distribution_retention",
         left_ylabel="Final score",
+        panel_labels=("C", "D"),
+        show_legend=False,
     )
 
 

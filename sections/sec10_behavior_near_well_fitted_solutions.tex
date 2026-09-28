@@ -17,14 +17,11 @@ This observation is one instance of the weighting effect identified in Section~\
 
 The same observation extends to arbitrary differentiable losses.
 
-Importance is estimated after training on $A$, when many old samples may be well fit. The original EWC Laplace argument likewise expands at an old-task optimum, although its model-Fisher motivation differs from the observed-label OPG analyzed here \citep{EWC,KunstnerEF}. Modern expressive models can fit training data up to interpolation \citep{ModernInterp}, so the near-zero regime must be explicit. For one sample, let
+Importance is estimated after training on $A$, when many old samples may be well fit. The original EWC Laplace argument likewise expands at an old-task optimum, although its model-Fisher motivation differs from the observed-label OPG analyzed here \citep{EWC,KunstnerEF}. Modern expressive models can fit training data up to interpolation \citep{ModernInterp}, so the near-zero regime must be explicit. For one sample, let $s_n=r_n^\top G_n^{-1}r_n$ and
 \[
-\begin{aligned}
-s_n &= r_n^\top G_n^{-1}r_n,\\
-S_n^{\mathrm{OPG}} &= J_n^\top r_nr_n^\top J_n,\\
-S_{n,\tau}^{\mathrm{IEF},G}
-&= \frac{J_n^\top r_nr_n^\top J_n}{s_n+\tau}.
-\end{aligned}
+S_n^{\mathrm{OPG}}=J_n^\top r_nr_n^\top J_n,
+\qquad
+S_{n,\tau}^{\mathrm{IEF},G}=\frac{J_n^\top r_nr_n^\top J_n}{s_n+\tau}.
 \]
 
 \begin{proposition}[Gradient-scale behavior near a well-fitted solution]
