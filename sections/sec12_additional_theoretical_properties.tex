@@ -3,6 +3,8 @@
 Table~\ref{tab:notation} collects the objects that are otherwise easy to conflate.
 
 \begin{table}[H]
+\caption{Notation and distinctions used throughout the paper.}
+\label{tab:notation}
 \centering
 \small
 \begin{tabular}{p{0.18\linewidth}p{0.74\linewidth}}
@@ -20,8 +22,6 @@ $\bar h_i$ & Optional mean-one aggregation weight; uniform weighting and RDW are
 $(\Gamma,h,\Pi)$ & Output-metric rule, aggregation-weight rule, and matrix approximation operator. \\
 \bottomrule
 \end{tabular}
-\caption{Notation and distinctions used throughout the paper.}
-\label{tab:notation}
 \end{table}
 
 Our derivations concern full positive-semidefinite matrices, whereas the training experiments store only their diagonals. Taking $\operatorname{diag}(M)$ preserves each coordinate-axis quadratic penalty, nonnegativity of the entries, and the trace. It generally does not preserve off-axis quadratic forms, rank, eigenvectors, parameterization behavior, or the full normal-space geometry. Consequently, the full-matrix contamination analysis in Appendix B tests the proposed normalization mechanism, while benchmark training separately tests whether its diagonal projection is useful.

@@ -20,6 +20,8 @@ whereas undamped IEF has no factor $W$ on the contaminating direction. In partic
 We test the mechanism directly in a fitted two-class MLP. For each seed, 512 inputs are drawn from $\mathcal N(0,I_2)$ and assigned the clean label $\mathbf{1}\{x_1+0.75x_2<0\}$; a uniformly selected $0$, $5$, $10$, or $20\%$ of labels is flipped. A $2$--$32$--$2$ tanh MLP is trained for 250 epochs with Adam, learning rate $0.01$, and batch size 64. For each of 20 independent seeds we then retain every per-sample parameter-gradient row and clean/corrupt identity. We decompose the full OPG and task-relative-damped IEF matrices ($\kappa=0.01$) into clean and corrupt contributions, then compare each total matrix with its clean-contribution reference. Table~\ref{tab:contamination-mechanism} reports means over seeds.
 
 \begin{table}[H]
+\caption{Direct full-matrix contamination diagnostic. Alignment is the absolute inner product of the leading eigenvectors; top-5 overlap is the mean squared singular value between the corresponding eigenspaces. Each reference is the clean contribution from the same fitted model.}
+\label{tab:contamination-mechanism}
 \centering
 \small
 \resizebox{\linewidth}{!}{%
@@ -33,11 +35,11 @@ $0.10$ & 36.67 & 0.789 & 0.104 & 0.720 & 0.999 & 0.923 & 0.997 \\
 $0.20$ & 11.23 & 0.736 & 0.202 & 0.875 & 0.998 & 0.930 & 0.990 \\
 \bottomrule
 \end{tabular}}
-\caption{Direct full-matrix contamination diagnostic. Alignment is the absolute inner product of the leading eigenvectors; top-5 overlap is the mean squared singular value between the corresponding eigenspaces. Each reference is the clean contribution from the same fitted model.}
-\label{tab:contamination-mechanism}
 \end{table}
 
 \begin{table}[H]
+\caption{Paired mean differences with 95\% Student-$t$ intervals over 20 seeds. Every interval excludes zero.}
+\label{tab:contamination-mechanism-intervals}
 \centering
 \small
 \begin{tabular}{lccc}
@@ -49,8 +51,6 @@ Leading-vector alignment & $+0.574$ [$+0.444,+0.704$] & $+0.279$ [$+0.152,+0.406
 Top-5 overlap & $+0.094$ [$+0.067,+0.122$] & $+0.074$ [$+0.047,+0.101$] & $+0.060$ [$+0.029,+0.091$] \\
 \bottomrule
 \end{tabular}
-\caption{Paired mean differences with 95\% Student-$t$ intervals over 20 seeds. Every interval excludes zero.}
-\label{tab:contamination-mechanism-intervals}
 \end{table}
 
 These observations support the proposed contamination mechanism in this controlled construction. They do not establish a universal robustness guarantee or prove that a diagonal continual-learning penalty improves on a real benchmark; those are separate empirical questions.
