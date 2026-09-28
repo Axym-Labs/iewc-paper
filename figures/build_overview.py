@@ -4,7 +4,6 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.lines import Line2D
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 
 
@@ -42,7 +41,15 @@ def add_box(fig, xy, width, height, text, *, face, fontsize=12.5):
     )
 
 
-def add_arrow(fig, start, end, *, color=INK, linewidth=1.0):
+def add_arrow(
+    fig,
+    start,
+    end,
+    *,
+    color=INK,
+    linewidth=1.0,
+    connectionstyle="arc3",
+):
     fig.add_artist(
         FancyArrowPatch(
             start,
@@ -52,6 +59,7 @@ def add_arrow(fig, start, end, *, color=INK, linewidth=1.0):
             mutation_scale=10,
             linewidth=linewidth,
             color=color,
+            connectionstyle=connectionstyle,
         )
     )
 
@@ -116,7 +124,7 @@ def add_penalty_panel(
     xmid = rect[0] + rect[2] / 2
     fig.text(xmid, rect[1] + rect[3] + 0.015, title, ha="center", va="bottom", color=INK, fontsize=14, fontweight="bold")
 
-    fig.text(xmid, 0.240, formula, ha="center", va="center", color=INK, fontsize=11.5)
+    fig.text(xmid, 0.245, formula, ha="center", va="center", color=INK, fontsize=11.5)
     add_box(
         fig,
         (rect[0], 0.035),
@@ -126,7 +134,7 @@ def add_penalty_panel(
         face=box_face,
         fontsize=11.1,
     )
-    add_arrow(fig, (xmid, 0.128), (xmid, 0.212), color=color)
+    add_arrow(fig, (xmid, 0.133), (xmid, 0.205), color=color)
 
 
 def main():
@@ -149,11 +157,21 @@ def main():
         face=PALE,
         fontsize=13.5,
     )
-    fig.add_artist(
-        Line2D([0.16, 0.84], [0.84, 0.84], transform=fig.transFigure, color=INK, lw=1.0)
-    )
-    for x in (0.17, 0.50, 0.83):
-        add_arrow(fig, (x, 0.84), (x, 0.79), color=INK)
+    # Three gently routed arrows make the hierarchy explicit while preserving
+    # clear air above the instance titles.
+    for start, end, bend in (
+        ((0.30, 0.892), (0.17, 0.805), 0.10),
+        ((0.50, 0.892), (0.50, 0.805), 0.00),
+        ((0.70, 0.892), (0.83, 0.805), -0.10),
+    ):
+        add_arrow(
+            fig,
+            start,
+            end,
+            color=INK,
+            linewidth=1.05,
+            connectionstyle=f"arc3,rad={bend}",
+        )
 
     panels = [
         (0.01, 0.285, 0.30, 0.455),

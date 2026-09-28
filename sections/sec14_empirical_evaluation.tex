@@ -38,7 +38,7 @@ Table \ref{tab:main-empirical-results} shows that uniform IEWC attained higher s
 \includegraphics[width=\linewidth]{figures/rendered/classification_distribution_retention.pdf}
 \vspace{-0.55em}
 \includegraphics[width=\linewidth]{figures/rendered/nlp_distribution_retention.pdf}
-\caption[ImageNet-R and TRACE distribution retention]{Distribution-level retention in the multi-domain study. \textbf{A--B}: ImageNet-R final accuracy and forgetting. \textbf{C--D}: TRACE final score and forgetting for C-STANCE, FOMC, and ScienceQA. FOMC's distributed evaluation and test files are duplicates, so the locked comparison uses C-STANCE, ScienceQA, and NumGLUE-cm.}
+\caption[ImageNet-R and TRACE distribution retention]{Distribution-level retention in the multi-domain study. \textbf{A--B}: ImageNet-R final accuracy and forgetting. \textbf{C--D}: TRACE final score and forgetting for C-STANCE, FOMC, and ScienceQA.}
 \label{fig:distribution-retention}
 \end{figure}
 
@@ -46,15 +46,11 @@ At the distribution level, Figure~\ref{fig:distribution-retention}A--B shows tha
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{figures/rendered/forecast_rollouts_longhorizon_tasknorm_selected.pdf}
-\caption[Forecasting rollout comparison]{Forecasting rollout comparison. Each panel shows one held-out rollout from the corresponding forecasting distribution. The gray curve is the observed context, the black curve is the target horizon, and colored curves are method predictions after the full continual sequence.}
+\includegraphics[width=0.90\linewidth]{figures/rendered/forecast_rollouts_longhorizon_tasknorm_selected.pdf}
+\caption[Forecasting rollout comparison]{Held-out forecasting rollouts after the continual sequence. Gray: observed context; black: target horizon; colored: method predictions.}
 \label{fig:forecast-rollouts}
 \end{figure}
 
-Figure \ref{fig:forecast-rollouts} complements the aggregate forecasting scores with individual held-out rollouts. Weighted IEWC retains more target-trajectory structure at the first task and remains close to OPG-EWC later; these examples illustrate the observed behavior rather than replace the aggregate uncertainty estimates.
+Weighted IEWC retains more target-trajectory structure at the first task and remains close to OPG-EWC later; Figure~\ref{fig:forecast-rollouts} provides representative held-out rollouts alongside the aggregate scores.
 
 The DDPM study also uses a row/column cumulative-distribution output representation motivated by sliced Wasserstein distance. The selected run reduced old-output drift to $9.4409\pm7.2517$, compared with $14.1026\pm12.2220$ for Euclidean uniform IEWC, while attaining denoising MSE $0.0301\pm0.0012$ versus $0.0298\pm0.0014$. Because that surrogate did not establish a matched primal/dual metric pair, the result supports output-representation flexibility but not a claim about Wasserstein geometry. Appendix~\ref{app:ordered-cdf-geometry} supplies a correct ordered-CDF/Cram\'er construction.
-
-The FROMP-derived weighting ablation \citep{FROMP} reached $0.6365\pm0.0165$ final average accuracy and $0.3068\pm0.0170$ forgetting on ImageNet-R, but $0.3351\pm0.0742$ final all-mIoU and $0.4064\pm0.1122$ base-class forgetting on VOC 15--5. Its domain-dependent behavior further motivates treating aggregation as an explicit design axis.
-
-Appendices B--D report the mechanism, protocol/sensitivity, and label-noise analyses; Appendix~\ref{app:reproducibility} gives the archive and reproduction path.

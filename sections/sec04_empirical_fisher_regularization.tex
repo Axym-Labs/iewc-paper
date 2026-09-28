@@ -20,20 +20,14 @@ F_{\mathrm{emp}}
 \nabla_\theta\log p_\theta(y_i\mid x_i)
 \nabla_\theta\log p_\theta(y_i\mid x_i)^\top.
 \]
-Thus OPG-EWC and empirical-Fisher EWC denote the same implementation in an explicit likelihood setting. The CLOC derivation justifies this matrix as the quadratic form of a squared first-order loss-preservation surrogate. It does not turn the matrix into the model Fisher or establish that it approximates the Hessian.
+Thus OPG-EWC and empirical-Fisher EWC denote the same implementation in an explicit likelihood setting. The CLOC derivation identifies this matrix as the quadratic form of a squared first-order loss-preservation surrogate, an interpretation distinct from model-Fisher and Hessian curvature.
 
-The model Fisher is instead
+Writing $s_\theta(x,y)=\nabla_\theta\log p_\theta(y\mid x)$, the model Fisher is instead
 \[
-\begin{aligned}
 F_{\mathrm{model}}(\theta)
-&=\mathbb E_{x\sim\mathcal D_A}
+=\mathbb E_{x\sim\mathcal D_A}
 \mathbb E_{y\sim p_\theta(\cdot\mid x)}
-\bigl[
-\nabla_\theta\log p_\theta(y\mid x)\\[-2pt]
-&\hspace{7em}{}
-\nabla_\theta\log p_\theta(y\mid x)^\top
-\bigr].
-\end{aligned}
+\bigl[s_\theta(x,y)s_\theta(x,y)^\top\bigr].
 \]
 It averages over labels sampled from the model, not only the observed label. Under standard regularity conditions this Fisher is connected to expected negative-log-likelihood curvature and natural-gradient geometry \citep{Amari1998,MartensNG,KFAC}. The observed-label empirical Fisher is a different object and can be a poor curvature approximation \citep{KunstnerEF}; Fisher-estimator choice can also materially affect EWC behavior and regularization scale \citep{VanDeVenFisher2025}.
 

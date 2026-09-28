@@ -19,24 +19,9 @@ M_{\mathrm{IEWC}}
 (\theta-\theta_A^\star).
 \]
 
-The canonical geometry is $G_n=I$. We use task-relative damping
-\[
-\tau_A
-=
-\kappa\,\operatorname{median}
-\{r_i^\top G_i^{-1}r_i:r_i\ne0\},
-\]
-with $\kappa=10^{-2}$ in the confirmatory comparison. This makes $\kappa$ dimensionless and preserves global loss-unit invariance. If all denominators are zero, the stored importance is zero.
+The canonical geometry is $G_n=I$. We use task-relative damping $\tau_A=\kappa\operatorname{median}\{r_i^\top G_i^{-1}r_i:r_i\ne0\}$ with $\kappa=10^{-2}$ in the confirmatory comparison. This makes $\kappa$ dimensionless and preserves global loss-unit invariance. If all denominators are zero, the stored importance is zero.
 
-Uniform IEWC sets $\bar h_n=1$. To study weighting without confounding it with normalization, we define a separate \emph{residual-diversity weighting} (RDW) variant. Let
-\[
-u_n=\frac{g_n}{\|g_n\|_2}
-\]
-for nonzero parameter gradients. In a fixed sample order, RDW maintains an orthonormal basis $Q$ of at most $K$ earlier residual directions and assigns
-\[
-h_n=\|(I-Q^\top Q)u_n\|_2^2.
-\]
-When the residual is nonzero and the cap is not reached, its normalized direction is appended to $Q$; the final $h_n$ are mean-normalized. This streaming rule is motivated by residual-gradient diversity ideas in GSS \citep{GSS}, but it is an order-dependent aggregation heuristic, not part of the level-set derivation. Crucially, both OPG-RDW and IEF-RDW receive the same unit parameter-gradient directions. Scalar IEF normalization cannot change $u_n$, so the $2\times2$ comparison
+Uniform IEWC sets $\bar h_n=1$. To study weighting without confounding it with normalization, we define a separate \emph{residual-diversity weighting} (RDW) variant. RDW assigns mean-one weights from the component of each unit parameter-gradient direction outside a capped span of earlier directions; Appendix~\ref{app:rdw-rule} gives the exact streaming rule. Both OPG-RDW and IEF-RDW receive the same unit parameter-gradient directions. Scalar IEF normalization cannot change those directions, so the $2\times2$ comparison
 \[
 \{\mathrm{OPG},\mathrm{IEF}\}
 \times
@@ -44,10 +29,4 @@ When the residual is nonzero and the cap is not reached, its normalized directio
 \]
 isolates matrix normalization from sample weighting.
 
-For diagonal training penalties, we take the diagonal after aggregation and rescale every nonzero diagonal to have mean one over trainable parameters. This removes only a global factor absorbable into $\lambda$ and lets all regularized methods use the same within-domain $\lambda$ grid. It does not restore the cross-parameter information discarded by diagonalization.
-
-An IEWC instantiation is specified by the five-tuple
-\[
-(\lambda,\kappa,\Gamma,h,\Pi),
-\]
-where $\lambda$ sets preservation strength, $\kappa$ sets relative damping, $\Gamma$ maps an old output to its local metric $G_n$, $h$ supplies aggregation weights, and $\Pi$ is the matrix approximation operator (for example, full, diagonal, or low rank). These are genuine design choices rather than values fixed by the derivation. Scalar loss preservation gives OPG-EWC; loss-level-set normal preservation gives uniform IEWC. We call this CLOC-derived mechanism \emph{Improved Elastic Weight Consolidation} while treating its individual axes separately in theory and experiment.
+An IEWC instantiation is specified by the five-tuple $(\lambda,\kappa,\Gamma,h,\Pi)$, where $\lambda$ sets preservation strength, $\kappa$ sets relative damping, $\Gamma$ maps an old output to its local metric $G_n$, $h$ supplies aggregation weights, and $\Pi$ is the matrix approximation operator (for example, full, diagonal, or low rank). These are genuine design choices rather than values fixed by the derivation. Scalar loss preservation gives OPG-EWC; loss-level-set normal preservation gives uniform IEWC. We call this CLOC-derived mechanism \emph{Improved Elastic Weight Consolidation} while treating its individual axes separately in theory and experiment.

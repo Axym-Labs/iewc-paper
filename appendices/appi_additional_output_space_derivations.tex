@@ -1,0 +1,39 @@
+\section{Additional Output-Space Derivations}
+
+\subsection{Matched-metric hyperplane projection}
+\label{app:matched-metric-projection}
+
+For the tangent hyperplane $T=\{t:r^\top t=0\}$, write the normal residual as $e=\Delta z-t$ with $t\in T$. The projection solves
+\[
+\min_e e^\top G e
+\quad\text{subject to}\quad
+r^\top e=r^\top\Delta z.
+\]
+The Lagrange equations give
+\[
+e^\star
+=
+\frac{r^\top\Delta z}{r^\top G^{-1}r}G^{-1}r,
+\]
+whose squared $G$-norm is
+\[
+\|e^\star\|_G^2
+=
+\frac{(r^\top\Delta z)^2}{r^\top G^{-1}r}.
+\]
+Hence $G$ measures primal output displacement and $G^{-1}$ acts on the loss covector.
+
+\subsection{Scalar least-squares reduction}
+\label{app:scalar-gauss-newton}
+
+Consider scalar-output least-squares regression in Euclidean geometry,
+\[
+\ell_n(z)=\frac12(z-y_n)^2.
+\]
+Then $r_n=z_n^A-y_n$ is scalar and, for $r_n\neq0$, the undamped normalized factor is $r_n^2/r_n^2=1$. Each IEF summand therefore reduces to $J_n^\top J_n$, and averaging gives
+\[
+M_{\mathrm{IEF}}
+=
+\frac{1}{N}\sum_{n=1}^N J_n^\top J_n.
+\]
+This is exactly the Gauss--Newton or output-Jacobian form for squared-error regression \citep{GaussNewton,MartensHF,MartensNG}, as also made explicit by \citet{IEF}.

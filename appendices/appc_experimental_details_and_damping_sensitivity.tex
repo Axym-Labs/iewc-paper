@@ -14,6 +14,19 @@ All four cells use the same retained examples, and the RDW cells receive the sam
 
 This estimator-focused factorial keeps the same post-task diagonal-penalty interface. SI's trajectory accumulation and LwF's distillation objective are discussed in Section~\ref{sec:related-work} but are not mixed into that factorial. Paper-facing EWC, IEWC, and IEWC+RDW correspond respectively to archived EF-EWC, IEWC-E/U-IEWC, and IEWC-GSS/GSS-IEWC labels.
 
+\subsubsection{Residual-diversity weighting rule}
+\label{app:rdw-rule}
+
+For each nonzero parameter gradient, let
+\[
+u_n=\frac{g_n}{\|g_n\|_2}.
+\]
+In a fixed sample order, RDW maintains an orthonormal basis $Q$ of at most $K$ earlier residual directions and assigns
+\[
+h_n=\|(I-Q^\top Q)u_n\|_2^2.
+\]
+When the residual is nonzero and the cap is not reached, its normalized direction is appended to $Q$; the final $h_n$ are mean-normalized. This streaming rule is motivated by residual-gradient diversity ideas in GSS \citep{GSS}, but it is an order-dependent aggregation heuristic, not part of the level-set derivation.
+
 \begin{table}[H]
 \caption{Frozen confirmatory roles and repetitions. FOMC is excluded because its distributed evaluation and test files are exact duplicates.}
 \label{tab:confirmatory-protocol}
