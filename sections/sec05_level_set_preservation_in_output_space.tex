@@ -20,7 +20,7 @@ p(a,\theta) =
 \]
 where $G\succ0$ is the chosen local output metric. Positive definiteness makes the primal metric and its inverse on covectors unambiguous; Section~\ref{sec:output-geometry} treats the restricted pseudoinverse convention needed by a singular ordered-output example.
 
-We obtain a tractable penalty from the standard first-order model of the constraint set near $z_A$, namely its tangent plane. Let
+This exact penalty is generally not tractable. To obtain a practical form, use the standard first-order local model of the constraint set near the old output $z_A$, namely its tangent plane. Let
 \[
 r=
 \nabla_z \phi_a(z)\big|_{z=z_A}.
@@ -97,4 +97,4 @@ J_i^\top
 J_i.  
 \]
 
-This local construction penalizes motion normal to the tangent model. IEWC is the evaluated specialization $\phi_a=\ell_A$; other functionals define CLOC extensions. When $r_i=0$, the tangent normal is undefined and the undamped quotient is $0/0$; our finite-damping implementation assigns that sample zero contribution. Section~\ref{sec:well-fitted} characterizes the resulting near-interpolation behavior.
+This is a local construction: it penalizes motion normal to the tangent model, not distance to a globally convex neural-network level set. IEWC is the specialization $\phi_a=\ell_A$ studied below; other functionals define CLOC extensions but are not evaluated here. When $r_i=0$, the tangent normal is undefined and the undamped quotient is $0/0$; our finite-damping implementation assigns that sample zero contribution. Section~\ref{sec:well-fitted} makes the resulting near-interpolation boundary explicit.

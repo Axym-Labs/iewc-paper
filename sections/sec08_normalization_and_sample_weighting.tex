@@ -8,24 +8,26 @@ Define
 \hat r_n^{\,G}
 =
 \frac{r_n}{\sqrt{r_n^\top G_n^{-1}r_n}},
-\qquad
+\quad
 a_n^{\,G}
 =
 J_n^\top \hat r_n^{\,G},
-\qquad
+\quad
 w_n^{\,G}
 =
 r_n^\top G_n^{-1}r_n.
 \]
 Then, wherever $r_n\ne0$,
 \[
+\begin{aligned}
 M_{\mathrm{IEF},G}
-=
+&=
 \frac{1}{N}\sum_{n=1}^N a_n^{\,G}(a_n^{\,G})^\top,
-\qquad
+\\
 M_{\mathrm{OPG}}
-=
+&=
 \frac{1}{N}\sum_{n=1}^N w_n^{\,G}\,a_n^{\,G}(a_n^{\,G})^\top.
+\end{aligned}
 \]
 
 Both matrices empirically aggregate the same local old-task sensitivity directions $a_n^{\,G}(a_n^{\,G})^\top$, but they differ in how strongly each sample contributes. Undamped IEF keeps uniform empirical weighting of these normalized directions, while OPG multiplies each contribution by the metric-dependent squared magnitude
@@ -33,4 +35,6 @@ Both matrices empirically aggregate the same local old-task sensitivity directio
 w_n^{\,G}=r_n^\top G_n^{-1}r_n.
 \]
 
-Thus normalization changes sample aggregation: OPG shifts old-task weighting toward samples with large output-loss gradients and away from confidently fitted ones, whereas undamped IEF removes that scale.
+Thus normalization changes sample aggregation: OPG shifts old-task weighting toward samples with large output-loss gradients and away from confidently fitted ones, whereas undamped IEF removes that scale. With positive damping, IEF also multiplies each direction by $s_n/(s_n+\tau)$, as Section~\ref{sec:well-fitted} makes explicit.
+
+The next section treats probabilistic classification, where the scale difference has a concrete well-fitted limit.

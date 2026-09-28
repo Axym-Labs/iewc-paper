@@ -1,13 +1,13 @@
 \section{Empirical Evaluation}
 
-We use two complementary evidence tiers. The retained multi-domain study reports development-selected attained performance across classification, NLP, forecasting, segmentation, and diffusion. A later study freezes selection before locked-test access and estimates paired held-out effects. It compares IEF with OPG under matched uniform weighting and diagonal scale, then crosses OPG/IEF with uniform/RDW aggregation. Appendix C specifies data roles, fixed validation grids, repetitions, baselines, and uncertainty calculations.
+We use two complementary evidence tiers. The retained multi-domain study establishes IEWC's attained performance across classification, NLP, forecasting, segmentation, and diffusion; its selected endpoints are descriptive because they participated in method development. A later study freezes selection before locked-test access and estimates paired held-out effects. It compares IEF with OPG under matched uniform weighting and diagonal scale, then crosses OPG/IEF with uniform/RDW aggregation. Appendix C specifies data roles, fixed validation grids, repetitions, baselines, and uncertainty calculations.
 
-Benchmark training stores diagonal matrices, while the full-matrix contamination analysis tests normalization before this approximation. Paper-facing EWC, IEWC, and IEWC+RDW denote observed-label OPG, uniform IEF, and residual-diversity-weighted IEF, respectively. The crossed OPG/IEF $\times$ uniform/RDW design assigns RDW effects to aggregation and IEF effects to normalization; Appendix C maps the archived labels and complete protocols.
+Unless stated otherwise, all stored matrices are diagonal. Paper-facing EWC, IEWC, and IEWC+RDW denote observed-label OPG, uniform IEF, and residual-diversity-weighted IEF, respectively. RDW is order dependent, so its gains cannot be attributed to normalization alone; Appendix C maps the archived labels and complete protocols.
 
 \subsection{Established multi-domain results}
 
 \begin{table*}[t]
-\caption[Multi-domain continual-learning results]{Original multi-domain continual-learning results, reported as selected-run mean (across-seed standard deviation). These development-selected endpoints establish attained performance across five task types; the locked study reports pairwise held-out effects. Higher is better for accuracy, score, and mIoU; lower is better for MSE and forgetting.}
+\caption[Multi-domain continual-learning results]{Original multi-domain continual-learning results, reported as selected-run mean (across-seed standard deviation). These development-selected endpoints establish attained performance across five task types rather than selection-independent pairwise effects. Higher is better for accuracy, score, and mIoU; lower is better for MSE and forgetting.}
 \label{tab:main-empirical-results}
 \centering
 \setlength{\tabcolsep}{1.1pt}
@@ -61,9 +61,9 @@ The weighted IEWC run likewise has less forgetting on C-STANCE and FOMC in Figur
 \label{fig:forecast-rollouts}
 \end{figure}
 
-Figure \ref{fig:forecast-rollouts} complements the aggregate forecasting scores with individual held-out rollouts. Weighted IEWC retains more target-trajectory structure at the first task and remains close to OPG-EWC later, providing qualitative examples alongside the aggregate uncertainty estimates.
+Figure \ref{fig:forecast-rollouts} complements the aggregate forecasting scores with individual held-out rollouts. Weighted IEWC retains more target-trajectory structure at the first task and remains close to OPG-EWC later; these examples illustrate the observed behavior rather than replace the aggregate uncertainty estimates.
 
-The DDPM study also tested an alternative output representation originally labeled ``sliced Wasserstein.'' The selected run reduced old-output drift to $9.4409\pm7.2517$, compared with $14.1026\pm12.2220$ for Euclidean uniform IEWC, while attaining denoising MSE $0.0301\pm0.0012$ versus $0.0298\pm0.0014$. The result demonstrates output-representation flexibility. Separately, Appendix~\ref{app:ordered-cdf-geometry} supplies a mathematically matched ordered-CDF/Cram\'er geometry.
+The DDPM study also tested an alternative output representation originally labeled ``sliced Wasserstein.'' The selected run reduced old-output drift to $9.4409\pm7.2517$, compared with $14.1026\pm12.2220$ for Euclidean uniform IEWC, while attaining denoising MSE $0.0301\pm0.0012$ versus $0.0298\pm0.0014$. Because that surrogate did not establish a matched primal/dual metric pair, the result supports output-representation flexibility but not a claim about Wasserstein geometry. Appendix~\ref{app:ordered-cdf-geometry} supplies a correct ordered-CDF/Cram\'er construction.
 
 The FROMP-derived weighting ablation \citep{FROMP} reached $0.6365\pm0.0165$ final average accuracy and $0.3068\pm0.0170$ forgetting on ImageNet-R, but $0.3351\pm0.0742$ final all-mIoU and $0.4064\pm0.1122$ base-class forgetting on VOC 15--5. Its domain-dependent behavior further motivates treating aggregation as an explicit design axis rather than folding it into the normalization claim.
 
