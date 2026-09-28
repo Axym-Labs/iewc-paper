@@ -1,10 +1,11 @@
-\section{Old-Task Loss Preservation}
+\section{Scalar Functional Preservation}
+\label{sec:scalar-functional-preservation}
 
-Since $\ell_A$ is a practical surrogate for performance on distribution $A$, a natural choice is to use the loss itself to define preservation. We say that $f_\theta$ locally preserves an old sample if it preserves that sample's old loss value. This gives
+Let $s_a:\Theta\to\mathbb R$ be a differentiable scalar functional of the model on old sample $a$. Preserving that functional means
 \[
 q(a,\theta)
 =
-\ell_A(f_\theta(x))-\ell_A(f_{\theta_A^\star}(x)).
+s_a(\theta)-s_a(\theta_A^\star).
 \]
 Since preservation means $q(a,\theta)=0$, take $\mathcal C=\{0\}$. The corresponding unscaled proximal loss is
 \[
@@ -18,26 +19,22 @@ To obtain a low-order Taylor approximation, use the perturbation around the old 
 \[
 q(a,\theta_A^\star+\delta)
 \approx
-g^\top\delta,
+g_a^\top\delta,
 \]
 where
 \[
-g
+g_a
 =
-\nabla_\theta \ell_A(f_{\theta_A^\star}(a)).
+\nabla_\theta s_a(\theta)\big|_{\theta=\theta_A^\star}.
 \]
 
-Equivalently, writing
+When the functional factors through the model output as $s_a(\theta)=\phi_a(f_\theta(x))$, write
 \[
-z_A=f_{\theta_A^\star}(a)
-\qquad
-r_i
-=
-\nabla_z \ell_A(z)\big|_{z=f_{\theta_A^\star}(a)},
-\qquad
-J_i
-=
-\nabla_\theta f_{\theta_A^\star}(a),
+\begin{aligned}
+z_{A,i} &= f_{\theta_A^\star}(x_i),\\
+r_i &= \nabla_z \phi_{a_i}(z)\big|_{z=z_{A,i}},\\
+J_i &= \nabla_\theta f_{\theta_A^\star}(x_i),
+\end{aligned}
 \]
 the chain rule gives
 \[
@@ -77,4 +74,4 @@ M_1
 =
 \frac{1}{N_A}\sum_{i=1}^{N_A} J_i^\top r_i r_i^\top J_i.
 \]
-This matrix encodes the local parameter directions in which the chosen scalar preservation quantity changes. We call it the \emph{outer-product loss-gradient} (OPG) matrix. The construction is exact for the squared first-order surrogate displayed above, not for the original nonlinear equality constraint. It becomes the observed-label empirical-Fisher algebra only for likelihood losses, as specified next.
+This matrix encodes the local parameter directions in which the chosen scalar functional changes. The construction is exact for the squared first-order surrogate displayed above, not for the original nonlinear equality constraint. The rest of the paper takes $\phi_a=\ell_A$ unless stated otherwise. This loss specialization is the \emph{outer-product loss-gradient} (OPG) matrix, and for negative log likelihood it becomes the empirical-Fisher algebra used by EWC, as specified next.

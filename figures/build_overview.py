@@ -141,7 +141,7 @@ def main():
         (0.22, 0.895),
         0.56,
         0.065,
-        "CLOC: old-solution preservation as an optimization constraint",
+        "CLOC: preserving learned behavior as an optimization constraint",
         edge=PRIMARY,
         face=PALE,
         fontsize=14,

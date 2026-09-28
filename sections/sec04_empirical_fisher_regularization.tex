@@ -1,12 +1,12 @@
 \section{Outer-Product Loss-Gradient Regularization and EWC}
 
-The matrix obtained in the previous section is
+For the loss functional $s_{a_i}(\theta)=\ell_A(f_\theta(x_i))$, the matrix obtained in the previous section is
 \[
 M_{\mathrm{OPG}}
 =
 \frac{1}{N_A}\sum_{i=1}^{N_A}g_i g_i^\top.
 \]
-It is an outer product of gradients of the selected scalar preservation object. This identity holds for any differentiable loss, without a probabilistic model or a curvature interpretation. We therefore call the general object an \emph{outer-product-of-loss-gradients} (OPG) matrix.
+It is an outer product of loss gradients. This identity holds for any differentiable loss, without a probabilistic model or a curvature interpretation. We therefore call it an \emph{outer-product-of-loss-gradients} (OPG) matrix.
 
 For a negative-log-likelihood loss,
 \[

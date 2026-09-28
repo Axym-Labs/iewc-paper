@@ -1,6 +1,6 @@
 \section{Improved Elastic Weight Consolidation}
 
-The preceding derivation leaves four implementation choices: global penalty strength, damping, aggregation weights, and output geometry. For old-task samples $a_1,\dots,a_N$, IEWC uses
+The preceding derivation leaves five implementation choices: global penalty strength, damping, aggregation weights, output geometry, and matrix approximation. For old-task samples $a_1,\dots,a_N$, IEWC uses
 \[
 M_{\mathrm{IEWC}}
 =
@@ -46,4 +46,8 @@ isolates matrix normalization from sample weighting.
 
 For diagonal training penalties, we take the diagonal after aggregation and rescale every nonzero diagonal to have mean one over trainable parameters. This removes only a global factor absorbable into $\lambda$ and lets all regularized methods use the same within-domain $\lambda$ grid. It does not restore the cross-parameter information discarded by diagonalization.
 
-The design can be summarized by $(\lambda,\kappa,\Gamma,h)$, where $\Gamma$ maps an old output to its local metric $G_n$, and by an additional approximation choice such as diagonal or low rank. Scalar loss preservation gives OPG-EWC; level-set normal preservation gives uniform IEWC; damping, weighting, and geometry are explicit surrounding choices. We call this CLOC-derived mechanism \emph{Improved Elastic Weight Consolidation} while treating its individual axes separately in theory and experiment.
+An IEWC instantiation is specified by the five-tuple
+\[
+(\lambda,\kappa,\Gamma,h,\Pi),
+\]
+where $\lambda$ sets preservation strength, $\kappa$ sets relative damping, $\Gamma$ maps an old output to its local metric $G_n$, $h$ supplies aggregation weights, and $\Pi$ is the matrix approximation operator (for example, full, diagonal, or low rank). These are genuine design choices rather than values fixed by the derivation. Scalar loss preservation gives OPG-EWC; loss-level-set normal preservation gives uniform IEWC. We call this CLOC-derived mechanism \emph{Improved Elastic Weight Consolidation} while treating its individual axes separately in theory and experiment.

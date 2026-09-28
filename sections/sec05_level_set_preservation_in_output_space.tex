@@ -1,9 +1,9 @@
 \section{Level-Set Preservation in Output Space}
 
-Our first mechanism is derived from preservation of the loss value. An extension of the same preservation constraint is to impose it through the old-task loss level set in output space. More concretely, we preserve the output per-sample up to motions that stay on this set. This output-space perspective connects to distillation and functional regularization approaches to continual learning \citep{LwF,Distillation,FunctionalGP,FROMP}, which let the model match old predictions or predictive functions. This gives a geometric formulation of the same underlying constraint: instead of penalizing raw change in the scalar loss coordinate, we penalize displacement away from the local constraint set in output space. Let $a \in D_A$ be an old sample, and write  $z_A=f_{\theta_A^\star}(x)$. The exact old-loss preservation set in output coordinates is
+Section~\ref{sec:scalar-functional-preservation} preserves a scalar functional value directly. A second construction instead preserves the model output up to motions along a level set of a differentiable output functional $\phi_a:\mathcal Z\to\mathbb R$. This output-space perspective connects to distillation and functional regularization approaches to continual learning \citep{LwF,Distillation,FunctionalGP,FROMP}. Let $a \in D_A$ be an old sample, write $z_A=f_{\theta_A^\star}(x)$, and define the exact preservation set
 \[
-\mathcal C=
-\{z:\ell_A(z)=\ell_A(z_A)\}.  
+\mathcal C_a=
+\{z:\phi_a(z)=\phi_a(z_A)\}.
 \]
 Thus the preserved quantity is the model output itself:
 \[
@@ -11,22 +11,22 @@ q(a,\theta)=f_\theta(x).
 \]
 The hard constraint is
 \[
-q(a,\theta)\in\mathcal C,  
+q(a,\theta)\in\mathcal C_a,
 \]
 and the corresponding unscaled proximal loss is
 \[
 p(a,\theta) =
-\operatorname{dist}_{G}\big(q(a,\theta),\mathcal C\big)^2,  
+\operatorname{dist}_{G}\big(q(a,\theta),\mathcal C_a\big)^2,
 \]
 where $G\succ0$ is the chosen local output metric. Positive definiteness makes the primal metric and its inverse on covectors unambiguous; Section~11 treats the restricted pseudoinverse convention needed by a singular ordered-output example.
 
 This exact penalty is generally not tractable. To obtain a practical form, use the standard first-order local model of the constraint set near the old output $z_A$, namely its tangent plane. Let
 \[
 r=
-\nabla_z \ell_A(z)\big|_{z=z_A}.  
+\nabla_z \phi_a(z)\big|_{z=z_A}.
 \]
-We first assume $r\ne0$, so the loss level set has a regular tangent hyperplane at $z_A$.
-For a small output displacement $\Delta z=f_\theta(x)-f_{\theta_A^\star}(x)$, the first-order old-loss change is approximately $r^\top \Delta z$.
+We first assume $r\ne0$, so the functional's level set has a regular tangent hyperplane at $z_A$.
+For a small output displacement $\Delta z=f_\theta(x)-f_{\theta_A^\star}(x)$, its first-order change is approximately $r^\top \Delta z$.
 Hence the local constraint set is
 \[
 T=
@@ -97,4 +97,4 @@ J_i^\top
 J_i.  
 \]
 
-This is a local construction: it penalizes motion normal to the tangent model, not distance to a globally convex neural-network level set. When $r_i=0$, the tangent normal is undefined and the undamped quotient is $0/0$; our finite-damping implementation assigns that sample zero contribution. Section~10 makes the resulting near-interpolation boundary explicit.
+This is a local construction: it penalizes motion normal to the tangent model, not distance to a globally convex neural-network level set. IEWC is the specialization $\phi_a=\ell_A$ studied below; other functionals define CLOC extensions but are not evaluated here. When $r_i=0$, the tangent normal is undefined and the undamped quotient is $0/0$; our finite-damping implementation assigns that sample zero contribution. Section~10 makes the resulting near-interpolation boundary explicit.
