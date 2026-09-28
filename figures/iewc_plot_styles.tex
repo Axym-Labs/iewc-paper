@@ -1,0 +1,40 @@
+% Shared PGFPlots visual language for IEWC empirical figures.
+\definecolor{IEWCPrimary}{HTML}{3F21B6}
+\definecolor{IEWCSecondary}{HTML}{8C7AD3}
+\definecolor{IEWCDark}{HTML}{3F4147}
+\definecolor{IEWCMid}{HTML}{777A80}
+\definecolor{IEWCLight}{HTML}{B9BBC0}
+\definecolor{IEWCText}{HTML}{20232A}
+\definecolor{IEWCGrid}{HTML}{E3E5E8}
+
+\pgfplotsset{
+  compat=1.18,
+  iewc axis/.style={
+    axis x line*=bottom,
+    axis y line*=left,
+    axis line style={IEWCText,line width=.45pt},
+    tick align=outside,
+    tick style={IEWCText,line width=.4pt},
+    tick label style={font=\tiny,text=IEWCText},
+    label style={font=\scriptsize,text=IEWCText},
+    title style={font=\scriptsize\bfseries,text=IEWCText,anchor=west,at={(0,1.04)}},
+    ymajorgrids,
+    grid style={IEWCGrid,line width=.35pt},
+    legend style={draw=none,font=\tiny,/tikz/every even column/.append style={column sep=3pt}},
+    line width=.8pt,
+    mark size=1.7pt,
+    scaled ticks=false,
+    clip=true,
+  },
+  sequential/.style={color=IEWCLight,mark=*,solid},
+  ewc/.style={color=IEWCDark,mark=square*,solid},
+  ewcdr/.style={color=IEWCMid,mark=triangle*,dotted},
+  iewc/.style={color=IEWCPrimary,mark=*,solid,line width=1pt},
+  iewcrdw/.style={color=IEWCSecondary,mark=diamond*,dashed,line width=.9pt},
+  context/.style={color=IEWCLight,mark=none,solid,line width=.65pt},
+  target/.style={color=black,mark=none,solid,line width=1pt},
+  accuracy/.style={color=IEWCPrimary,mark=*,solid,line width=1pt},
+  retention/.style={color=IEWCSecondary,mark=square*,dashed,line width=.9pt},
+  domainone/.style={color=IEWCPrimary,mark=*,solid,line width=1pt},
+  domaintwo/.style={color=IEWCSecondary,mark=diamond*,dashed,line width=.9pt},
+}

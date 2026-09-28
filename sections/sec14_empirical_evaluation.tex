@@ -2,7 +2,7 @@
 
 We use two evidence tiers. The confirmatory comparison is frozen before locked-test access and asks whether IEF normalization helps relative to OPG under identical uniform weights and matched global diagonal scale. It uses disjoint train, validation, and locked-test roles; paired task orders and optimizer seeds; fixed five-point validation grids without edge expansion; and paired uncertainty on the held-out repetitions. The secondary $2\times2$ comparison crosses OPG/IEF with uniform/RDW aggregation. Sampled model-Fisher EWC and MAS are external regularization baselines; sequential training and offline/joint training provide lower-context and non-continual references. This comparator set preserves the same post-task diagonal-penalty interface: SI's trajectory accumulation and LwF's distillation objective are discussed in Section~2 but are not mixed into the estimator-focused factorial. Appendix C specifies the complete protocol.
 
-The original multi-domain study is retained quantitatively in full because it establishes IEWC's empirical breadth and attained performance across classification, NLP, forecasting, segmentation, and diffusion. Its selected endpoints participated in hyperparameter and method development, so comparisons within that study are descriptive rather than selection-independent effect estimates; the new locked study supplies the latter evidence under a matched factorial design. Unless stated otherwise, all stored matrices are diagonal. Historical labels embedded in the original figures map as follows: EF-EWC denotes observed-label OPG-EWC, IEWC-E or U-IEWC denotes uniform IEF, and IEWC-GSS or GSS-IEWC denotes the earlier GSS-motivated weighting implementation. The last implementation is order dependent, so its gains cannot be attributed to normalization alone.
+The original multi-domain study is retained quantitatively in full because it establishes IEWC's empirical breadth and attained performance across classification, NLP, forecasting, segmentation, and diffusion. Its selected endpoints participated in hyperparameter and method development, so comparisons within that study are descriptive rather than selection-independent effect estimates; the new locked study supplies the latter evidence under a matched factorial design. Unless stated otherwise, all stored matrices are diagonal. In the paper-facing labels, EWC denotes observed-label OPG-EWC, IEWC denotes uniform IEF, and IEWC+RDW denotes the earlier GSS-motivated weighting implementation; archived EF-EWC, IEWC-E/U-IEWC, and IEWC-GSS/GSS-IEWC labels map to these three methods, respectively. The last implementation is order dependent, so its gains cannot be attributed to normalization alone.
 
 \subsection{Established multi-domain results}
 
@@ -34,7 +34,7 @@ Table \ref{tab:main-empirical-results} shows that uniform IEWC attained higher s
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.65\linewidth]{figures/classification_distribution_retention.pdf}
+\includegraphics[width=\linewidth]{figures/rendered/classification_distribution_retention.pdf}
 \caption[ImageNet-R distribution retention]{ImageNet-R retention in the original multi-domain study. The left panel shows final accuracy per distribution; the right shows forgetting.}
 \label{fig:classification-distribution-retention}
 \end{figure}
@@ -43,7 +43,7 @@ At the distribution level, Figure \ref{fig:classification-distribution-retention
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.65\linewidth]{figures/nlp_distribution_retention.pdf}
+\includegraphics[width=\linewidth]{figures/rendered/nlp_distribution_retention.pdf}
 \caption[TRACE distribution retention]{TRACE retention for C-STANCE, FOMC, and ScienceQA in the original study. FOMC's distributed evaluation and test files are duplicates, so the new locked comparison uses C-STANCE, ScienceQA, and NumGLUE-cm.}
 \label{fig:nlp-distribution-retention}
 \end{figure}
@@ -52,7 +52,7 @@ The weighted IEWC run likewise has less forgetting on C-STANCE and FOMC in Figur
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.75\linewidth]{figures/forecast_rollouts_longhorizon_tasknorm_selected.pdf}
+\includegraphics[width=\linewidth]{figures/rendered/forecast_rollouts_longhorizon_tasknorm_selected.pdf}
 \caption[Forecasting rollout comparison]{Forecasting rollout comparison. Each panel shows one held-out rollout from the corresponding forecasting distribution. The gray curve is the observed context, the black curve is the target horizon, and colored curves are method predictions after the full continual sequence.}
 \label{fig:forecast-rollouts}
 \end{figure}

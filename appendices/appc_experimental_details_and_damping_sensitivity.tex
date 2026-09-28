@@ -72,20 +72,20 @@ The retained development ledger makes the broader selection history explicit rat
 
 \subsection{Damping and summand diagnostics}
 
-Figure~\ref{fig:tau-sensitivity-cifar100} reports the fixed-$\tau$ sensitivity experiment on a three-task CIFAR-100/FACIL prefix. It demonstrates that damping is consequential, while also showing why a universal numerical default is inappropriate: $\tau$ has loss-dependent units. The revised experiment therefore uses the dimensionless relative coefficient $\kappa$.
+Figure~\ref{fig:damping-sensitivity} combines two complementary damping diagnostics on a common higher-is-better change scale. Panel A re-expresses the historical fixed-$\tau$ CIFAR-100/FACIL prefix in changes from $\tau=10^{-2}$: the two curves are final accuracy and negative forgetting, so values below zero indicate worse performance on either measure. Panel B reports the predeclared relative-$\kappa$ sweep at the selected $\lambda$ on one recorded validation repetition per domain, relative to the confirmatory default $\kappa=10^{-2}$. The default is not uniformly best in these descriptive cells: $\kappa=1$ changes validation performance by $+0.0263$ on ImageNet-R and $+0.0007$ on TRACE. The former is material under the prespecified one-point threshold while the latter is negligible. These sensitivity outcomes motivate reporting and tuning damping rather than replacing the frozen confirmatory setting post hoc. Fixed $\tau$ has loss-dependent units; relative $\kappa$ is dimensionless and preserves global loss-unit invariance.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.62\linewidth]{figures/tau_sensitivity_cifar100.pdf}
-\caption[Fixed-damping sensitivity]{Fixed-$\tau$ sensitivity on a CIFAR-100 prefix. The tested numerical values were $\{10^{-6},10^{-5},10^{-4},10^{-3},10^{-2},3\cdot10^{-2},10^{-1}\}$. The result demonstrates the practical importance of reporting damping explicitly.}
-\label{fig:tau-sensitivity-cifar100}
+\includegraphics[width=0.96\linewidth]{figures/rendered/damping_sensitivity.pdf}
+\caption[Damping sensitivity]{Damping sensitivity. \textbf{A}: Historical fixed-$\tau$ CIFAR-100 prefix, expressed relative to $\tau=10^{-2}$; for comparability, forgetting is sign-reversed so higher is better. \textbf{B}: Validation-only task-relative damping at fixed selected $\lambda$, expressed relative to the predeclared $\kappa=10^{-2}$ baseline. Panel B uses one prespecified validation repetition per domain and is descriptive rather than a new selection step.}
+\label{fig:damping-sensitivity}
 \end{figure}
 
 Figure~\ref{fig:summand-norm-ecdf} reports the diagonal scale diagnostic for CIFAR-100 classification, controlled regression, MNIST DDPM denoising, and binary segmentation. It shows $\lambda$ times the per-sample diagonal trace before averaging and is not a sample-weight plot.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\linewidth]{figures/summand_norm_ecdf.pdf}
+\includegraphics[width=0.98\linewidth]{figures/rendered/summand_norm_ecdf.pdf}
 \caption[Effective diagonal summand norms]{Effective diagonal summand norms. Each panel reports the empirical CDF of $\lambda$ times the per-sample diagonal trace in the original configuration.}
 \label{fig:summand-norm-ecdf}
 \end{figure}

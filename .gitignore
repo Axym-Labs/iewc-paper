@@ -7,3 +7,5 @@ main.out
 dist/
 paper_writeup.md
 arxiv_endorsement_request_template.md
+__pycache__/
+*.pyc
