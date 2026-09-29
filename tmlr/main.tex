@@ -40,9 +40,9 @@
 \def\openreview{\url{https://openreview.net/forum?id=XXXX}}
 
 \newcommand{\iewcleadfigure}{%
-  \begin{figure}[h]
+  \begin{figure}[H]
   \centering
-  \includegraphics[width=0.84\textwidth]{figures/overview.pdf}
+  \includegraphics[width=0.80\textwidth]{figures/overview.pdf}
   \caption[IEWC framework overview]{Each panel shows the continual-learning
   penalty over normalized directions for two representative samples. EWC (OPG)
   inherits sample weighting from output-loss-gradient scale; uniform IEWC
@@ -55,6 +55,13 @@
 \begin{document}
 
 \maketitle
+
+\begingroup
+\renewcommand\thefootnote{}
+\footnotetext{The IEWC framework and initial manuscript predate generative-AI
+assistance with this revision; the author reviewed and takes responsibility for
+the final content.}
+\endgroup
 
 \begin{abstract}
 \input{../abstract}
