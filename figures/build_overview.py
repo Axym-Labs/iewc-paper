@@ -157,12 +157,11 @@ def main():
         face=PALE,
         fontsize=13.5,
     )
-    # Three gently routed arrows make the hierarchy explicit while preserving
-    # clear air above the instance titles.
-    for start, end, bend in (
-        ((0.30, 0.892), (0.17, 0.805), 0.10),
-        ((0.50, 0.892), (0.50, 0.805), 0.00),
-        ((0.70, 0.892), (0.83, 0.805), -0.10),
+    # Straight branches keep the three instances visually subordinate to CLOC.
+    for start, end in (
+        ((0.30, 0.892), (0.17, 0.805)),
+        ((0.50, 0.892), (0.50, 0.805)),
+        ((0.70, 0.892), (0.83, 0.805)),
     ):
         add_arrow(
             fig,
@@ -170,7 +169,7 @@ def main():
             end,
             color=INK,
             linewidth=1.05,
-            connectionstyle=f"arc3,rad={bend}",
+            connectionstyle="arc3,rad=0",
         )
 
     panels = [

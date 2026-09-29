@@ -41,9 +41,15 @@ Table \ref{tab:main-empirical-results} shows that uniform IEWC attained higher s
 
 \begin{figure}[t]
 \centering
+\ifdefined\TMLRSubmission
+\includegraphics[width=0.62\linewidth]{figures/rendered/classification_distribution_retention.pdf}
+\vspace{-0.55em}
+\includegraphics[width=0.62\linewidth]{figures/rendered/nlp_distribution_retention.pdf}
+\else
 \includegraphics[width=\linewidth]{figures/rendered/classification_distribution_retention.pdf}
 \vspace{-0.55em}
 \includegraphics[width=\linewidth]{figures/rendered/nlp_distribution_retention.pdf}
+\fi
 \caption[ImageNet-R and TRACE distribution retention]{Distribution-level retention in the multi-domain study. \textbf{A--B}: ImageNet-R final accuracy and forgetting. \textbf{C--D}: TRACE final score and forgetting for C-STANCE, FOMC, and ScienceQA.}
 \label{fig:distribution-retention}
 \end{figure}

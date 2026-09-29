@@ -120,7 +120,11 @@ Figure~\ref{fig:damping-sensitivity} combines two complementary damping diagnost
 
 \begin{figure}[H]
 \centering
+\ifdefined\TMLRSubmission
+\includegraphics[width=0.72\linewidth]{figures/rendered/damping_sensitivity.pdf}
+\else
 \includegraphics[width=0.96\linewidth]{figures/rendered/damping_sensitivity.pdf}
+\fi
 \caption[Damping sensitivity]{Damping sensitivity. \textbf{A}: Historical fixed-$\tau$ CIFAR-100 prefix, expressed relative to $\tau=10^{-2}$; for comparability, forgetting is sign-reversed so higher is better. \textbf{B}: Validation-only task-relative damping at fixed selected $\lambda$, expressed relative to the predeclared $\kappa=10^{-2}$ baseline. Panel B uses one prespecified validation repetition per domain and is descriptive rather than a new selection step.}
 \label{fig:damping-sensitivity}
 \end{figure}
