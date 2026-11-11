@@ -1,13 +1,13 @@
 \section{Empirical Evaluation}
 
-We use two complementary evidence tiers. The retained multi-domain study establishes IEWC's attained performance across classification, NLP, forecasting, segmentation, and diffusion; its selected endpoints are descriptive because they participated in method development. The locked study freezes selection before test access and estimates paired held-out effects. It compares IEF with OPG under matched uniform weighting and diagonal scale, then crosses OPG/IEF with uniform/RDW aggregation. Appendix C specifies data roles, fixed validation grids, repetitions, baselines, and uncertainty calculations.
+We report two evaluations. The multi-domain study measures IEWC's performance across classification, NLP, forecasting, segmentation, and diffusion; because its results also informed method development, they describe selected configurations rather than unbiased effect estimates. The held-out evaluation fixes hyperparameter selection before any test access and estimates paired effects on held-out data. It compares IEF with OPG under matched uniform weighting and diagonal scale, then crosses OPG/IEF with uniform/RDW aggregation. Appendix C specifies data splits, fixed validation grids, repetitions, baselines, and uncertainty calculations.
 
-Unless stated otherwise, all stored matrices are diagonal. Paper-facing EWC, IEWC, and IEWC+RDW denote observed-label OPG, uniform IEF, and residual-diversity-weighted IEF, respectively. RDW is order dependent, so its gains cannot be attributed to normalization alone; Appendix C maps the archived labels and complete protocols.
+Unless stated otherwise, all stored matrices are diagonal. EWC, IEWC, and IEWC+RDW denote observed-label OPG, uniform IEF, and residual-diversity-weighted IEF, respectively. RDW is order dependent, so its gains cannot be attributed to normalization alone; Appendix C maps these names to the archived code and gives complete protocols.
 
-\subsection{Established multi-domain results}
+\subsection{Multi-domain results}
 
 \begin{table}[t]
-\caption[Multi-domain continual-learning results]{Multi-domain selected-run means. Across-seed standard deviations and full-precision means are reported in Appendix Table~\ref{tab:main-empirical-results-uncertainty}. Higher is better except for MSE and forgetting.}
+\caption[Multi-domain continual-learning results]{Multi-domain results, means over seeds of the selected configurations. Across-seed standard deviations and full-precision means are reported in Appendix Table~\ref{tab:main-empirical-results-uncertainty}. Higher is better except for MSE and forgetting.}
 \label{tab:main-empirical-results}
 \centering
 \small
@@ -34,7 +34,7 @@ Task & Benchmark & Model & Metric & Seq. & EWC (OPG) & EWC-DR & IEWC & IEWC+RDW 
 \end{tabular*}
 \end{table}
 
-Table \ref{tab:main-empirical-results} shows that uniform IEWC attained higher selected means than OPG-EWC on ImageNet-R and VOC 15--5, while the weighted IEWC configuration attained the highest TRACE score and the lowest forecasting and DDPM MSE. The matched factorial and locked evaluation then isolates which gains generalize and which arise from normalization versus weighting.
+Table \ref{tab:main-empirical-results} shows that uniform IEWC achieves higher means than OPG-EWC on ImageNet-R and VOC 15--5, while weighted IEWC achieves the highest TRACE score and the lowest forecasting and DDPM MSE. The held-out evaluation then tests which gains generalize and whether they arise from normalization or weighting.
 
 \begin{figure}[t]
 \centering
@@ -43,7 +43,7 @@ Table \ref{tab:main-empirical-results} shows that uniform IEWC attained higher s
 \label{fig:distribution-retention}
 \end{figure}
 
-At the distribution level, Figure~\ref{fig:distribution-retention}A--B shows that IEWC's retained accuracy is not concentrated in a single late distribution. The locked paired analysis tests whether this advantage generalizes across frozen class orders. The weighted IEWC run likewise has less forgetting on C-STANCE and FOMC in Figure~\ref{fig:distribution-retention}C--D. The locked comparison crosses the weighting mechanism with both OPG and IEF, while replacing FOMC with NumGLUE-cm to obtain disjoint validation and test roles.
+At the distribution level, Figure~\ref{fig:distribution-retention}A--B shows that IEWC's retained accuracy is not concentrated in a single late distribution. The held-out evaluation tests whether this advantage generalizes across fixed class orders. The weighted IEWC run likewise has less forgetting on C-STANCE and FOMC in Figure~\ref{fig:distribution-retention}C--D. The held-out evaluation crosses the weighting mechanism with both OPG and IEF, and replaces FOMC with NumGLUE-cm to obtain disjoint validation and test splits.
 
 
 Weighted IEWC retains more target-trajectory structure at the first task and remains close to OPG-EWC later; Appendix Figure~\ref{fig:forecast-rollouts} provides representative held-out rollouts alongside the aggregate scores.
@@ -52,9 +52,9 @@ The DDPM study also uses a row/column cumulative-distribution output representat
 
 Figure~\ref{fig:locked-summands}C--F shows the effective per-sample diagonal summands, $\lambda$ times the per-sample diagonal trace before averaging, in four representative settings. In classification and regression, OPG summands span more than three orders of magnitude between their 5th and 95th percentiles, while IEWC narrows this range by more than an order of magnitude; in diffusion and segmentation, both spreads are comparable.
 
-\subsection{Locked evaluation}
+\subsection{Held-out evaluation}
 
-The locked study selects $\lambda$ on validation data from fixed five-point grids and evaluates each method once on held-out data (Appendix~\ref{app:confirmatory-results}). ImageNet-R uses ten paired class orders; TRACE crosses all six orders of C-STANCE, ScienceQA, and NumGLUE-cm with two seeds. On ImageNet-R, uniform IEWC improves final average accuracy over matched EWC by 2.00 percentage points (95\% CI 0.93--3.07; exact sign-flip $p=0.0078$; Figure~\ref{fig:locked-summands}A), and the IEF advantage persists under RDW aggregation (1.71 points, 0.92--2.51; Holm $p=0.016$). On TRACE, the primary difference is $-0.11$ points ($-1.48$--$1.27$; Figure~\ref{fig:locked-summands}B).
+The held-out evaluation selects $\lambda$ on validation data from fixed five-point grids and evaluates each method once on the test split (Appendix~\ref{app:confirmatory-results}). ImageNet-R uses ten paired class orders; TRACE crosses all six orders of C-STANCE, ScienceQA, and NumGLUE-cm with two seeds. On ImageNet-R, uniform IEWC improves final average accuracy over matched EWC by 2.00 percentage points (95\% CI 0.93--3.07; exact sign-flip $p=0.0078$; Figure~\ref{fig:locked-summands}A), and the IEF advantage persists under RDW aggregation (1.71 points, 0.92--2.51; Holm $p=0.016$). On TRACE, the difference is $-0.11$ points ($-1.48$--$1.27$; Figure~\ref{fig:locked-summands}B).
 
 \begin{figure}[t]
 \centering
@@ -62,6 +62,6 @@ The locked study selects $\lambda$ on validation data from fixed five-point grid
 
 \vspace{2mm}
 \input{\iewcroot figures/tikz/summand_norm_ecdf.tex}
-\caption[Locked paired effects and effective summand norms]{\textbf{A--B}: Locked paired differences in final average performance, uniform IEF minus uniform OPG. Gray points are individual paired cells, the diamond is the mean, the bar its 95\% Student-$t$ interval, and the shaded band the predeclared one-point practical threshold. \textbf{C--F}: Empirical CDFs of $\lambda$ times the per-sample diagonal trace for CIFAR-100 classification, controlled regression, MNIST DDPM denoising, and binary segmentation.}
+\caption[Held-out paired effects and effective summand norms]{\textbf{A--B}: Held-out paired differences in final average performance, uniform IEF minus uniform OPG. Gray points are individual paired runs, the diamond is the mean, the bar its 95\% Student-$t$ interval, and the shaded band the one-point practical threshold fixed in advance. \textbf{C--F}: Empirical CDFs of $\lambda$ times the per-sample diagonal trace for CIFAR-100 classification, controlled regression, MNIST DDPM denoising, and binary segmentation.}
 \label{fig:locked-summands}
 \end{figure}

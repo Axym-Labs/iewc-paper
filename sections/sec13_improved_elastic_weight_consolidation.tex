@@ -19,7 +19,7 @@ M_{\mathrm{IEWC}}
 (\theta-\theta_A^\star).
 \]
 
-The canonical geometry is $G_n=I$. We use task-relative damping $\tau_A=\kappa\operatorname{median}\{r_i^\top G_i^{-1}r_i:r_i\ne0\}$ with $\kappa=10^{-2}$ in the confirmatory comparison. This makes $\kappa$ dimensionless and preserves global loss-unit invariance. If all denominators are zero, the stored importance is zero.
+The canonical geometry is $G_n=I$. We use task-relative damping $\tau_A=\kappa\operatorname{median}\{r_i^\top G_i^{-1}r_i:r_i\ne0\}$ with $\kappa=10^{-2}$ in the held-out evaluation. This makes $\kappa$ dimensionless and preserves global loss-unit invariance. If all denominators are zero, the stored importance is zero.
 
 Uniform IEWC sets $\bar h_n=1$. To study weighting without confounding it with normalization, we define a separate \emph{residual-diversity weighting} (RDW) variant. RDW assigns mean-one weights from the component of each unit parameter-gradient direction outside a capped span of earlier directions; Appendix~\ref{app:rdw-rule} gives the exact streaming rule. Both OPG-RDW and IEF-RDW receive the same unit parameter-gradient directions. Scalar IEF normalization cannot change those directions, so the $2\times2$ comparison
 \[

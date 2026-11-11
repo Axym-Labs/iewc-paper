@@ -1,18 +1,18 @@
 \section{Experimental Protocol, Provenance, and Sensitivity}
 
-\subsection{Frozen confirmatory protocol}
+\subsection{Held-out evaluation protocol}
 
-The confirmatory protocol was serialized and hashed before any new locked-test model outcome was computed. It fixes data roles, methods, grids, repetitions, estimands, uncertainty calculations, and stopping rules. Locked-test loading requires the manifest hash and writes an append-only access record before loading examples. Validation scripts reject a locked-test role, and validation repetitions are excluded from confirmatory intervals.
+The evaluation protocol was fixed and hashed before any test result was computed. It specifies the data splits, methods, hyperparameter grids, repetitions, metrics, and statistical analysis. Test data can be loaded only with the matching protocol hash, and every access is logged before examples are loaded. Validation scripts refuse to load test data, and validation runs do not enter the reported intervals.
 
-The primary contrast in each domain is paired final average performance of uniform IEF minus uniform OPG. The secondary factorial comparison is
+The primary comparison in each domain is the paired final average performance of uniform IEF minus uniform OPG. The secondary comparisons cross estimator and aggregation:
 \[
 \{\mathrm{OPG},\mathrm{IEF}\}
 \times
 \{\mathrm{uniform},\mathrm{RDW}\}.
 \]
-All four cells use the same retained examples, and the RDW cells receive the same unit-normalized parameter-gradient directions. Sampled model-Fisher EWC and MAS \citep{MAS} are external regularization baselines. Sequential and offline/joint training are references. Every nonzero diagonal importance is rescaled to mean one across trainable parameters, and every method uses the displayed $\lambda/2$ convention.
+All four combinations use the same importance examples, and the RDW variants receive the same unit-normalized parameter-gradient directions. Sampled model-Fisher EWC and MAS \citep{MAS} are additional regularization baselines. Sequential and offline/joint training are references. Every nonzero diagonal importance is rescaled to mean one across trainable parameters, and every method uses the displayed $\lambda/2$ convention.
 
-This estimator-focused factorial keeps the same post-task diagonal-penalty interface. SI's trajectory accumulation and LwF's distillation objective are discussed in Section~\ref{sec:related-work} but are not mixed into that factorial. Paper-facing EWC, IEWC, and IEWC+RDW correspond respectively to archived EF-EWC, IEWC-E/U-IEWC, and IEWC-GSS/GSS-IEWC labels.
+This comparison keeps the same post-task diagonal penalty for every method. SI's trajectory accumulation and LwF's distillation objective are discussed in Section~\ref{sec:related-work} but are not part of it. EWC, IEWC, and IEWC+RDW in the paper correspond to the EF-EWC, IEWC-E/U-IEWC, and IEWC-GSS/GSS-IEWC labels in the archived code.
 
 \subsubsection{Residual-diversity weighting rule}
 \label{app:rdw-rule}
@@ -28,30 +28,30 @@ h_n=\|(I-Q^\top Q)u_n\|_2^2.
 When the residual is nonzero and the cap is not reached, its normalized direction is appended to $Q$; the final $h_n$ are mean-normalized. This streaming rule is motivated by residual-gradient diversity ideas in GSS \citep{GSS}, but it is an order-dependent aggregation heuristic, not part of the level-set derivation.
 
 \begin{table}[H]
-\caption{Frozen confirmatory roles and repetitions. FOMC is excluded because its distributed evaluation and test files are exact duplicates.}
+\caption{Data splits and repetitions in the held-out evaluation. FOMC is excluded because its distributed evaluation and test files are exact duplicates.}
 \label{tab:confirmatory-protocol}
 \centering
 \small
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{@{}p{0.11\linewidth}p{0.38\linewidth}p{0.18\linewidth}p{0.25\linewidth}@{}}
 \toprule
-Domain & Data roles & Validation runs & Locked runs \\
+Domain & Data splits & Validation runs & Test runs \\
 \midrule
-ImageNet-R & Stratified 80\%/20\% split of the original 24,000-example train set for train/locked test; the previously accessed 6,000-example test set is validation only & 3 class orders & 10 paired class orders \\
+ImageNet-R & Stratified 80\%/20\% split of the original 24,000-example train set for train/test; the original 6,000-example test set is used only for validation & 3 class orders & 10 paired class orders \\
 TRACE & Distributed train/eval/test files for C-STANCE, ScienceQA, and NumGLUE-cm; prompt/answer overlaps are zero & 3 task orders & 6 task orders $\times$ 2 optimizer seeds \\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-ImageNet-R uses the fixed $\lambda$ grid $\{0.01,0.03,0.1,0.3,1\}$. TRACE uses $10^{-5}\!\times\!\{1,3,10,30,100\}$. Neither grid permits edge expansion.
+ImageNet-R uses the fixed $\lambda$ grid $\{0.01,0.03,0.1,0.3,1\}$. TRACE uses $10^{-5}\!\times\!\{1,3,10,30,100\}$. Neither grid is extended after validation.
 
 ImageNet-R uses a pretrained ViT-B/16 with LoRA rank 4 and ten 20-class tasks, trained for two epochs per task with AdamW at learning rate $3\cdot10^{-4}$ and batch size 64. Importance uses 128 examples per completed task and RDW cap 64. TRACE uses Qwen2.5-3B-Instruct with LoRA rank 8, two epochs, AdamW at $2\cdot10^{-4}$, batch size 2 with gradient accumulation 8, 512 training examples per task, and 64 importance examples per completed task. Data, loader, optimizer, task-order, importance-order, and sampled-Fisher-label seeds are separately recorded and paired where appropriate.
 
-Confirmatory execution uses explicit DataLoader generators, reseeds each task's training stage independently of intervening importance computation, and requires deterministic PyTorch and CUDA kernels. Before restarting validation, two complete same-configuration runs in each domain were compared after removing wall-clock metadata. Their training losses, evaluation matrices, and, for TRACE, generated example-level predictions matched exactly. These duplicate checks are retained for reproducibility auditing but excluded from selection.
+All runs use explicit DataLoader generators, reseed each task's training stage independently of the importance computation, and require deterministic PyTorch and CUDA kernels. Before validation, two complete runs with the same configuration were compared in each domain after removing wall-clock metadata; their training losses, evaluation matrices, and, for TRACE, generated example-level predictions matched exactly. These duplicate runs are kept for reproducibility checks but excluded from selection.
 
-For every paired contrast we report the mean and standard deviation of paired differences, a two-sided 95\% Student-$t$ interval, the exact two-sided sign-flip randomization $p$-value when enumerable, the median, and every paired point. These summaries treat task-order/seed pairs as independent; the interval assumes approximately normal paired differences, and sign-flip validity assumes sign exchangeability under the null. The primary interpretation uses a predeclared practical-difference threshold of $0.01$---one percentage point on either zero-to-one final-average metric---rather than a binary significance rule. A pre-lock audit found that the frozen protocol listed five secondary contrasts but called them four; the dated clarification applies Holm correction to all five within a domain. Full five-point validation curves, importance time, total run time, and peak CUDA memory are retained.
+For every paired comparison we report the mean and standard deviation of paired differences, a two-sided 95\% Student-$t$ interval, the exact two-sided sign-flip $p$-value when enumerable, the median, and every paired value. These summaries treat task-order/seed pairs as independent; the interval assumes approximately normal paired differences, and the sign-flip test assumes that signs are exchangeable under the null. We interpret results against a practical threshold of $0.01$, one percentage point on either zero-to-one final-average metric, fixed in advance rather than relying on a binary significance rule. Holm correction is applied to all five secondary comparisons within a domain. Full five-point validation curves, importance time, total run time, and peak CUDA memory are recorded.
 
-TRACE's twelve cells form a balanced cross of six task permutations and two model/optimizer seeds, so they are not twelve independent order draws. A further dated pre-lock amendment therefore leaves the twelve-cell primary analysis, practical threshold, five secondary contrasts, and Holm family unchanged, while adding two dependence checks. First, we average each method over the two seeds within an order and recompute all paired summaries over the six order-level units. Second, we average over all six orders within each seed and report the two seed-level paired differences descriptively, without treating a two-unit interval as reliable inference. The balanced construction preserves the overall paired mean. If the run-level and order-level uncertainty readings differ, the more cautious order-level reading governs claims about TRACE robustness. The six orders are the complete frozen permutation set, not a sample supporting extrapolation to an unlimited population of orders.
+TRACE's twelve runs form a balanced cross of six task permutations and two model/optimizer seeds, so they are not twelve independent order draws. The primary analysis, threshold, and secondary comparisons therefore use all twelve runs, and two dependence checks complement them. First, we average each method over the two seeds within an order and recompute all paired summaries over the six orders. Second, we average over all six orders within each seed and report the two seed-level paired differences without treating a two-unit interval as reliable inference. The balanced design preserves the overall paired mean. Where run-level and order-level uncertainty differ, we base claims about TRACE on the more conservative order-level result. The six orders are the complete set of permutations, not a sample from a larger population of orders.
 
 IEF uses task-relative damping
 \[
@@ -59,13 +59,13 @@ IEF uses task-relative damping
 \]
 Validation-only sensitivity varies the coefficient over $\{0,10^{-3},10^{-2},10^{-1},1\}$, importance counts, RDW caps, and RDW sample order. A separate loss-unit diagnostic multiplies a fitted classification loss by $0.1$, $1$, and $10$. OPG raw scale changes quadratically, fixed numerical damping changes IEF shape, and task-relative damping preserves the IEF matrix to numerical tolerance, matching Section~\ref{sec:well-fitted}.
 
-\subsection{Locked results}
+\subsection{Held-out results}
 \label{app:confirmatory-results}
 
-Table~\ref{tab:confirmatory-main} reports every locked method, and Table~\ref{tab:confirmatory-inference} the primary contrast and the Holm-adjusted secondary family. Values are fractions; differences in the main text are in percentage points.
+Table~\ref{tab:confirmatory-main} reports every method in the held-out evaluation, and Table~\ref{tab:confirmatory-inference} the primary comparison and the Holm-corrected secondary comparisons. Values are fractions; differences in the main text are in percentage points.
 
 \begin{table}[H]
-\caption{Locked final performance and forgetting, mean $\pm$ standard deviation over paired cells, with the validation-selected $\lambda$.}
+\caption{Held-out final performance and forgetting, mean $\pm$ standard deviation over paired runs, with the validation-selected $\lambda$.}
 \label{tab:confirmatory-main}
 \centering
 \small
@@ -95,14 +95,14 @@ TRACE & Sequential & -- & 0.5697 $\pm$ 0.0431 & 0.0758 $\pm$ 0.0440 \\
 \end{table}
 
 \begin{table}[H]
-\caption{Locked paired contrasts with 95\% Student-$t$ intervals, exact sign-flip $p$-values, and Holm-adjusted $p$-values for the secondary family.}
+\caption{Held-out paired comparisons with 95\% Student-$t$ intervals, exact sign-flip $p$-values, and Holm-corrected $p$-values for the secondary comparisons.}
 \label{tab:confirmatory-inference}
 \centering
 \small
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{lllcccc}
 \toprule
-Domain & Family & Contrast & Mean paired difference & 95\% CI & Exact $p$ & Holm $p$ \\
+Domain & Type & Comparison & Mean paired difference & 95\% CI & Exact $p$ & Holm $p$ \\
 \midrule
 ImageNet-R & Primary & IEF uniform $-$ OPG uniform & 0.0200 & [0.0093, 0.0307] & 0.0078 & -- \\
  & Secondary & IEF, RDW $-$ OPG, RDW & 0.0171 & [0.0092, 0.0251] & 0.0039 & 0.0156 \\
@@ -121,12 +121,12 @@ TRACE & Primary & IEF uniform $-$ OPG uniform & -0.0011 & [-0.0148, 0.0127] & 0.
 \end{tabular}}
 \end{table}
 
-\subsection{Original multi-domain protocol}
+\subsection{Multi-domain protocol}
 
-Table~\ref{tab:empirical-protocol} records the configurations behind Table~\ref{tab:main-empirical-results}. These values are retained for exact provenance. In the original study, final reported endpoints participated in grid centering, edge expansion, and method selection; the runs therefore do not have an untouched selection-independent endpoint. The original implementation also omitted the displayed factor $1/2$, so its numerical $\lambda$ values should not be compared directly with the revised convention.
+Table~\ref{tab:empirical-protocol} records the configurations behind Table~\ref{tab:main-empirical-results}. In the multi-domain study, the reported results also informed grid placement, grid extension, and method selection, so they are not unbiased effect estimates. Its implementation omits the factor $1/2$ of the displayed penalty, so its $\lambda$ values are not directly comparable with those of the held-out evaluation.
 
 \begin{table}[H]
-\caption{Complete multi-domain selected-run estimates corresponding to Table~\ref{tab:main-empirical-results}, reported as mean (across-seed standard deviation). Higher is better for accuracy, score, and mIoU; lower is better for MSE and forgetting.}
+\caption{Complete multi-domain results corresponding to Table~\ref{tab:main-empirical-results}, reported as mean (across-seed standard deviation). Higher is better for accuracy, score, and mIoU; lower is better for MSE and forgetting.}
 \label{tab:main-empirical-results-uncertainty}
 \centering
 \small
@@ -155,13 +155,13 @@ Diffusion & Final denoise MSE $\downarrow$ & 0.0676(.0029) & 0.0296(.0013) & -- 
 \end{table}
 
 \begin{table}[H]
-\caption{Configurations for the original multi-domain study. ``DR'' denotes EWC-DR. These hyperparameters belong to the original implementation and selection workflow.}
+\caption{Configurations for the multi-domain study. ``DR'' denotes EWC-DR.}
 \label{tab:empirical-protocol}
 \centering
 \small
 \begin{tabular}{@{}p{0.13\linewidth}p{0.38\linewidth}p{0.43\linewidth}@{}}
 \toprule
-Task type & Dataset, sequence, and model & Originally selected values \\
+Task type & Dataset, sequence, and model & Selected values \\
 \midrule
 Classification & ImageNet-R; ten 20-class distributions; pretrained ViT-B/16 with LoRA rank 4. & OPG: $\lambda=333.333$; DR: $\lambda=3$; U-IEWC: $\lambda=33.333,\tau=10^{-4}$; weighted IEWC: $\lambda=11.111,\tau=10^{-2}$. \\
 NLP & TRACE, C-STANCE $\rightarrow$ FOMC $\rightarrow$ ScienceQA; pretrained Qwen2.5-3B with LoRA rank 8. & OPG: $\lambda=1$; DR: $\lambda=1$; U-IEWC: $\lambda=0.111,\tau=10^{-2}$; weighted IEWC: $\lambda=59049,\tau=10^{-2}$. \\
@@ -172,7 +172,7 @@ Diffusion & MNIST DDPM, labels $0/1\rightarrow2/3$; conditional DDPM trained fro
 \end{tabular}
 \end{table}
 
-The original search used a five-point multiplicative grid around a task-specific midpoint and extended an edge up to three times when an endpoint was best. This workflow supports descriptive selected-performance claims but not a selection-independent effect estimate. The revised protocol fixes all five points before validation, forbids edge expansion, and accesses the locked test only after a selection artifact is frozen.
+The multi-domain search used a five-point multiplicative grid around a task-specific midpoint and extended the grid up to three times when an endpoint was best. Its results therefore describe the performance of the selected configurations rather than unbiased effect estimates. The held-out evaluation instead fixes all five grid points before validation, never extends the grid, and accesses the test split only after the selected hyperparameters are saved.
 
 \begin{figure}[H]
 \centering
@@ -181,18 +181,18 @@ The original search used a five-point multiplicative grid around a task-specific
 \label{fig:forecast-rollouts}
 \end{figure}
 
-The retained development ledger makes the broader selection history explicit rather than indexing only the five paper-facing settings. It contains 635 per-$\lambda$ outcomes: 148 vision-classification, 161 forecasting/regression, 47 DDPM, 55 segmentation, 110 encoder-language, and 114 TRACE decoder-only runs. The record includes pilots, smoke checks, tuning sweeps, selected-seed repetitions, and negative or mixed configurations across CIFAR-100 and ImageNet-R; ETT, M4, and long-horizon forecasting; synthetic and GLUE-family language sequences; three Qwen scales on TRACE; VOC 15--5; and MNIST DDPM. It also retains sequential, OPG-EWC, EWC-DR, uniform IEWC, residual-diversity, and FROMP-derived variants where implemented. Thus Table~\ref{tab:main-empirical-results} presents attained performance in the strongest representative multi-domain settings, while the archival ledger exposes the full development record and the new locked study supplies selection-independent comparisons.
+The archive also contains the complete log of development runs behind the five reported settings, with 635 per-$\lambda$ outcomes: 148 vision-classification, 161 forecasting/regression, 47 DDPM, 55 segmentation, 110 encoder-language, and 114 TRACE decoder-only runs. The log includes pilots, smoke checks, tuning sweeps, selected-seed repetitions, and negative or mixed configurations across CIFAR-100 and ImageNet-R; ETT, M4, and long-horizon forecasting; synthetic and GLUE-family language sequences; three Qwen scales on TRACE; VOC 15--5; and MNIST DDPM. It also covers sequential, OPG-EWC, EWC-DR, uniform IEWC, residual-diversity, and FROMP-derived variants where implemented. Table~\ref{tab:main-empirical-results} thus reports performance in the strongest representative multi-domain settings, the log exposes the full development record, and the held-out evaluation provides comparisons free of selection bias.
 
 \subsection{Damping sensitivity}
 
-Figure~\ref{fig:damping-sensitivity} combines two complementary damping diagnostics on a common higher-is-better change scale. Panel A re-expresses the historical fixed-$\tau$ CIFAR-100/FACIL prefix in changes from $\tau=10^{-2}$: the two curves are final accuracy and negative forgetting, so values below zero indicate worse performance on either measure. Panel B reports the predeclared relative-$\kappa$ sweep at the selected $\lambda$ on one recorded validation repetition per domain, relative to the confirmatory default $\kappa=10^{-2}$. The default is not uniformly best in these descriptive cells: $\kappa=1$ changes validation performance by $+0.0263$ on ImageNet-R and $+0.0007$ on TRACE. The former is material under the prespecified one-point threshold while the latter is negligible. These sensitivity outcomes motivate reporting and tuning damping rather than replacing the frozen confirmatory setting post hoc. Fixed $\tau$ has loss-dependent units; relative $\kappa$ is dimensionless and preserves global loss-unit invariance.
+Figure~\ref{fig:damping-sensitivity} combines two complementary damping diagnostics on a common higher-is-better change scale. Panel A shows a fixed-$\tau$ sweep on a CIFAR-100/FACIL prefix as changes from $\tau=10^{-2}$: the two curves are final accuracy and negative forgetting, so values below zero indicate worse performance on either measure. Panel B reports a relative-$\kappa$ sweep, fixed in advance, at the selected $\lambda$ on one validation repetition per domain, relative to the default $\kappa=10^{-2}$ of the held-out evaluation. The default is not uniformly best in these single runs: $\kappa=1$ changes validation performance by $+0.0263$ on ImageNet-R and $+0.0007$ on TRACE. The former exceeds the one-point practical threshold, while the latter is negligible. These results motivate reporting and tuning damping, rather than changing the fixed setting of the held-out evaluation after the fact. Fixed $\tau$ has loss-dependent units; relative $\kappa$ is dimensionless and preserves global loss-unit invariance.
 
 \begin{figure}[H]
 \centering
 \input{\iewcroot figures/tikz/damping_sensitivity.tex}
-\caption[Damping sensitivity]{Damping sensitivity. \textbf{A}: Historical fixed-$\tau$ CIFAR-100 prefix, expressed relative to $\tau=10^{-2}$; for comparability, forgetting is sign-reversed so higher is better. \textbf{B}: Validation-only task-relative damping at fixed selected $\lambda$, expressed relative to the predeclared $\kappa=10^{-2}$ baseline. Panel B uses one prespecified validation repetition per domain and is descriptive rather than a new selection step.}
+\caption[Damping sensitivity]{Damping sensitivity. \textbf{A}: Fixed-$\tau$ sweep on a CIFAR-100 prefix, expressed relative to $\tau=10^{-2}$; for comparability, forgetting is sign-reversed so higher is better. \textbf{B}: Validation-only task-relative damping at fixed selected $\lambda$, expressed relative to the default $\kappa=10^{-2}$. Panel B uses one validation repetition per domain and was not used for selection.}
 \label{fig:damping-sensitivity}
 \end{figure}
 
 
-The earlier EWC-DR check additionally tested $\lambda\in\{100,300,1000,3000,10000\}$ on that CIFAR-100 prefix and selected $100$. It remains a local historical sensitivity check, not part of the ImageNet-R confirmatory selection.
+An additional EWC-DR check tested $\lambda\in\{100,300,1000,3000,10000\}$ on the same CIFAR-100 prefix and selected $100$; it is not part of the ImageNet-R held-out selection.
