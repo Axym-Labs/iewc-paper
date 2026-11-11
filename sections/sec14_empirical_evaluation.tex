@@ -10,59 +10,58 @@ Unless stated otherwise, all stored matrices are diagonal. Paper-facing EWC, IEW
 \caption[Multi-domain continual-learning results]{Multi-domain selected-run means. Across-seed standard deviations and full-precision means are reported in Appendix Table~\ref{tab:main-empirical-results-uncertainty}. Higher is better except for MSE and forgetting.}
 \label{tab:main-empirical-results}
 \centering
-\ifdefined\TMLRSubmission
 \small
-\setlength{\tabcolsep}{4pt}
-\renewcommand{\arraystretch}{1.0}
-\else
-\footnotesize
-\setlength{\tabcolsep}{1.8pt}
-\renewcommand{\arraystretch}{0.92}
-\fi
-\begin{tabular}{@{}llrrrrr@{}}
+\setlength{\tabcolsep}{0pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}llllrrrrr@{}}
 \toprule
-Task & Metric & Seq. & EWC & DR & IEWC & +RDW \\
+Task & Benchmark & Model & Metric & Seq. & EWC (OPG) & EWC-DR & IEWC & IEWC+RDW \\
 \midrule
-Class. & Acc. $\uparrow$ & .2896 & .5981 & .5687 & \textbf{.6332} & .6250 \\
-& Fgt. $\downarrow$ & .7066 & .3595 & .3933 & \textbf{.3142} & .3285 \\
-NLP & Score $\uparrow$ & .5760 & .5972 & .5972 & .5938 & \textbf{.6272} \\
-& Fgt. $\downarrow$ & .1139 & .0762 & .0781 & .0820 & \textbf{.0046} \\
-Forecast & MSE $\downarrow$ & .2733 & .2388 & -- & .2418 & \textbf{.2383} \\
-& Fgt. $\downarrow$ & .0535 & \textbf{.0140} & -- & .0191 & .0147 \\
-Segment. & mIoU $\uparrow$ & .0917 & .0946 & .3080 & \textbf{.4678} & .4274 \\
-& Fgt. $\downarrow$ & .7135 & .7131 & .4471 & \textbf{.2418} & .2925 \\
-Diffusion & MSE $\downarrow$ & .0676 & .0296 & -- & .0298 & \textbf{.0293} \\
-& Fgt. $\downarrow$ & .0503 & \textbf{-.0006} & -- & .0001 & -.0003 \\
+\multirow{2}{*}{Classification} & \multirow{2}{*}{ImageNet-R} & \multirow{2}{*}{ViT-B/16} & Acc. $\uparrow$ & .2896 & .5981 & .5687 & \textbf{.6332} & .6250 \\
+& & & Fgt. $\downarrow$ & .7066 & .3595 & .3933 & \textbf{.3142} & .3285 \\
+\addlinespace[2pt]
+\multirow{2}{*}{Language} & \multirow{2}{*}{TRACE} & \multirow{2}{*}{Qwen2.5-3B} & Score $\uparrow$ & .5760 & .5972 & .5972 & .5938 & \textbf{.6272} \\
+& & & Fgt. $\downarrow$ & .1139 & .0762 & .0781 & .0820 & \textbf{.0046} \\
+\addlinespace[2pt]
+\multirow{2}{*}{Forecasting} & \multirow{2}{*}{Weather, ECL, Traffic} & \multirow{2}{*}{PatchTST} & MSE $\downarrow$ & .2733 & .2388 & -- & .2418 & \textbf{.2383} \\
+& & & Fgt. $\downarrow$ & .0535 & \textbf{.0140} & -- & .0191 & .0147 \\
+\addlinespace[2pt]
+\multirow{2}{*}{Segmentation} & \multirow{2}{*}{VOC 15--5} & \multirow{2}{*}{ConvNeXtV2-T FPN} & mIoU $\uparrow$ & .0917 & .0946 & .3080 & \textbf{.4678} & .4274 \\
+& & & Fgt. $\downarrow$ & .7135 & .7131 & .4471 & \textbf{.2418} & .2925 \\
+\addlinespace[2pt]
+\multirow{2}{*}{Diffusion} & \multirow{2}{*}{MNIST} & \multirow{2}{*}{DDPM} & MSE $\downarrow$ & .0676 & .0296 & -- & .0298 & \textbf{.0293} \\
+& & & Fgt. $\downarrow$ & .0503 & \textbf{-.0006} & -- & .0001 & -.0003 \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table}
 
 Table \ref{tab:main-empirical-results} shows that uniform IEWC attained higher selected means than OPG-EWC on ImageNet-R and VOC 15--5, while the weighted IEWC configuration attained the highest TRACE score and the lowest forecasting and DDPM MSE. The matched factorial and locked evaluation then isolates which gains generalize and which arise from normalization versus weighting.
 
 \begin{figure}[t]
 \centering
-\ifdefined\TMLRSubmission
-\includegraphics[width=0.62\linewidth]{figures/rendered/classification_distribution_retention.pdf}
-\vspace{-0.55em}
-\includegraphics[width=0.62\linewidth]{figures/rendered/nlp_distribution_retention.pdf}
-\else
-\includegraphics[width=\linewidth]{figures/rendered/classification_distribution_retention.pdf}
-\vspace{-0.55em}
-\includegraphics[width=\linewidth]{figures/rendered/nlp_distribution_retention.pdf}
-\fi
-\caption[ImageNet-R and TRACE distribution retention]{Distribution-level retention in the multi-domain study. \textbf{A--B}: ImageNet-R final accuracy and forgetting. \textbf{C--D}: TRACE final score and forgetting for C-STANCE, FOMC, and ScienceQA.}
+\input{\iewcroot figures/tikz/distribution_retention.tex}
+\caption[ImageNet-R and TRACE distribution retention]{Distribution-level retention in the multi-domain study. \textbf{A--B}: ImageNet-R final accuracy and forgetting. \textbf{C--D}: TRACE final score and forgetting for C-STANCE, FOMC, and ScienceQA. Bands show across-seed standard deviations.}
 \label{fig:distribution-retention}
 \end{figure}
 
 At the distribution level, Figure~\ref{fig:distribution-retention}A--B shows that IEWC's retained accuracy is not concentrated in a single late distribution. The locked paired analysis tests whether this advantage generalizes across frozen class orders. The weighted IEWC run likewise has less forgetting on C-STANCE and FOMC in Figure~\ref{fig:distribution-retention}C--D. The locked comparison crosses the weighting mechanism with both OPG and IEF, while replacing FOMC with NumGLUE-cm to obtain disjoint validation and test roles.
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.90\linewidth]{figures/rendered/forecast_rollouts_longhorizon_tasknorm_selected.pdf}
-\caption[Forecasting rollout comparison]{Held-out forecasting rollouts after the continual sequence. Gray: observed context; black: target horizon; colored: method predictions.}
-\label{fig:forecast-rollouts}
-\end{figure}
 
-Weighted IEWC retains more target-trajectory structure at the first task and remains close to OPG-EWC later; Figure~\ref{fig:forecast-rollouts} provides representative held-out rollouts alongside the aggregate scores.
+Weighted IEWC retains more target-trajectory structure at the first task and remains close to OPG-EWC later; Appendix Figure~\ref{fig:forecast-rollouts} provides representative held-out rollouts alongside the aggregate scores.
 
 The DDPM study also uses a row/column cumulative-distribution output representation motivated by sliced Wasserstein distance. The selected run reduced old-output drift to $9.4409\pm7.2517$, compared with $14.1026\pm12.2220$ for Euclidean uniform IEWC, while attaining denoising MSE $0.0301\pm0.0012$ versus $0.0298\pm0.0014$. Because that surrogate did not establish a matched primal/dual metric pair, the result supports output-representation flexibility but not a claim about Wasserstein geometry. Appendix~\ref{app:ordered-cdf-geometry} supplies a correct ordered-CDF/Cram\'er construction.
+
+Figure~\ref{fig:locked-summands}C--F shows the effective per-sample diagonal summands, $\lambda$ times the per-sample diagonal trace before averaging, in four representative settings. In classification and regression, OPG summands span more than three orders of magnitude between their 5th and 95th percentiles, while IEWC narrows this range by more than an order of magnitude; in diffusion and segmentation, both spreads are comparable.
+
+\subsection{Locked evaluation}
+
+The locked study selects $\lambda$ on validation data from fixed five-point grids and evaluates each method once on held-out data (Appendix~\ref{app:confirmatory-results}). ImageNet-R uses ten paired class orders; TRACE crosses all six orders of C-STANCE, ScienceQA, and NumGLUE-cm with two seeds. On ImageNet-R, uniform IEWC improves final average accuracy over matched EWC by 2.00 percentage points (95\% CI 0.93--3.07; exact sign-flip $p=0.0078$; Figure~\ref{fig:locked-summands}A), and the IEF advantage persists under RDW aggregation (1.71 points, 0.92--2.51; Holm $p=0.016$). On TRACE, the primary difference is $-0.11$ points ($-1.48$--$1.27$; Figure~\ref{fig:locked-summands}B).
+
+\begin{figure}[t]
+\centering
+\input{\iewcroot figures/tikz/locked_primary_effects.tex}
+
+\vspace{2mm}
+\input{\iewcroot figures/tikz/summand_norm_ecdf.tex}
+\caption[Locked paired effects and effective summand norms]{\textbf{A--B}: Locked paired differences in final average performance, uniform IEF minus uniform OPG. Gray points are individual paired cells, the diamond is the mean, the bar its 95\% Student-$t$ interval, and the shaded band the predeclared one-point practical threshold. \textbf{C--F}: Empirical CDFs of $\lambda$ times the per-sample diagonal trace for CIFAR-100 classification, controlled regression, MNIST DDPM denoising, and binary segmentation.}
+\label{fig:locked-summands}
+\end{figure}

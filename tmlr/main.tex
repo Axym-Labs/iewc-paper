@@ -9,12 +9,20 @@
 \usepackage{amsthm}
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usetikzlibrary{calc}
+\usepgfplotslibrary{groupplots}
 \usepackage{float}
 \usepackage{nicefrac}
 \usepackage{hyperref}
 \usepackage{cleveref}
 \usepackage{url}
 \usepackage{doi}
+
+\providecommand{\iewcroot}{../}
+\input{\iewcroot figures/iewc_plot_styles.tex}
 
 \graphicspath{{../}}
 
@@ -111,7 +119,6 @@ the final content.}
 
 \input{../appendices/appd_label_noise_stress_test.tex}
 
-\input{../appendices/appe_qualitative_ddpm_samples.tex}
 
 \input{../appendices/app0_reproducibility.tex}
 

@@ -89,77 +89,48 @@ def band_and_curve(
     )
 
 
-def retention_figure(
-    *,
+COLORS = {
+    "sequential": "IEWCLight",
+    "ewc": "IEWCDark",
+    "ewcdr": "IEWCMid",
+    "iewc": "IEWCPrimary",
+    "iewcrdw": "IEWCSecondary",
+}
+
+
+def retention_panels(
     artifact_root: Path,
     methods: dict[str, list[str]],
     matrix_key: str,
-    task_labels: list[str],
-    output_name: str,
-    left_ylabel: str,
-    panel_labels: tuple[str, str] = ("A", "B"),
-    show_legend: bool = True,
-) -> None:
+    xopts: str,
+    titles: tuple[str, str],
+    ylabels: tuple[str, str],
+    legend: bool,
+) -> list[str]:
     summaries = {
         method: retention_summary(artifact_root, files, matrix_key)
         for method, files in methods.items()
     }
-    xs = list(range(1, len(task_labels) + 1))
-    colors = {
-        "sequential": "IEWCLight",
-        "ewc": "IEWCDark",
-        "ewcdr": "IEWCMid",
-        "iewc": "IEWCPrimary",
-        "iewcrdw": "IEWCSecondary",
-    }
-    if len(task_labels) == 10:
-        xticklabels = ",".join(task_labels)
-        xopts = f"xmin=.7,xmax=10.3,xtick={{{','.join(map(str, xs))}}},xticklabels={{{xticklabels}}}"
-        height = ".34"
-    else:
-        compact = ["C-STANCE", "FOMC", "SciQA"]
-        xopts = (
-            f"xmin=.8,xmax={len(xs)+.2},xtick={{{','.join(map(str, xs))}}},"
-            f"xticklabels={{{','.join(compact)}}},"
-            "xticklabel style={font=\\tiny,rotate=18,anchor=north east}"
-        )
-        height = ".37"
-    legend_option = (
-        f",legend to name={output_name}legend,legend columns=3"
-        if show_legend
-        else ""
-    )
-    lines = [
-        "\\begin{tikzpicture}",
-        "\\begin{groupplot}[group style={group size=2 by 1,horizontal sep=11mm},",
-        f"iewc axis,width=.425\\columnwidth,height={height}\\columnwidth,{xopts}]",
-        f"\\nextgroupplot[title={{\\textbf{{{panel_labels[0]}}}\\quad Performance}},ylabel={{{left_ylabel}}}{legend_option}]",
-    ]
-    for method in methods:
-        final_mean, final_sd, _, _ = summaries[method]
-        style = METHODS[method]
-        lines.append(band_and_curve(xs, final_mean, final_sd, style, colors[style]))
-        if show_legend:
-            lines.append(f"\\addlegendentry{{{METHOD_LABELS[method]}}}")
-    lines.append(
-        f"\\nextgroupplot[title={{\\textbf{{{panel_labels[1]}}}\\quad Forgetting}}]"
-    )
-    for method in methods:
-        _, _, forget_mean, forget_sd = summaries[method]
-        style = METHODS[method]
-        lines.append(band_and_curve(xs, forget_mean, forget_sd, style, colors[style]))
-    lines.append("\\end{groupplot}")
-    if show_legend:
+    xs = list(range(1, len(summaries[next(iter(summaries))][0]) + 1))
+    lines = []
+    for panel, (title, ylabel) in enumerate(zip(titles, ylabels)):
+        legend_option = ",legend to name=retentionlegend,legend columns=5" if legend and panel == 0 else ""
         lines.append(
-            f"\\node[anchor=south] at ($(group c1r1.north west)!0.5!(group c2r1.north east)+(0,9mm)$) {{\\pgfplotslegendfromname{{{output_name}legend}}}};"
+            f"\\nextgroupplot[title={{{title}}},ylabel={{{ylabel}}},{xopts}{legend_option}]"
         )
-    lines.append("\\end{tikzpicture}")
-    write(f"{output_name}.tex", "\n".join(lines))
+        for method in methods:
+            final_mean, final_sd, forget_mean, forget_sd = summaries[method]
+            means, sds = (final_mean, final_sd) if panel == 0 else (forget_mean, forget_sd)
+            style = METHODS[method]
+            lines.append(band_and_curve(xs, means, sds, style, COLORS[style]))
+            if legend and panel == 0:
+                lines.append(f"\\addlegendentry{{{METHOD_LABELS[method]}}}")
+    return lines
 
 
-def classification_retention(experiment_root: Path) -> None:
+def distribution_retention(experiment_root: Path) -> None:
     artifact_root = experiment_root / "docs" / "empirical-2" / "artifacts"
-    methods = {
+    imagenet = {
         "Sequential": [
             f"vision-vitb-imagenetr-10x20-full-e2-classinc-sequential-seed{seed}.json"
             for seed in range(3)
@@ -182,19 +153,7 @@ def classification_retention(experiment_root: Path) -> None:
             for seed in range(3)
         ],
     }
-    retention_figure(
-        artifact_root=artifact_root,
-        methods=methods,
-        matrix_key="accuracy_matrix",
-        task_labels=[str(i) for i in range(1, 11)],
-        output_name="classification_distribution_retention",
-        left_ylabel="Final accuracy",
-    )
-
-
-def nlp_retention(experiment_root: Path) -> None:
-    artifact_root = experiment_root / "docs" / "empirical-2" / "artifacts"
-    methods = {
+    trace = {
         "Sequential": [
             f"trace-qwen3-trace-choiceanswer-3task-512-e2-sequential-seed{seed}.json"
             for seed in range(3)
@@ -216,16 +175,35 @@ def nlp_retention(experiment_root: Path) -> None:
             for seed in range(3)
         ],
     }
-    retention_figure(
-        artifact_root=artifact_root,
-        methods=methods,
-        matrix_key="score_matrix",
-        task_labels=["C-STANCE", "FOMC", "ScienceQA"],
-        output_name="nlp_distribution_retention",
-        left_ylabel="Final score",
-        panel_labels=("C", "D"),
-        show_legend=False,
+    lines = [
+        "\\begin{tikzpicture}",
+        "\\begin{groupplot}[group style={group size=2 by 2,horizontal sep=22mm,vertical sep=19mm},"
+        "iewc axis,width=.37\\linewidth,height=.19\\linewidth]",
+    ]
+    lines += retention_panels(
+        artifact_root,
+        imagenet,
+        "accuracy_matrix",
+        "xmin=.6,xmax=10.4,xtick={1,...,10},xlabel={ImageNet-R distribution}",
+        ("\\textbf{A}\\quad ImageNet-R performance", "\\textbf{B}\\quad ImageNet-R forgetting"),
+        ("Final accuracy", "Forgetting"),
+        legend=True,
     )
+    lines += retention_panels(
+        artifact_root,
+        trace,
+        "score_matrix",
+        "xmin=.75,xmax=3.25,xtick={1,2,3},xticklabels={C-STANCE,FOMC,ScienceQA},xlabel={TRACE task}",
+        ("\\textbf{C}\\quad TRACE performance", "\\textbf{D}\\quad TRACE forgetting"),
+        ("Final score", "Forgetting"),
+        legend=False,
+    )
+    lines += [
+        "\\end{groupplot}",
+        "\\node[anchor=south] at ($(group c1r1.north west)!0.5!(group c2r1.north east)+(0,7mm)$) {\\pgfplotslegendfromname{retentionlegend}};",
+        "\\end{tikzpicture}",
+    ]
+    write("distribution_retention.tex", "\n".join(lines))
 
 
 def sharp_drop_cutoff(values: list[float]) -> int:
@@ -253,7 +231,7 @@ def forecast_rollouts(experiment_root: Path) -> None:
     frequencies = [name for name in ("Weather", "ECL", "Traffic") if name in reference]
     lines = [
         "\\begin{tikzpicture}",
-        "\\begin{groupplot}[group style={group size=1 by 3,vertical sep=8mm},iewc axis,width=\\columnwidth,height=.25\\columnwidth,xmin=-122]",
+        "\\begin{groupplot}[group style={group size=3 by 1,horizontal sep=12mm},iewc axis,width=.245\\linewidth,height=.17\\linewidth,xmin=-122]",
     ]
     for panel, frequency in enumerate(frequencies):
         candidates = []
@@ -267,9 +245,9 @@ def forecast_rollouts(experiment_root: Path) -> None:
         context_values = context_values[-context_tail:]
         target_values = [float(v) for v in ref["target"][:cutoff]]
         xmax = max(22, len(target_values) + 2)
-        legend = ",legend to name=forecastlegend,legend columns=3" if panel == 0 else ""
-        ylabel = "Normalized value" if panel == 1 else ""
-        xlabel = "Forecast step" if panel == 2 else ""
+        legend = ",legend to name=forecastlegend,legend columns=6" if panel == 0 else ""
+        ylabel = "Normalized value" if panel == 0 else ""
+        xlabel = "Forecast step"
         lines.append(
             f"\\nextgroupplot[title={{\\textbf{{{chr(65+panel)}}}\\quad {frequency}}},ylabel={{{ylabel}}},xlabel={{{xlabel}}},xmax={xmax}{legend}]"
         )
@@ -306,7 +284,7 @@ def forecast_rollouts(experiment_root: Path) -> None:
     lines.extend(
         [
             "\\end{groupplot}",
-            "\\node[anchor=south] at ($(group c1r1.north west)!0.5!(group c1r1.north east)+(0,9mm)$) {\\pgfplotslegendfromname{forecastlegend}};",
+            "\\node[anchor=south] at ($(group c1r1.north west)!0.5!(group c3r1.north east)+(0,7mm)$) {\\pgfplotslegendfromname{forecastlegend}};",
             "\\end{tikzpicture}",
         ]
     )
@@ -368,7 +346,7 @@ def damping_sensitivity(experiment_root: Path, internal_root: Path) -> None:
     kappa_labels = ["$0$", "$10^{-3}$", "$10^{-2}$", "$10^{-1}$", "$1$"]
     lines = [
         "\\begin{tikzpicture}",
-        "\\begin{groupplot}[group style={group size=2 by 1,horizontal sep=10mm},iewc axis,width=.47\\linewidth,height=.28\\linewidth,ymin=-.032,ymax=.032]",
+        "\\begin{groupplot}[group style={group size=2 by 1,horizontal sep=22mm},iewc axis,width=.37\\linewidth,height=.19\\linewidth,ymin=-.032,ymax=.032]",
         "\\nextgroupplot[title={\\textbf{A}\\quad Fixed $\\tau$ (CIFAR-100)},xlabel={Fixed damping, $\\tau$},ylabel={$\\Delta$ metric vs. $10^{-2}$},xmin=-.2,xmax=6.2,xtick={0,1,2,3,4,5,6},xticklabels={"
         + ",".join(tau_labels)
         + "},legend to name=dampingleftlegend,legend columns=2]",
@@ -436,14 +414,14 @@ def summand_ecdf(experiment_root: Path) -> None:
     tasks = ("Classification", "Regression", "Diffusion", "Segmentation")
     lines = [
         "\\begin{tikzpicture}",
-        "\\begin{groupplot}[group style={group size=4 by 1,horizontal sep=2mm},iewc axis,width=.245\\linewidth,height=.245\\linewidth,xmode=log,ymin=0,ymax=1.02]",
+        "\\begin{groupplot}[group style={group size=4 by 1,horizontal sep=4mm},iewc axis,width=.19\\linewidth,height=.14\\linewidth,xmode=log,ymin=0,ymax=1.02]",
     ]
     for idx, task in enumerate(tasks):
         ylabel = "Empirical CDF" if idx == 0 else ""
         ylabels = "" if idx == 0 else ",yticklabels={\\empty}"
-        legend = ",legend to name=summandlegend,legend columns=2" if idx == 0 else ""
+        legend = ",legend pos=north west" if idx == 0 else ""
         lines.append(
-            f"\\nextgroupplot[title={{\\textbf{{{chr(65+idx)}}}\\quad {task}}},ylabel={{{ylabel}}}{ylabels}{legend}]"
+            f"\\nextgroupplot[title={{\\textbf{{{chr(67+idx)}}}\\quad {task}}},ylabel={{{ylabel}}}{ylabels}{legend}]"
         )
         for method, style, label in (
             ("EF-EWC", "ewc", "EWC"),
@@ -461,8 +439,7 @@ def summand_ecdf(experiment_root: Path) -> None:
     lines.extend(
         [
             "\\end{groupplot}",
-            "\\node[anchor=north,font=\\scriptsize] at ($(group c1r1.south west)!0.5!(group c4r1.south east)+(0,-6mm)$) {Effective diagonal summand trace ($\\lambda\\times$ trace)};",
-            "\\node[anchor=south] at ($(group c1r1.north west)!0.5!(group c4r1.north east)+(0,7mm)$) {\\pgfplotslegendfromname{summandlegend}};",
+            "\\node[anchor=north,font=\\footnotesize] at ($(group c1r1.south west)!0.5!(group c4r1.south east)+(0,-6mm)$) {Effective diagonal summand trace ($\\lambda\\times$ trace)};",
             "\\end{tikzpicture}",
         ]
     )
@@ -488,7 +465,7 @@ def contamination_spectra(experiment_root: Path) -> None:
     }
     lines = [
         "\\begin{tikzpicture}",
-        "\\begin{axis}[iewc axis,width=.92\\linewidth,height=.36\\linewidth,ymode=log,xlabel={Sorted diagonal-entry rank},ylabel={Mean top diagonal entry},legend columns=3,legend style={at={(.5,1.03)},anchor=south}]",
+        "\\begin{axis}[iewc axis,width=.6\\linewidth,height=.24\\linewidth,ymode=log,xlabel={Sorted diagonal-entry rank},ylabel={Mean top diagonal entry},legend columns=3,legend style={at={(.5,1.03)},anchor=south}]",
     ]
     for method in ("EF-EWC", "IEWC"):
         for noise in (0.0, 0.1, 0.25):
@@ -501,6 +478,39 @@ def contamination_spectra(experiment_root: Path) -> None:
             lines.append(f"\\addlegendentry{{{label}, $p={noise:g}$}}")
     lines.extend(["\\end{axis}", "\\end{tikzpicture}"])
     write("contamination_diagonal_spectra.tex", "\n".join(lines))
+
+
+def locked_effects(internal_root: Path) -> None:
+    locked = load_json(internal_root / "artifacts" / "locked-analysis.json")
+    lines = [
+        "\\begin{tikzpicture}",
+        "\\begin{groupplot}[group style={group size=2 by 1,horizontal sep=22mm},iewc axis,"
+        "width=.37\\linewidth,height=.09\\linewidth,xmin=-5.5,xmax=5.5,ymin=-1,ymax=1,ytick=\\empty,"
+        "axis y line=none,ymajorgrids=false,xmajorgrids,"
+        "xlabel={IEF $-$ OPG, uniform (percentage points)}]",
+    ]
+    for panel, (domain, label) in enumerate((("imagenet_r", "ImageNet-R"), ("trace", "TRACE"))):
+        primary = locked["domains"][domain]["primary"]
+        diffs = [100 * float(value) for value in primary["differences"]]
+        lower, upper = (100 * float(value) for value in primary["confidence_interval_95"])
+        mean = 100 * float(primary["mean_difference"])
+        threshold = 100 * float(primary["practical_threshold"])
+        n = len(diffs)
+        jitter = [-.55 + 1.1 * idx / (n - 1) for idx in range(n)]
+        lines += [
+            f"\\nextgroupplot[title={{\\textbf{{{chr(65+panel)}}}\\quad {label} ($n={n}$)}}]",
+            f"\\addplot[draw=none,fill=IEWCBand,forget plot] coordinates {{({f(-threshold)},-1)({f(threshold)},-1)({f(threshold)},1)({f(-threshold)},1)}} -- cycle;",
+            "\\addplot[IEWCMid,line width=.45pt,forget plot] coordinates {(0,-1)(0,1)};",
+            "\\addplot[only marks,mark=*,mark size=1.15pt,color=IEWCMid] coordinates {"
+            + " ".join(f"({f(x)},{f(y)})" for x, y in zip(diffs, jitter))
+            + "};",
+            f"\\addplot[IEWCPrimary,line width=.85pt] coordinates {{({f(lower)},0)({f(upper)},0)}};",
+            f"\\addplot[IEWCPrimary,line width=.85pt] coordinates {{({f(lower)},-.18)({f(lower)},.18)}};",
+            f"\\addplot[IEWCPrimary,line width=.85pt] coordinates {{({f(upper)},-.18)({f(upper)},.18)}};",
+            f"\\addplot[only marks,mark=diamond*,mark size=2.4pt,color=IEWCPrimary] coordinates {{({f(mean)},0)}};",
+        ]
+    lines += ["\\end{groupplot}", "\\end{tikzpicture}"]
+    write("locked_primary_effects.tex", "\n".join(lines))
 
 
 def main() -> None:
@@ -518,8 +528,8 @@ def main() -> None:
         help="Revision task arc containing confirmatory sensitivity records",
     )
     args = parser.parse_args()
-    classification_retention(args.experiment_root)
-    nlp_retention(args.experiment_root)
+    distribution_retention(args.experiment_root)
+    locked_effects(args.internal_root)
     forecast_rollouts(args.experiment_root)
     damping_sensitivity(args.experiment_root, args.internal_root)
     summand_ecdf(args.experiment_root)

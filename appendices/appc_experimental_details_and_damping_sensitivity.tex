@@ -59,6 +59,68 @@ IEF uses task-relative damping
 \]
 Validation-only sensitivity varies the coefficient over $\{0,10^{-3},10^{-2},10^{-1},1\}$, importance counts, RDW caps, and RDW sample order. A separate loss-unit diagnostic multiplies a fitted classification loss by $0.1$, $1$, and $10$. OPG raw scale changes quadratically, fixed numerical damping changes IEF shape, and task-relative damping preserves the IEF matrix to numerical tolerance, matching Section~\ref{sec:well-fitted}.
 
+\subsection{Locked results}
+\label{app:confirmatory-results}
+
+Table~\ref{tab:confirmatory-main} reports every locked method, and Table~\ref{tab:confirmatory-inference} the primary contrast and the Holm-adjusted secondary family. Values are fractions; differences in the main text are in percentage points.
+
+\begin{table}[H]
+\caption{Locked final performance and forgetting, mean $\pm$ standard deviation over paired cells, with the validation-selected $\lambda$.}
+\label{tab:confirmatory-main}
+\centering
+\small
+\begin{tabular}{llccc}
+\toprule
+Domain & Method & Selected $\lambda$ & Final performance & Forgetting \\
+\midrule
+ImageNet-R & Sequential & -- & 0.2808 $\pm$ 0.0438 & 0.7018 $\pm$ 0.0467 \\
+ & Offline/joint & -- & 0.8199 $\pm$ 0.0029 & 0.0000 $\pm$ 0.0000 \\
+ & OPG, uniform & 1.0000 & 0.6416 $\pm$ 0.0301 & 0.2835 $\pm$ 0.0337 \\
+ & IEF, uniform & 1.0000 & 0.6616 $\pm$ 0.0168 & 0.2566 $\pm$ 0.0177 \\
+ & OPG, RDW & 1.0000 & 0.6445 $\pm$ 0.0278 & 0.2803 $\pm$ 0.0310 \\
+ & IEF, RDW & 1.0000 & 0.6617 $\pm$ 0.0185 & 0.2565 $\pm$ 0.0196 \\
+ & Sampled model Fisher & 1.0000 & 0.6477 $\pm$ 0.0242 & 0.2755 $\pm$ 0.0259 \\
+ & MAS & 0.0300 & 0.4602 $\pm$ 0.0261 & 0.5015 $\pm$ 0.0273 \\
+\midrule
+TRACE & Sequential & -- & 0.5697 $\pm$ 0.0431 & 0.0758 $\pm$ 0.0440 \\
+ & Offline/joint & -- & 0.6391 $\pm$ 0.0183 & 0.0000 $\pm$ 0.0000 \\
+ & OPG, uniform & $3\times 10^{-4}$ & 0.5703 $\pm$ 0.0395 & 0.0750 $\pm$ 0.0458 \\
+ & IEF, uniform & $3\times 10^{-4}$ & 0.5692 $\pm$ 0.0408 & 0.0670 $\pm$ 0.0471 \\
+ & OPG, RDW & $3\times 10^{-4}$ & 0.5800 $\pm$ 0.0381 & 0.0685 $\pm$ 0.0446 \\
+ & IEF, RDW & $3\times 10^{-5}$ & 0.5646 $\pm$ 0.0395 & 0.0763 $\pm$ 0.0407 \\
+ & Sampled model Fisher & $1\times 10^{-5}$ & 0.5758 $\pm$ 0.0460 & 0.0759 $\pm$ 0.0427 \\
+ & MAS & $1\times 10^{-4}$ & 0.5650 $\pm$ 0.0441 & 0.0785 $\pm$ 0.0433 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\caption{Locked paired contrasts with 95\% Student-$t$ intervals, exact sign-flip $p$-values, and Holm-adjusted $p$-values for the secondary family.}
+\label{tab:confirmatory-inference}
+\centering
+\small
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lllcccc}
+\toprule
+Domain & Family & Contrast & Mean paired difference & 95\% CI & Exact $p$ & Holm $p$ \\
+\midrule
+ImageNet-R & Primary & IEF uniform $-$ OPG uniform & 0.0200 & [0.0093, 0.0307] & 0.0078 & -- \\
+ & Secondary & IEF, RDW $-$ OPG, RDW & 0.0171 & [0.0092, 0.0251] & 0.0039 & 0.0156 \\
+ & Secondary & OPG, RDW $-$ OPG, uniform & 0.0030 & [-0.0024, 0.0084] & 0.2637 & 0.5273 \\
+ & Secondary & IEF, RDW $-$ IEF, uniform & $8.5\times 10^{-5}$ & [-0.0017, 0.0018] & 0.8867 & 0.8867 \\
+ & Secondary & Sampled model Fisher $-$ OPG, uniform & 0.0061 & [-0.0021, 0.0144] & 0.1270 & 0.3809 \\
+ & Secondary & MAS $-$ OPG, uniform & -0.1814 & [-0.1986, -0.1643] & 0.0020 & 0.0098 \\
+\midrule
+TRACE & Primary & IEF uniform $-$ OPG uniform & -0.0011 & [-0.0148, 0.0127] & 0.8589 & -- \\
+ & Secondary & IEF, RDW $-$ OPG, RDW & -0.0155 & [-0.0335, 0.0026] & 0.0513 & 0.2563 \\
+ & Secondary & OPG, RDW $-$ OPG, uniform & 0.0097 & [-0.0042, 0.0237] & 0.1914 & 0.7656 \\
+ & Secondary & IEF, RDW $-$ IEF, uniform & -0.0047 & [-0.0136, 0.0043] & 0.2759 & 0.8276 \\
+ & Secondary & Sampled model Fisher $-$ OPG, uniform & 0.0055 & [-0.0063, 0.0172] & 0.3887 & 0.8276 \\
+ & Secondary & MAS $-$ OPG, uniform & -0.0053 & [-0.0156, 0.0050] & 0.3013 & 0.8276 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
 \subsection{Original multi-domain protocol}
 
 Table~\ref{tab:empirical-protocol} records the configurations behind Table~\ref{tab:main-empirical-results}. These values are retained for exact provenance. In the original study, final reported endpoints participated in grid centering, edge expansion, and method selection; the runs therefore do not have an untouched selection-independent endpoint. The original implementation also omitted the displayed factor $1/2$, so its numerical $\lambda$ values should not be compared directly with the revised convention.
@@ -112,30 +174,25 @@ Diffusion & MNIST DDPM, labels $0/1\rightarrow2/3$; conditional DDPM trained fro
 
 The original search used a five-point multiplicative grid around a task-specific midpoint and extended an edge up to three times when an endpoint was best. This workflow supports descriptive selected-performance claims but not a selection-independent effect estimate. The revised protocol fixes all five points before validation, forbids edge expansion, and accesses the locked test only after a selection artifact is frozen.
 
+\begin{figure}[H]
+\centering
+\input{\iewcroot figures/tikz/forecast_rollouts_longhorizon_tasknorm_selected.tex}
+\caption[Forecasting rollout comparison]{Held-out forecasting rollouts after the continual sequence. Gray: observed context; black: target horizon; colored: method predictions.}
+\label{fig:forecast-rollouts}
+\end{figure}
+
 The retained development ledger makes the broader selection history explicit rather than indexing only the five paper-facing settings. It contains 635 per-$\lambda$ outcomes: 148 vision-classification, 161 forecasting/regression, 47 DDPM, 55 segmentation, 110 encoder-language, and 114 TRACE decoder-only runs. The record includes pilots, smoke checks, tuning sweeps, selected-seed repetitions, and negative or mixed configurations across CIFAR-100 and ImageNet-R; ETT, M4, and long-horizon forecasting; synthetic and GLUE-family language sequences; three Qwen scales on TRACE; VOC 15--5; and MNIST DDPM. It also retains sequential, OPG-EWC, EWC-DR, uniform IEWC, residual-diversity, and FROMP-derived variants where implemented. Thus Table~\ref{tab:main-empirical-results} presents attained performance in the strongest representative multi-domain settings, while the archival ledger exposes the full development record and the new locked study supplies selection-independent comparisons.
 
-\subsection{Damping and summand diagnostics}
+\subsection{Damping sensitivity}
 
 Figure~\ref{fig:damping-sensitivity} combines two complementary damping diagnostics on a common higher-is-better change scale. Panel A re-expresses the historical fixed-$\tau$ CIFAR-100/FACIL prefix in changes from $\tau=10^{-2}$: the two curves are final accuracy and negative forgetting, so values below zero indicate worse performance on either measure. Panel B reports the predeclared relative-$\kappa$ sweep at the selected $\lambda$ on one recorded validation repetition per domain, relative to the confirmatory default $\kappa=10^{-2}$. The default is not uniformly best in these descriptive cells: $\kappa=1$ changes validation performance by $+0.0263$ on ImageNet-R and $+0.0007$ on TRACE. The former is material under the prespecified one-point threshold while the latter is negligible. These sensitivity outcomes motivate reporting and tuning damping rather than replacing the frozen confirmatory setting post hoc. Fixed $\tau$ has loss-dependent units; relative $\kappa$ is dimensionless and preserves global loss-unit invariance.
 
 \begin{figure}[H]
 \centering
-\ifdefined\TMLRSubmission
-\includegraphics[width=0.72\linewidth]{figures/rendered/damping_sensitivity.pdf}
-\else
-\includegraphics[width=0.96\linewidth]{figures/rendered/damping_sensitivity.pdf}
-\fi
+\input{\iewcroot figures/tikz/damping_sensitivity.tex}
 \caption[Damping sensitivity]{Damping sensitivity. \textbf{A}: Historical fixed-$\tau$ CIFAR-100 prefix, expressed relative to $\tau=10^{-2}$; for comparability, forgetting is sign-reversed so higher is better. \textbf{B}: Validation-only task-relative damping at fixed selected $\lambda$, expressed relative to the predeclared $\kappa=10^{-2}$ baseline. Panel B uses one prespecified validation repetition per domain and is descriptive rather than a new selection step.}
 \label{fig:damping-sensitivity}
 \end{figure}
 
-Figure~\ref{fig:summand-norm-ecdf} reports the diagonal scale diagnostic for CIFAR-100 classification, controlled regression, MNIST DDPM denoising, and binary segmentation. It shows $\lambda$ times the per-sample diagonal trace before averaging and is not a sample-weight plot.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.98\linewidth]{figures/rendered/summand_norm_ecdf.pdf}
-\caption[Effective diagonal summand norms]{Effective diagonal summand norms. Each panel reports the empirical CDF of $\lambda$ times the per-sample diagonal trace in the original configuration.}
-\label{fig:summand-norm-ecdf}
-\end{figure}
 
 The earlier EWC-DR check additionally tested $\lambda\in\{100,300,1000,3000,10000\}$ on that CIFAR-100 prefix and selected $100$. It remains a local historical sensitivity check, not part of the ImageNet-R confirmatory selection.

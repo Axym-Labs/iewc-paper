@@ -3,16 +3,13 @@ export SOURCE_DATE_EPOCH
 
 TECTONIC_FLAGS ?= -Z deterministic-mode
 
-.PHONY: paper tmlr figures regenerate
+.PHONY: paper tmlr regenerate
 
-paper: figures figures/overview.pdf
+paper: figures/overview.pdf
 	tectonic $(TECTONIC_FLAGS) main.tex
 
-tmlr: figures figures/overview.pdf
+tmlr: figures/overview.pdf
 	cd tmlr && tectonic $(TECTONIC_FLAGS) main.tex
-
-figures:
-	python scripts/build_cached_figures.py
 
 figures/overview.pdf: figures/build_overview.py
 	python figures/build_overview.py
@@ -20,5 +17,4 @@ figures/overview.pdf: figures/build_overview.py
 regenerate:
 	python figures/build_overview.py
 	python scripts/generate_tikz_figures.py
-	python scripts/build_cached_figures.py --force
 	tectonic $(TECTONIC_FLAGS) main.tex
