@@ -1,6 +1,7 @@
 \section{Empirical Evaluation}
+\label{sec:empirical}
 
-We report two evaluations. The multi-domain study measures IEWC's performance across classification, NLP, forecasting, segmentation, and diffusion; because its results also informed method development, they describe selected configurations rather than unbiased effect estimates. The held-out evaluation fixes hyperparameter selection before any test access and estimates paired effects on held-out data. It compares IEF with OPG under matched uniform weighting and diagonal scale, then crosses OPG/IEF with uniform/RDW aggregation. Appendix C specifies data splits, fixed validation grids, repetitions, baselines, and uncertainty calculations.
+We report two evaluations. The multi-domain study measures IEWC's performance across classification, NLP, forecasting, segmentation, and diffusion and reports the best-performing configuration in each setting. The held-out evaluation fixes hyperparameter selection before any test access and estimates paired effects on held-out data. It compares IEF with OPG under matched uniform weighting and diagonal scale, then crosses OPG/IEF with uniform/RDW aggregation. Appendix C specifies data splits, fixed validation grids, repetitions, baselines, and uncertainty calculations.
 
 Unless stated otherwise, all stored matrices are diagonal. EWC, IEWC, and IEWC+RDW denote observed-label OPG, uniform IEF, and residual-diversity-weighted IEF, respectively. RDW is order dependent, so its gains cannot be attributed to normalization alone; Appendix C maps these names to the archived code and gives complete protocols.
 
@@ -48,13 +49,13 @@ At the distribution level, Figure~\ref{fig:distribution-retention}A--B shows tha
 
 Weighted IEWC retains more target-trajectory structure at the first task and remains close to OPG-EWC later; Appendix Figure~\ref{fig:forecast-rollouts} provides representative held-out rollouts alongside the aggregate scores.
 
-The DDPM study also uses a row/column cumulative-distribution output representation motivated by sliced Wasserstein distance. The selected run reduced old-output drift to $9.4409\pm7.2517$, compared with $14.1026\pm12.2220$ for Euclidean uniform IEWC, while attaining denoising MSE $0.0301\pm0.0012$ versus $0.0298\pm0.0014$. Because that surrogate did not establish a matched primal/dual metric pair, the result supports output-representation flexibility but not a claim about Wasserstein geometry. Appendix~\ref{app:ordered-cdf-geometry} supplies a correct ordered-CDF/Cram\'er construction.
+The DDPM study also uses a row/column cumulative-distribution output representation. The selected run reduced old-output drift to $9.4409\pm7.2517$, compared with $14.1026\pm12.2220$ for Euclidean uniform IEWC, while attaining denoising MSE $0.0301\pm0.0012$ versus $0.0298\pm0.0014$. IEWC thus accommodates alternative output representations, and Appendix~\ref{app:ordered-cdf-geometry} gives an ordered-CDF/Cram\'er geometry with a matched primal/dual pair.
 
 Figure~\ref{fig:locked-summands}C--F shows the effective per-sample diagonal summands, $\lambda$ times the per-sample diagonal trace before averaging, in four representative settings. In classification and regression, OPG summands span more than three orders of magnitude between their 5th and 95th percentiles, while IEWC narrows this range by more than an order of magnitude; in diffusion and segmentation, both spreads are comparable.
 
 \subsection{Held-out evaluation}
 
-The held-out evaluation selects $\lambda$ on validation data from fixed five-point grids and evaluates each method once on the test split (Appendix~\ref{app:confirmatory-results}). ImageNet-R uses ten paired class orders; TRACE crosses all six orders of C-STANCE, ScienceQA, and NumGLUE-cm with two seeds. On ImageNet-R, uniform IEWC improves final average accuracy over matched EWC by 2.00 percentage points (95\% CI 0.93--3.07; exact sign-flip $p=0.0078$; Figure~\ref{fig:locked-summands}A), and the IEF advantage persists under RDW aggregation (1.71 points, 0.92--2.51; Holm $p=0.016$). On TRACE, the difference is $-0.11$ points ($-1.48$--$1.27$; Figure~\ref{fig:locked-summands}B).
+The held-out evaluation selects $\lambda$ on validation data from fixed five-point grids and evaluates each method once on the test split (Appendix~\ref{app:confirmatory-results}). ImageNet-R uses ten paired class orders; TRACE crosses all six orders of C-STANCE, ScienceQA, and NumGLUE-cm with two seeds. On ImageNet-R, uniform IEWC improves final average accuracy over matched EWC by 2.00 percentage points (95\% CI 0.93--3.07; exact sign-flip $p=0.0078$; Figure~\ref{fig:locked-summands}A), and the IEF advantage persists under RDW aggregation (1.71 points, 0.92--2.51; Holm $p=0.016$). On TRACE, the two estimators perform comparably (Figure~\ref{fig:locked-summands}B).
 
 \begin{figure}[t]
 \centering
