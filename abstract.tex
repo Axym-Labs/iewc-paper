@@ -4,8 +4,8 @@ Consolidation (EWC), a standard instance, weights its quadratic penalty by the
 empirical Fisher, usually justified as approximating loss curvature. We
 instead derive the penalty from what training on a new task should preserve. In
 this formulation, \emph{Continual Learning as an Optimization Constraint}
-(CLOC), new training must keep chosen functionals of learned behavior unchanged;
-approximating this constraint locally gives the stored penalty. We show
+(CLOC), new training must keep chosen functionals of learned behavior unchanged,
+and the local approximation of this constraint is the stored penalty. We show
 that EWC's empirical Fisher is exactly the first-order form of this constraint
 when the preserved functional is each old sample's loss. The derivation exposes
 a flaw: EWC weights each sample by the scale of its loss gradient, so samples
@@ -14,7 +14,8 @@ them. Improved EWC (IEWC) instead penalizes how far each old output moves off
 its loss level set, rather than how much its loss changes, which removes this
 weighting for any differentiable loss and output geometry. Across
 classification, segmentation, language, forecasting, and diffusion, IEWC
-variants match or improve on EWC. In a held-out evaluation with
+variants match or improve on EWC and outperform EWC-DR, a classification-specific
+correction. In a held-out evaluation with
 validation-selected hyperparameters, removing this weighting alone raises ImageNet-R
 accuracy over EWC by 2.00 percentage points (95\% CI 0.93--3.07). More
 broadly, CLOC turns the design of continual-learning penalties into a choice of
