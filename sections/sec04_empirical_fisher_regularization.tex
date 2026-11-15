@@ -31,4 +31,4 @@ F_{\mathrm{model}}(\theta)
 \]
 It averages over labels sampled from the model, not only the observed label. Under standard regularity conditions this Fisher is connected to expected negative-log-likelihood curvature and natural-gradient geometry \citep{Amari1998,MartensNG,KFAC}. The observed-label empirical Fisher is a different object and can be a poor curvature approximation \citep{KunstnerEF}; Fisher-estimator choice can also materially affect EWC behavior and regularization scale \citep{VanDeVenFisher2025}.
 
-Our experiments include a one-label Monte Carlo model-Fisher baseline, obtained by sampling from the frozen predictive distribution at each supervised output site---one class per image and one token per supervised TRACE answer position---alongside OPG-EWC.
+Our experiments include a one-label Monte Carlo model-Fisher baseline, obtained by sampling from the frozen predictive distribution at each supervised output site (one class per image and one token per supervised TRACE answer position), alongside OPG-EWC.

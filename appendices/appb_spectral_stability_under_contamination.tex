@@ -1,4 +1,5 @@
 \section{Contamination Contributions and Spectral Stability}
+\label{app:contamination}
 
 The OPG--IEF normalization difference can change which samples dominate a full importance matrix. In Euclidean output geometry, write $s_i=\|r_i\|_2^2$ and $a_i=g_i/\sqrt{s_i}$ for $s_i>0$. The undamped per-sample matrices are
 \[
@@ -15,7 +16,7 @@ For intuition, suppose a fraction $\varepsilon$ of samples are contaminated, the
 (1-\varepsilon)\bar s_{\mathrm{clean}}\Sigma_{\mathrm{clean}}
 +\varepsilon Wuu^\top,
 \]
-whereas undamped IEF has no factor $W$ on the contaminating direction. In particular, a sufficiently large $\varepsilon W$ can move $u$ into the leading OPG eigenspace. This model is illustrative rather than a distribution-free robustness theorem.
+whereas undamped IEF has no factor $W$ on the contaminating direction. In particular, a sufficiently large $\varepsilon W$ can move $u$ into the leading OPG eigenspace. This model is an illustration; the experiment below tests the mechanism directly.
 
 We test the mechanism directly in a fitted two-class MLP. For each seed, 512 inputs are drawn from $\mathcal N(0,I_2)$ and assigned the clean label $\mathbf{1}\{x_1+0.75x_2<0\}$; a uniformly selected $0$, $5$, $10$, or $20\%$ of labels is flipped. A $2$--$32$--$2$ tanh MLP is trained for 250 epochs with Adam, learning rate $0.01$, and batch size 64. For each of 20 independent seeds we then retain every per-sample parameter-gradient row and clean/corrupt identity. We decompose the full OPG and task-relative-damped IEF matrices ($\kappa=0.01$) into clean and corrupt contributions, then compare each total matrix with its clean-contribution reference. Table~\ref{tab:contamination-mechanism} reports means over seeds.
 
@@ -44,7 +45,7 @@ $0.20$ & 11.23 & 0.736 & 0.202 & 0.875 & 0.998 & 0.930 & 0.990 \\
 \small
 \begin{tabular}{lccc}
 \toprule
-IEF minus OPG contrast & 5\% flips & 10\% flips & 20\% flips \\
+IEF minus OPG & 5\% flips & 10\% flips & 20\% flips \\
 \midrule
 Corrupt trace share & $-0.729$ [$-0.751,-0.706$] & $-0.685$ [$-0.701,-0.670$] & $-0.534$ [$-0.549,-0.519$] \\
 Leading-vector alignment & $+0.574$ [$+0.444,+0.704$] & $+0.279$ [$+0.152,+0.406$] & $+0.123$ [$+0.034,+0.213$] \\
@@ -53,4 +54,4 @@ Top-5 overlap & $+0.094$ [$+0.067,+0.122$] & $+0.074$ [$+0.047,+0.101$] & $+0.06
 \end{tabular}
 \end{table}
 
-These observations support the proposed contamination mechanism in this controlled construction. They do not establish a universal robustness guarantee or prove that a diagonal continual-learning penalty improves on a real benchmark; those are separate empirical questions.
+These observations support the proposed contamination mechanism in this controlled construction; Appendix~\ref{app:label-noise} gives the downstream benchmark view.

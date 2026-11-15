@@ -1,19 +1,21 @@
-Elastic Weight Consolidation (EWC) is a widely used regularization-based
-technique for continual learning, protecting performance on old tasks with a
-quadratic penalty whose empirical Fisher is usually justified through
-probabilistic curvature. We instead introduce \emph{Continual Learning as an
-Optimization Constraint} (CLOC): new training must preserve chosen functionals
-of learned behavior. EWC's empirical Fisher is exactly the first-order form of
-this constraint when the preserved functional is each sample's loss. This
-derivation exposes a flaw: EWC implicitly weights each sample by the scale of
-its loss gradient, so well-fitted samples lose importance. EWC-DR observed this
-failure in classification; CLOC identifies its general cause. Improved Elastic
-Weight Consolidation (IEWC) penalizes output changes according to the
-first-order approximation of each old sample's loss level set, removing the
-weighting for any differentiable loss and output geometry, and prevents corrupt
-samples from dominating the importance matrix. Across classification,
-segmentation, language, forecasting, and diffusion, IEWC variants match or
-improve on EWC and outperform EWC-DR. In a held-out evaluation with validation-selected hyperparameters, uniform IEWC improves ImageNet-R accuracy over matched EWC by 2.00 percentage points
-(95\% CI 0.93--3.07). More broadly, deriving a regularizer from what a model
-should preserve, rather than from an approximation of curvature, gives a
-principled recipe for designing continual-learning penalties.
+Regularization-based continual learning reduces catastrophic forgetting by
+penalizing changes to parameters that mattered for earlier tasks. Elastic Weight
+Consolidation (EWC), a standard instance, weights its quadratic penalty by the
+empirical Fisher, usually justified as approximating loss curvature. We
+instead derive the penalty from what training on a new task should preserve. In
+this formulation, \emph{Continual Learning as an Optimization Constraint}
+(CLOC), new training must keep chosen functionals of learned behavior unchanged;
+approximating this constraint locally gives the stored penalty. We show
+that EWC's empirical Fisher is exactly the first-order form of this constraint
+when the preserved functional is each old sample's loss. The derivation exposes
+a flaw: EWC weights each sample by the scale of its loss gradient, so samples
+the model fits well barely contribute, although later training can still forget
+them. Improved EWC (IEWC) instead penalizes how far each old output moves off
+its loss level set, rather than how much its loss changes, which removes this
+weighting for any differentiable loss and output geometry. Across
+classification, segmentation, language, forecasting, and diffusion, IEWC
+variants match or improve on EWC. In a held-out evaluation with
+validation-selected hyperparameters, removing this weighting alone raises ImageNet-R
+accuracy over EWC by 2.00 percentage points (95\% CI 0.93--3.07). More
+broadly, CLOC turns the design of continual-learning penalties into a choice of
+what to preserve, from which a principled penalty follows by derivation.

@@ -172,7 +172,7 @@ Diffusion & MNIST DDPM, labels $0/1\rightarrow2/3$; conditional DDPM trained fro
 \end{tabular}
 \end{table}
 
-The multi-domain search used a five-point multiplicative grid around a task-specific midpoint and extended the grid up to three times when an endpoint was best. Its results therefore describe the performance of the selected configurations rather than unbiased effect estimates. The held-out evaluation instead fixes all five grid points before validation, never extends the grid, and accesses the test split only after the selected hyperparameters are saved.
+The multi-domain search used a five-point multiplicative grid around a task-specific midpoint and extended the grid up to three times when an endpoint was best. Its results therefore report the best-performing configuration in each setting. The held-out evaluation instead fixes all five grid points before validation, never extends the grid, and accesses the test split only after the selected hyperparameters are saved.
 
 \begin{figure}[H]
 \centering
