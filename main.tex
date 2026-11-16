@@ -1,7 +1,17 @@
-\documentclass[twoside]{article}
+% One source for the AISTATS 2027 submission (anonymous, default) and the arXiv
+% version. scripts/build_arxiv.sh sets \arxivtrue in the packaged copy.
+\newif\ifarxiv
+\arxivfalse
 
-% Official AISTATS 2027 submission style. Do not modify the style file.
-\usepackage{aistats2027}
+\ifarxiv
+  \ifdefined\XeTeXversion\else\pdfoutput=1\fi
+  \documentclass{article}
+  \usepackage{arxiv}
+\else
+  \documentclass[twoside]{article}
+  % Official AISTATS 2027 submission style. Do not modify the style file.
+  \usepackage{aistats2027}
+\fi
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{microtype}
@@ -17,12 +27,21 @@
 \usepackage{float}
 \usepackage{nicefrac}
 \usepackage[round,authoryear]{natbib}
-\renewcommand{\bibname}{References}
-\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+\ifarxiv
+  \setlength{\bibsep}{2pt plus 0.5pt}
+\else
+  \renewcommand{\bibname}{References}
+  \renewcommand{\bibsection}{\subsubsection*{\bibname}}
+\fi
 \usepackage{hyperref}
 \usepackage{cleveref}
 \usepackage{url}
 \usepackage{doi}
+\ifarxiv
+  \usepackage{axym-links}
+  \publicationcode{https://github.com/Axym-Labs/iewc}
+  \publicationcorrespondence{dw@axym.org}
+\fi
 
 \providecommand{\iewcroot}{}
 \input{\iewcroot figures/iewc_plot_styles.tex}
@@ -32,9 +51,19 @@
 \hypersetup{
   hidelinks,
   pdftitle={Improved Elastic Weight Consolidation as an Optimization Constraint for Continual Learning},
-  pdfauthor={},
   pdfkeywords={continual learning, elastic weight consolidation, empirical Fisher, constrained optimization},
 }
+\ifarxiv
+  \hypersetup{pdfauthor={Davide Wiest}}
+\else
+  \hypersetup{pdfauthor={}}
+\fi
+
+\newcommand{\iewcoverviewcaption}{Each panel shows the continual-learning penalty
+  over normalized directions for two representative samples. EWC (OPG) inherits
+  sample weighting from output-loss-gradient scale; uniform IEWC removes this
+  scale away from the damping regime, while residual-diversity weighting changes
+  the aggregation measure as a separate design choice.}
 
 \newcommand{\iewcleadfigure}{%
   \begin{center}
@@ -45,19 +74,30 @@
 
   \begin{minipage}{0.94\textwidth}
   \small
-  \textbf{Figure \thefigure:} Each panel shows the continual-learning penalty
-  over normalized directions for two representative samples. EWC (OPG) inherits
-  sample weighting from output-loss-gradient scale; uniform IEWC removes this
-  scale away from the damping regime, while residual-diversity weighting changes
-  the aggregation measure as a separate design choice.
+  \textbf{Figure \thefigure:} \iewcoverviewcaption
   \label{fig:overview}
   \end{minipage}
   \end{center}
   \vspace{0.5em}%
 }
 
+\ifarxiv
+  \title{Improved Elastic Weight Consolidation as an Optimization Constraint for Continual Learning}
+  \author{
+    Davide Wiest \\
+    Department of Computer Science, TU Darmstadt
+  }
+  \date{}
+  \renewcommand{\headeright}{}
+  \renewcommand{\undertitle}{}
+  \renewcommand{\shorttitle}{Improved Elastic Weight Consolidation}
+\fi
+
 \begin{document}
 
+\ifarxiv
+\maketitle
+\else
 \twocolumn[
 \aistatstitle{Improved Elastic Weight Consolidation as an Optimization Constraint for Continual Learning}
 
@@ -66,10 +106,24 @@
 
 \iewcleadfigure
 ]
+\fi
 
 \begin{abstract}
 \input{abstract}
 \end{abstract}
+
+\ifarxiv
+\makepublicationlinks
+
+\keywords{continual learning \and elastic weight consolidation \and empirical Fisher \and constrained optimization}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.62\textwidth]{figures/overview.pdf}
+\caption[IEWC framework overview]{\iewcoverviewcaption}
+\label{fig:overview}
+\end{figure}
+\fi
 
 \input{sections/sec01_continual_learning_as_optimization_constraint.tex}
 
@@ -104,12 +158,16 @@
 \bibliographystyle{apalike}
 \bibliography{references}
 
+\ifarxiv\else
 \input{sections/sec17_reproducibility_checklist.tex}
+\fi
 
 \clearpage
 \appendix
+\ifarxiv\else
 \onecolumn
 \aistatstitle{Improved Elastic Weight Consolidation as an Optimization Constraint for Continual Learning: Supplementary Materials}
+\fi
 
 \input{appendices/appa_invariance_to_loss_reparameterization.tex}
 

@@ -2,10 +2,12 @@
 
 LaTeX source for *Improved Elastic Weight Consolidation as an Optimization Constraint for Continual Learning*.
 
-Build with:
+`main.tex` is the single source for the anonymous AISTATS 2027 submission
+(default) and the arXiv version (`\arxivtrue`). Build with:
 
 ```bash
-make paper
+make paper   # AISTATS submission, main.pdf
+make arxiv   # arXiv package dist/iewc-arxiv.zip and preview dist/iewc-arxiv.pdf
 ```
 
 All quantitative plots are PGFPlots/TikZ sources in `figures/tikz/`, drawn
