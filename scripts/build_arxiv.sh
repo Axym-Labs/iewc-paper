@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Build the arXiv version from the single source: copy the sources to
-# dist/arxiv, switch main.tex to \arxivtrue, compile once to produce main.bbl,
-# and pack dist/iewc-arxiv.zip (sources, main.bbl, figures, link symbols; no
-# .bib or auxiliary files). The compiled preview is dist/iewc-arxiv.pdf.
+# Pack the arXiv version (the default build of main.tex): copy the sources to
+# dist/arxiv, compile once there to produce main.bbl, and pack
+# dist/iewc-arxiv.zip (sources, main.bbl, figures, link symbols; no .bib, TMLR
+# files or auxiliary files). The compiled preview is dist/iewc-arxiv.pdf.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 out=dist/arxiv
@@ -14,9 +14,6 @@ cp figures/overview.pdf figures/iewc_plot_styles.tex "$out/figures"/
 cp figures/tikz/*.tex "$out/figures/tikz"/
 cp appendices/*.tex "$out/appendices"/
 cp sections/*.tex "$out/sections"/
-rm "$out/sections/sec17_reproducibility_checklist.tex"
-sed -i 's/^\\arxivfalse$/\\arxivtrue/' "$out/main.tex"
-grep -q '^\\arxivtrue$' "$out/main.tex"
 (cd "$out" && tectonic -X compile --keep-intermediates main.tex)
 mv "$out/main.pdf" dist/iewc-arxiv.pdf
 (cd "$out" && rm -f references.bib main.aux main.blg main.log main.out)

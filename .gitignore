@@ -3,6 +3,11 @@ main.bbl
 main.blg
 main.log
 main.out
+tmlr.aux
+tmlr.bbl
+tmlr.blg
+tmlr.log
+tmlr.out
 *.synctex.gz
 dist/
 paper_writeup.md

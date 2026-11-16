@@ -12,7 +12,7 @@ arxiv: figures/overview.pdf
 	./scripts/build_arxiv.sh
 
 tmlr: figures/overview.pdf
-	cd tmlr && tectonic $(TECTONIC_FLAGS) main.tex
+	tectonic $(TECTONIC_FLAGS) tmlr.tex
 
 figures/overview.pdf: figures/build_overview.py
 	python figures/build_overview.py

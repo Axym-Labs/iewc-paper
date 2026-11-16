@@ -2,13 +2,19 @@
 
 LaTeX source for *Improved Elastic Weight Consolidation as an Optimization Constraint for Continual Learning*.
 
-`main.tex` is the single source for the anonymous AISTATS 2027 submission
-(default) and the arXiv version (`\arxivtrue`). Build with:
+`main.tex` is the single source for the arXiv version (default) and the
+anonymous TMLR submission (`tmlr.tex` sets the TMLR switch: official
+unmodified `tmlr.sty`, no authors or links line, first-page AI-assistance
+footnote instead of the AI-use subsection). Build with:
 
 ```bash
-make paper   # AISTATS submission, main.pdf
+make paper   # arXiv version, main.pdf
+make tmlr    # anonymous TMLR submission, tmlr.pdf
 make arxiv   # arXiv package dist/iewc-arxiv.zip and preview dist/iewc-arxiv.pdf
 ```
+
+The former AISTATS 2027 build and the previous `tmlr/` build are in
+`archive/`.
 
 All quantitative plots are PGFPlots/TikZ sources in `figures/tikz/`, drawn
 inline at their final width with the shared styles in
