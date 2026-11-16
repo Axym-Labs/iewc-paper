@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Pack the arXiv version (the default build of main.tex): copy the sources to
-# dist/arxiv, compile once there to produce main.bbl, and pack
+# dist/arxiv, build it there with pdflatex (scripts/pdflatex.sh) to produce
+# main.bbl, and pack
 # dist/iewc-arxiv.zip (sources, main.bbl, figures, link symbols; no .bib, TMLR
 # files or auxiliary files). The compiled preview is dist/iewc-arxiv.pdf.
 set -euo pipefail
@@ -14,7 +15,7 @@ cp figures/overview.pdf figures/iewc_plot_styles.tex "$out/figures"/
 cp figures/tikz/*.tex "$out/figures/tikz"/
 cp appendices/*.tex "$out/appendices"/
 cp sections/*.tex "$out/sections"/
-(cd "$out" && tectonic -X compile --keep-intermediates main.tex)
+scripts/pdflatex.sh main.tex "$out"
 mv "$out/main.pdf" dist/iewc-arxiv.pdf
 (cd "$out" && rm -f references.bib main.aux main.blg main.log main.out)
 (cd "$out" && zip -qrX ../iewc-arxiv.zip .)

@@ -1,18 +1,15 @@
-SOURCE_DATE_EPOCH ?= 0
-export SOURCE_DATE_EPOCH
-
-TECTONIC_FLAGS ?= -Z deterministic-mode
+# Every build uses pdflatex (the arXiv engine) through scripts/pdflatex.sh.
 
 .PHONY: paper arxiv tmlr regenerate
 
 paper: figures/overview.pdf
-	tectonic $(TECTONIC_FLAGS) main.tex
+	scripts/pdflatex.sh main.tex
 
 arxiv: figures/overview.pdf
 	./scripts/build_arxiv.sh
 
 tmlr: figures/overview.pdf
-	tectonic $(TECTONIC_FLAGS) tmlr.tex
+	scripts/pdflatex.sh tmlr.tex
 
 figures/overview.pdf: figures/build_overview.py
 	python figures/build_overview.py
@@ -20,4 +17,4 @@ figures/overview.pdf: figures/build_overview.py
 regenerate:
 	python figures/build_overview.py
 	python scripts/generate_tikz_figures.py
-	tectonic $(TECTONIC_FLAGS) main.tex
+	scripts/pdflatex.sh main.tex
