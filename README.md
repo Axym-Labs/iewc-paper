@@ -18,5 +18,6 @@ changing data, plot styles, or the generator. The front-page conceptual
 illustration is a vector PDF built by `figures/build_overview.py`, which the
 standard build refreshes when needed.
 
-- [Project page](https://axym.org/work/iewc)
+- [Paper (arXiv:2611.16039)](https://arxiv.org/abs/2611.16039)
+- [Project page](https://axym.org/work/iewc/)
 - [Code](https://github.com/Axym-Labs/iewc)
